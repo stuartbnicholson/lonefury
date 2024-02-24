@@ -1,0 +1,7 @@
+name=Roguesconian
+author=Snic
+description=Shoot shoot kill kill lone spaceship baby.
+bundleID=com.snic.roguesconian
+version=1.0
+buildNumber=100
+imagePath=SystemAssets
