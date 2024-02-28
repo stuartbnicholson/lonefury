@@ -22,6 +22,7 @@ function Starfield.new()
 end
 
 function Starfield:draw()
+    -- TODO: This doesn't appear to work? Always draws at initial value? Why?
     self.image:draw(self.x, self.y)   
     
     print(self.x, self.y)
