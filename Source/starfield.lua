@@ -10,20 +10,24 @@ function Starfield.new()
     self.y = 0
     self.image = gfx.image.new(400, 240, gfx.kColorBlack)
     
-    -- Draw starfield on background image so we don't have to update it constantly
     gfx.pushContext(self.image)
     gfx.setColor(gfx.kColorWhite)
     for i = 1, 80 do
         gfx.drawPixel(math.random(400), math.random(240))
     end
     gfx.popContext()
-    
+
+    -- Make background transparent so we can see starfield draws
+    gfx.setBackgroundColor(gfx.kColorClear)
+
     return self
 end
 
+function Starfield:update(deltaX, deltaY)    
+    self.x += deltaX * 0.5
+    self.y += deltaY * 0.5
+end
+
 function Starfield:draw()
-    -- TODO: This doesn't appear to work? Always draws at initial value? Why?
     self.image:draw(self.x, self.y)   
-    
-    print(self.x, self.y)
 end

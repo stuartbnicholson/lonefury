@@ -13,13 +13,18 @@ function Player.new()
     local img = loadImage("images/player.png")
     self.sprite = gfx.sprite.new(img)
     self.sprite:moveTo(200,120)
+    self.sprite:setZIndex(100)
     self.sprite:add()
 
     return self
 end
 
 function Player:thrust()
-    -- TODO:
+    local rot = self.sprite:getRotation()
+    local deltaX = -math.sin(math.rad(rot))
+    local deltaY = math.cos(math.rad(rot))
+
+    return deltaX, deltaY
 end
 
 function Player:fire()

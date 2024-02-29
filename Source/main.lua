@@ -4,36 +4,16 @@ import "starfield"
 
 local gfx = playdate.graphics
 
-local player = Player.new()
-local asteroid1 = Asteroid.new(50, 50)
-local asteroid2 = Asteroid.new(350, 50)
-local asteroid3 = Asteroid.new(50, 150)
-
 local starfield = Starfield.new()
-gfx.sprite.setBackgroundDrawingCallback(
-    function(x,y,w,h)
-        starfield:draw()
-    end
-)
+local player = Player.new()
+local enemies = {}
+local deltaX = 0
+local deltaY = 0
 
---[[
-    So we have a starfield that moves slowly
-    And objects sprites that move quickly over it in response to the player ship
-    The player ship never leaves the centre of the screen
-    
-    If a sprite is offscreen we don't need to draw it (PlayDate handles that)?
-    What happens if we reach the end of the world? We wrap.
-]]--
-
-
-function playerThrust()
-    local rot = player.sprite:getRotation()
-    local x = math.cos(rot)
-    local y = math.sin(rot)
-
-    starfield.x += x
-    starfield.y += y
-end
+-- Generate some placeholder enemies
+enemies[1] = Asteroid.new(50, 50)
+enemies[2] = Asteroid.new(350, 50)
+enemies[3] = Asteroid.new(50, 150)
 
 function buttonUpdate()
     if playdate.buttonIsPressed(playdate.kButtonUp) then
@@ -41,7 +21,7 @@ function buttonUpdate()
     end
 
     if playdate.buttonIsPressed(playdate.kButtonDown) then
-        playerThrust()
+        deltaX, deltaY = player:thrust()
     end
  
     if playdate.buttonIsPressed(playdate.kButtonLeft) then
@@ -80,8 +60,19 @@ end
 ]]--
 
 function playdate.update()
-    buttonUpdate()
+    -- Reset
+    deltaX = 0 -- If we don't reset these, but delta them down to 0 we'd have thrust simulation
+    deltaY = 0
 
+    -- Update
+    buttonUpdate()
+    starfield:update(deltaX, deltaY)
+    for i, enemy in ipairs(enemies) do
+        enemy:update(deltaX, deltaY)
+    end
+
+    -- Draw
+    starfield:draw()    -- This works, it just doesn't work if you draw it via a background function? Odd
     gfx.sprite.update()
 
     -- playdate.drawFPS(0,0)
