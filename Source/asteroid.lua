@@ -1,5 +1,4 @@
 import "CoreLibs/sprites"
-import "imageLoader"
 
 local gfx = playdate.graphics
 
@@ -7,18 +6,20 @@ Asteroid = {}
 Asteroid.__index = Asteroid
 
 function Asteroid.new(x, y)
-    local self = setmetatable({}, Asteroid)
+    local img, err = gfx.image.new("images/asteroid.png")
+    assert(img, err)
 
-    local img = loadImage("images/asteroid.png")
-    self.sprite = gfx.sprite.new(img)
-    self.sprite:moveTo(x, y)
-    self.sprite:setZIndex(10)
-    self.sprite:add()
+    local self = gfx.sprite.new(img)
+    self:moveTo(x, y)
+    self:setZIndex(10)
+    self:setCollideRect(2, 2, 12, 12)
+
+    self:add()
+
+    function self:updateWorldPos(deltaX, deltaY)
+        local x, y = self:getPosition()
+        self:moveTo(x + deltaX, y + deltaY)
+    end
 
     return self
-end
-
-function Asteroid:update(deltaX, deltaY)
-    local x, y = self.sprite:getPosition()
-    self.sprite:moveTo(x + deltaX, y + deltaY)
 end
