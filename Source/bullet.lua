@@ -27,14 +27,20 @@ function Bullet:new()
 		local x,y,c,n = self:moveWithCollisions(self.x + self.deltaX, self.y + self.deltaY)
 		
 		for i=1,n do
-			local other = c[i].other
-			-- TODO: Something here
+			self:bulletHit(c[i].other)
 		end
 		
 		if self.x < 0 or self.x > 400 or self.y < 0 or self.y > 240 then
 			self:setVisible(false)
 			self:remove()
 		end
+	end
+
+	function self:bulletHit(other)
+		other:bulletHit()
+
+		self:setVisible(false)
+		self:remove()
 	end
 
 	function self:draw()

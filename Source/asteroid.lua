@@ -6,6 +6,8 @@ Asteroid = {}
 Asteroid.__index = Asteroid
 
 function Asteroid.new(x, y)
+    local POINTS <const> = 1
+
     local img, err = gfx.image.new("images/asteroid.png")
     assert(img, err)
 
@@ -21,6 +23,14 @@ function Asteroid.new(x, y)
     function self:updateWorldPos(deltaX, deltaY)
         local x, y = self:getPosition()
         self:moveTo(x + deltaX, y + deltaY)
+    end
+
+    function self:bulletHit()
+        -- TODO: Some animation here
+        self:setVisible(false)
+        self:remove()
+
+        PlayerScore += POINTS
     end
 
     return self
