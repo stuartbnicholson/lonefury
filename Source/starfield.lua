@@ -23,7 +23,7 @@ function Starfield.new()
     return self
 end
 
-function Starfield:update(deltaX, deltaY)    
+function Starfield:updateWorldPos(deltaX, deltaY)    
     self.x += deltaX * 0.5
     self.y += deltaY * 0.5
 end

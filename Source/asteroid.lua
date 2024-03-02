@@ -13,6 +13,8 @@ function Asteroid.new(x, y)
     self:moveTo(x, y)
     self:setZIndex(10)
     self:setCollideRect(2, 2, 12, 12)
+    self:setGroupMask(GROUP_ENEMY)
+    self:setCollidesWithGroupsMask(GROUP_PLAYER|GROUP_BULLET)
 
     self:add()
 

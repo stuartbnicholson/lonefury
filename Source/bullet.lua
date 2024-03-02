@@ -9,24 +9,30 @@ function Bullet:new()
 	
 	self:setSize(3, 3)
 	self:setCollideRect(0, 0, 3, 3)
+	self:setGroupMask(GROUP_BULLET)
+	self:setCollidesWithGroupsMask(GROUP_ENEMY)
+	self:setVisible(false)
 	
-	function self:setVelocity(dx, dy, da)
-		self.dx = dx
-		self.dy = dy
+	function self:fire(x, y, deltaX, deltaY, angle)
+		self.deltaX = deltaX
+		self.deltaY = deltaY
+
+		self:moveTo(x, y)
+		self:setRotation(angle)
+		self:setVisible(true)
+		self:add()
 	end
 	
 	function self:update()
-		local x,y,c,n = self:moveWithCollisions(self.x + self.dx, self.y + self.dy)
+		local x,y,c,n = self:moveWithCollisions(self.x + self.deltaX, self.y + self.deltaY)
 		
 		for i=1,n do
 			local other = c[i].other
-			if other.type == "asteroid" then
-				other:boom()
-				self:remove()
-			end
+			-- TODO: Something here
 		end
 		
-		if self.x < 0 or self.x > 400 or self.y < 0 or self.y > 240 or self.removeme then
+		if self.x < 0 or self.x > 400 or self.y < 0 or self.y > 240 then
+			self:setVisible(false)
 			self:remove()
 		end
 	end

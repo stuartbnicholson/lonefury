@@ -1,0 +1,1 @@
+A good description of the flocking algo: https://www.oreilly.com/library/view/ai-for-game/0596005555/ch04.html

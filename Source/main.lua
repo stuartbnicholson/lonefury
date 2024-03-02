@@ -2,10 +2,15 @@ import "player"
 import "asteroid"
 import "starfield"
 
-local gfx = playdate.graphics
+local gfx <const> = playdate.graphics
 
-local starfield = Starfield.new()
-local player = Player.new()
+-- Collision Groups
+GROUP_PLAYER = 0x01
+GROUP_BULLET = 0x02
+GROUP_ENEMY  = 0x04
+
+local starfield  <const> = Starfield.new()
+local player <const> = Player.new()
 local enemies = {}
 local deltaX = 0
 local deltaY = 0
@@ -36,32 +41,6 @@ function buttonUpdate()
     end     
 end
 
---[[ button functions
-function playdate.leftButtonHeld()
-    print('left')
-end
-
-function playdate.rightButtonHeld()
-    print('right')
-end
-
-function playdate.upButtonHeld()
-    print('up')
-end
-
-function playdate.downButtonHeld()
-    print('down')
-end
-
-function playdate.BButtonHeld()
-    print('B')
-end
-
-function playdate.AButtonHeld()
-    print('A')
-end
-]]--
-
 function playdate.update()
     -- Reset
     deltaX *= 0.65 -- If we don't reset these, but delta them down to 0 we'd have thrust simulation
@@ -70,7 +49,7 @@ function playdate.update()
 
     -- Update
     buttonUpdate()
-    starfield:update(deltaX, deltaY)
+    starfield:updateWorldPos(deltaX, deltaY)
     for i, enemy in ipairs(enemies) do
         enemy:updateWorldPos(deltaX, deltaY)
     end
