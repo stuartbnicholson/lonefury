@@ -1,1 +1,26 @@
 A good description of the flocking algo: https://www.oreilly.com/library/view/ai-for-game/0596005555/ch04.html
+
+TODO:
+
+Game:
+    - Dashboard
+        - Minimap
+    - Starfield
+
+Player:
+    - Death anim
+
+Enemies
+    - Asteroids
+        - Death anim
+
+    - Dive Bombers:
+        - Limit their turn
+        - Avoid colliding with friends
+        - Death anim
+
+    - Bases
+        - Firing
+        - Spawning dive bombers
+    
+Try it out on an actual device

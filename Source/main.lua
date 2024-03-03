@@ -29,6 +29,7 @@ enemies[3] = Asteroid.new(50, 150)
 enemies[4] = Enemy.new(-50,50)
 enemies[5] = Enemy.new(-30,-30)
 enemies[6] = Enemy.new(-10,-10)
+enemies[7] = EnemyBase.new(300,140)
 
 function getPlayer()
     return player
