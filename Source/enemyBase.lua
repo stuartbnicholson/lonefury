@@ -4,8 +4,6 @@ EnemyBase = {}
 EnemyBase.__index = EnemyBase
 
 function EnemyBase.new(x, y)
-	local ROTATE_SPEED <const> = 0
-
 	-- A base is composed of several parts, 4 x 32x32 corners and a 8x16 gun
 	local img = gfx.image.new(32 * 2 + 8, 32 * 2)
 	local self = gfx.sprite.new(img)
@@ -21,7 +19,7 @@ function EnemyBase.new(x, y)
 	end
 
 	function self:update()
-		self:setRotation((self:getRotation() + ROTATE_SPEED) % 360)
+		-- TODO: Something here. Fire. Spawn bombers
 	end
 
 	function self:updateWorldPos(deltaX, deltaY)

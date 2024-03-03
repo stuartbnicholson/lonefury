@@ -15,7 +15,7 @@ function Enemy.new(x, y)
 
     local self = gfx.sprite.new(img)
     self:moveTo(x, y)
-    self:setRotation(0)
+    self:setRotation(0) -- TODO: Inefficient on the hardware
     self:setZIndex(15)
 	self:setCollideRect(2, 2, 12, 11)
 	self:setGroupMask(GROUP_ENEMY)
@@ -37,7 +37,7 @@ function Enemy.new(x, y)
         local playerX, playerY = getPlayer():getPosition()
         local x, y = self:getPosition()
         local targetAngle = self:turnTowards(x - playerX, y - playerY, 0, 0, self:getRotation()) -- Sprite vs world coords. Player is always 0,0
-        self:setRotation(targetAngle) 
+        self:setRotation(targetAngle) -- TODO: Inefficient on the hardware
 
         local deltaX = -math.sin(math.rad(targetAngle)) * SPEED
         local deltaY = math.cos(math.rad(targetAngle)) * SPEED

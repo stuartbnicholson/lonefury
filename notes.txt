@@ -2,6 +2,13 @@ A good description of the flocking algo: https://www.oreilly.com/library/view/ai
 
 TODO:
 
+Play.Date
+    - Hmm apparently sprite:setRotation is expensive on the hardware!
+    - Pre-rotated sprites are suggested, which Asperite handles.
+    - Means I could used fixed rotates which might make things easier...
+
+    - Also apparently radians are preferred to degrees for video games...
+
 Game:
     - Dashboard
         - Minimap

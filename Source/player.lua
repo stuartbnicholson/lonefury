@@ -14,7 +14,7 @@ function Player:new()
     assert(img, err)
 
     local self = gfx.sprite:new(img)
-    self:setRotation(0)
+    self:setRotation(0)  -- TODO: Inefficient on the hardware
     self:moveTo(200,120)
     self:setZIndex(100)
     self:setCollideRect(1, 1, 14, 14)
@@ -48,17 +48,17 @@ function Player:new()
             local angle = self:getRotation()
             local deltaX = -math.sin(math.rad(angle)) * SPEED
             local deltaY = math.cos(math.rad(angle)) * SPEED 
-            self.bullets[1]:fire(x, y, deltaX, deltaY, angle)
-            self.bullets[2]:fire(x, y, -deltaX, -deltaY, -angle)
+            self.bullets[1]:fire(x, y, deltaX, deltaY)
+            self.bullets[2]:fire(x, y, -deltaX, -deltaY)
         end
     end
     
     function self:left()
-        self:setRotation(self:getRotation() - ROTATE_SPEED)
+        self:setRotation(self:getRotation() - ROTATE_SPEED) -- TODO: Inefficient on the hardware
     end
     
     function self:right()
-        self:setRotation(self:getRotation() + ROTATE_SPEED)
+        self:setRotation(self:getRotation() + ROTATE_SPEED) -- TODO: Inefficient on the hardware
     end
 
     return self

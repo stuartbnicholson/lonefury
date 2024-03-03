@@ -13,12 +13,11 @@ function Bullet:new()
 	self:setCollidesWithGroupsMask(GROUP_ENEMY)
 	self:setVisible(false)
 	
-	function self:fire(x, y, deltaX, deltaY, angle)
+	function self:fire(x, y, deltaX, deltaY)
 		self.deltaX = deltaX
 		self.deltaY = deltaY
 
 		self:moveTo(x, y)
-		self:setRotation(angle)
 		self:setVisible(true)
 		self:add()
 	end
