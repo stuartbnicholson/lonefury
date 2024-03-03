@@ -14,6 +14,7 @@ function Player:new()
     assert(img, err)
 
     local self = gfx.sprite:new(img)
+    self:setRotation(0)
     self:moveTo(200,120)
     self:setZIndex(100)
     self:setCollideRect(1, 1, 14, 14)
@@ -25,11 +26,19 @@ function Player:new()
     self.bullets[1] = Bullet.new()
     self.bullets[2] = Bullet.new()
 
+    function self:update()
+        local _,_,c,n = self:checkCollisions(self:getPosition())
+        
+        if n > 0 then
+            -- TODO: Player collides with anything they die
+        end
+    end
+
     function self:thrust()
         local angle = self:getRotation()
         local deltaX = -math.sin(math.rad(angle))
         local deltaY = math.cos(math.rad(angle))
-    
+
         return deltaX, deltaY
     end
     

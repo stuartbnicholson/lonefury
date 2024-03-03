@@ -1,5 +1,7 @@
 import "player"
 import "asteroid"
+import "enemy"
+import "enemyBase"
 
 import "dashboard"
 import "starfield"
@@ -24,6 +26,13 @@ local enemies <const> = {}
 enemies[1] = Asteroid.new(50, 50)
 enemies[2] = Asteroid.new(350, 50)
 enemies[3] = Asteroid.new(50, 150)
+enemies[4] = Enemy.new(-50,50)
+enemies[5] = Enemy.new(-30,-30)
+enemies[6] = Enemy.new(-10,-10)
+
+function getPlayer()
+    return player
+end
 
 function buttonUpdate()
     if playdate.buttonIsPressed(playdate.kButtonB) then
