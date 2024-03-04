@@ -6,7 +6,9 @@ Play.Date
     - Hmm apparently sprite:setRotation is expensive on the hardware!
     - Pre-rotated sprites are suggested, which Asperite handles.
     - Means I could used fixed rotates which might make things easier...
-
+        - 15 degree increments is what the original Bosconian used, although oddly not for the player ship?
+            - 7 tiles which can be reflected in X/Y
+            - See playdate.graphics.imagetable
     - Also apparently radians are preferred to degrees for video games...
 
 Game:
