@@ -22,7 +22,6 @@ function Enemy.new(x, y)
 	self:setCollideRect(2, 2, 12, 11)
 	self:setGroupMask(GROUP_ENEMY)
 	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
-
     self:add()
 
     function self:setTableImage()
@@ -72,21 +71,20 @@ function Enemy.new(x, y)
     end
 
     function self:update()
-        -- Turn towards the player
         local playerX, playerY = getPlayer():getPosition()
         local x, y = self:getPosition()
         
         self.angle = self:turnTowards(x - playerX, y - playerY, 0, 0, self.angle) -- Sprite vs world coords. Player is always 0,0
         self:setTableImage()
-
-        local deltaX = -math.sin(math.rad(self.angle)) * SPEED
-        local deltaY = math.cos(math.rad(self.angle)) * SPEED
-        self:moveTo(x - deltaX, y - deltaY)
     end
    
     function self:updateWorldPos(deltaX, deltaY)
         local x, y = self:getPosition()
-        self:moveTo(x + deltaX, y + deltaY)
+
+        -- Combine world and enemy move
+        local dX = -math.sin(math.rad(self.angle)) * SPEED
+        local dY = math.cos(math.rad(self.angle)) * SPEED
+        self:moveTo(x + deltaX - dX, y + deltaY - dY)
     end
 
     function self:bulletHit()
