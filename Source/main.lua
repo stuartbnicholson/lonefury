@@ -35,7 +35,7 @@ enemies[5] = Enemy.new(80,50)
 -- enemies[6] = Enemy.new(-30,-30)
 -- enemies[7] = Enemy.new(-10,-10)
 
--- Manage explosions
+-- Manage explosions, we only cycle three
 local explosions <const> = {}
 local explosionIdx = 1
 local explosionMaxIdx = 3
@@ -85,16 +85,16 @@ function playdate.update()
     -- Update
     ButtonUpdate()
     starfield:updateWorldPos(worldDeltaX, worldDeltaY)
-    for _, enemy in ipairs(enemies) do
-        enemy:updateWorldPos(worldDeltaX, worldDeltaY)
+    for i = 1, #enemies do
+        enemies[i]:updateWorldPos(worldDeltaX, worldDeltaY)
     end
 
     -- Draw
     starfield:draw()    -- This works, it just doesn't work if you draw it via a background function? Odd
     gfx.sprite.update()
 
-    for _, explosion in ipairs(explosions) do
-        explosion:update()
+    for i = 1, #explosions do
+        explosions[i]:update()
     end 
 
     dashboard:draw()

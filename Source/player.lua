@@ -21,32 +21,54 @@ function Player:new()
     self.angle = 0
     self:moveTo(200,120)
     self:setZIndex(100)
-    self:setCollideRect(1, 1, 14, 14)
+    self:setCollideRect(2, 2, 11, 11)
     self:setGroupMask(GROUP_PLAYER)
     self:setCollidesWithGroupsMask(GROUP_ENEMY)
     self:add()
+
+    self.isAlive = true
 
     self.bullets = {}
     self.bullets[1] = Bullet.new()
     self.bullets[2] = Bullet.new()
 
     function self:update()
-        local _,_,c,n = self:checkCollisions(self:getPosition())
-        
-        if n > 0 then
-            -- TODO: Player collides with anything they die
+        if self.isAlive then
+            local _,_,c,n = self:checkCollisions(self:getPosition())
+            
+            if n > 0 then
+                for i = 1, #c do
+                    if self:alphaCollision(c[i].sprite) then
+                        -- The first real collision is sufficient to kill the player
+                        self:collide()
+                        break
+                    end
+                end
+            end
         end
     end
 
+    function self:collide(other)
+        self:setVisible(false)
+        self.isAlive = false
+
+        Explode(self:getPosition())
+    end
+
     function self:thrust()
-        local deltaX = -math.sin(math.rad(self.angle))
-        local deltaY = math.cos(math.rad(self.angle))
+        local deltaX = 0
+        local deltaY = 0
+
+        if self.isAlive then
+            deltaX = -math.sin(math.rad(self.angle))
+            deltaY = math.cos(math.rad(self.angle))
+        end
 
         return deltaX, deltaY
     end
     
     function self:fire()
-        if self.bullets[1]:isVisible() == false and self.bullets[2]:isVisible() == false then
+        if self.isAlive and self.bullets[1]:isVisible() == false and self.bullets[2]:isVisible() == false then
             local x, y = self:getPosition()
             local deltaX = -math.sin(math.rad(self.angle)) * SPEED
             local deltaY = math.cos(math.rad(self.angle)) * SPEED 
@@ -73,23 +95,27 @@ function Player:new()
     end
 
     function self:left()
-        if self.angle == 0 then
-            self.angle = 360 - ROTATE_SPEED
-        else
-            self.angle -= ROTATE_SPEED
-        end
+        if self.isAlive then
+            if self.angle == 0 then
+                self.angle = 360 - ROTATE_SPEED
+            else
+                self.angle -= ROTATE_SPEED
+            end
 
-        self:setTableImage()
+            self:setTableImage()
+        end
     end
     
     function self:right()
-        if self.angle == 360 - ROTATE_SPEED then
-            self.angle = 0
-        else
-            self.angle += ROTATE_SPEED
-        end
+        if self.isAlive then
+            if self.angle == 360 - ROTATE_SPEED then
+                self.angle = 0
+            else
+                self.angle += ROTATE_SPEED
+            end
 
-        self:setTableImage()
+            self:setTableImage()
+        end
     end
 
     return self
