@@ -1,3 +1,5 @@
+import 'CoreLibs/sprites'
+
 import "player"
 import "asteroid"
 import "enemy"
@@ -33,14 +35,28 @@ enemies[5] = Enemy.new(80,50)
 -- enemies[6] = Enemy.new(-30,-30)
 -- enemies[7] = Enemy.new(-10,-10)
 
--- local explosions <const> = {}
--- explosions[1] = Explosion.new(0, 0)
+-- Manage explosions
+local explosions <const> = {}
+local explosionIdx = 1
+local explosionMaxIdx = 3
+explosions[1] = Explosion.new()
+explosions[2] = Explosion.new()
+explosions[3] = Explosion.new()
 
-function getPlayer()
+function Explode(x, y)
+    explosions[explosionIdx]:explode(x, y)
+    if explosionIdx == explosionMaxIdx then
+        explosionIdx = 1
+    else
+        explosionIdx += 1
+    end
+end
+
+function GetPlayer()
     return player
 end
 
-function buttonUpdate()
+function ButtonUpdate()
     if playdate.buttonIsPressed(playdate.kButtonB) then
         player:fire()
     end
@@ -67,18 +83,21 @@ function playdate.update()
     worldDeltaY *= 0.65
 
     -- Update
-    buttonUpdate()
+    ButtonUpdate()
     starfield:updateWorldPos(worldDeltaX, worldDeltaY)
-    for i, enemy in ipairs(enemies) do
+    for _, enemy in ipairs(enemies) do
         enemy:updateWorldPos(worldDeltaX, worldDeltaY)
     end
 
     -- Draw
     starfield:draw()    -- This works, it just doesn't work if you draw it via a background function? Odd
     gfx.sprite.update()
+
+    for _, explosion in ipairs(explosions) do
+        explosion:update()
+    end 
+
     dashboard:draw()
 
     FrameCount += 1
 end
-
--- setup

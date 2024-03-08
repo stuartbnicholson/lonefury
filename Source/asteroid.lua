@@ -26,7 +26,7 @@ function Asteroid.new(x, y)
     end
 
     function self:bulletHit()
-        -- TODO: Some animation here
+        Explode(self:getPosition())
         self:setVisible(false)
         self:remove()
 

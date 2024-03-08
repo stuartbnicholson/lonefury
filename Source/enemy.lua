@@ -1,3 +1,5 @@
+import "utility"
+
 local gfx = playdate.graphics
 
 Enemy = {}
@@ -53,6 +55,22 @@ function Enemy.new(x, y)
         return sign * number
     end
 
+    function self:doLOSChase()
+        --[[
+            Vector u, v;
+            bool left = false;
+            bool right = false;
+            u = VRotate2D(-Predator.fOrientation,
+            (Prey.vPosition - Predator.vPosition));
+            u.Normalize();
+            if (u.x < -_TOL)
+            left = true;
+            else if (u.x > _TOL)
+            right = true;
+            Predator.SetThrusters(left, right);
+        ]]
+    end
+
     function self:turnTowards(x, y, targetX, targetY, currentAngle)
         local angle = math.deg(math.atan(targetY - y, targetX - x))
         angle += 90 -- TODO: Why is this +90 req'd? Something in the way math.atan works?
@@ -71,7 +89,7 @@ function Enemy.new(x, y)
     end
 
     function self:update()
-        local playerX, playerY = getPlayer():getPosition()
+        local playerX, playerY = GetPlayer():getPosition()
         local x, y = self:getPosition()
         
         self.angle = self:turnTowards(x - playerX, y - playerY, 0, 0, self.angle) -- Sprite vs world coords. Player is always 0,0
@@ -88,7 +106,7 @@ function Enemy.new(x, y)
     end
 
     function self:bulletHit()
-        -- TODO: Some animation here
+        Explode(self:getPosition())
         self:setVisible(false)
         self:remove()
 
