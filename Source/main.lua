@@ -16,6 +16,15 @@ GROUP_PLAYER = 0x01
 GROUP_BULLET = 0x02
 GROUP_ENEMY  = 0x04
 
+SPRITE_TAGS = {
+    player = 1,
+    playerBullet = 2,
+    asteroid = 3,
+    enemy = 4,
+    enemyBullet = 5,
+    enemyBase = 6,
+}
+
 local dashboard  <const> = Dashboard.new()
 local starfield  <const> = Starfield.new()
 FrameCount = 0

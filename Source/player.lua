@@ -18,6 +18,7 @@ function Player:new()
     assert(imgTable, err)
     self.imgTable = imgTable
     self:setImage(self.imgTable:getImage(1))
+    self:setTag(SPRITE_TAGS.player)
     self.angle = 0
     self:moveTo(200,120)
     self:setZIndex(100)
@@ -34,11 +35,10 @@ function Player:new()
 
     function self:update()
         if self.isAlive then
-            local _,_,c,n = self:checkCollisions(self:getPosition())
-            
+            local _,_,c,n = self:checkCollisions(self:getPosition())            
             if n > 0 then
                 for i = 1, #c do
-                    if self:alphaCollision(c[i].sprite) then
+                    if self:alphaCollision(c[i].other) then
                         -- The first real collision is sufficient to kill the player
                         self:collide()
                         break

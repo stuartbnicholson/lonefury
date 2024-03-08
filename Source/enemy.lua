@@ -19,6 +19,7 @@ function Enemy.new(x, y)
     self.angle = 0
     self.imgTable = imgTable
     self:setImage(self.imgTable:getImage(1))
+    self:setTag(SPRITE_TAGS.enemy)
     self:moveTo(x, y)
     self:setZIndex(15)
 	self:setCollideRect(2, 2, 11, 10)
