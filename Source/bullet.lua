@@ -5,9 +5,13 @@ Bullet = {}
 Bullet.__index = Bullet
 
 function Bullet:new()
-	local self = gfx.sprite:new()
+	local img = gfx.image.new(3,3)
+	gfx.pushContext(img)
+	gfx.setColor(gfx.kColorWhite)
+	gfx.fillRect(0, 0, 3, 3)
+	gfx.popContext(img)
+	local self = gfx.sprite:new(img)
 	
-	self:setSize(3, 3)
 	self:setCollideRect(0, 0, 3, 3)
 	self:setGroupMask(GROUP_BULLET)
 	self:setCollidesWithGroupsMask(GROUP_ENEMY)
@@ -23,32 +27,29 @@ function Bullet:new()
 	end
 	
 	function self:update()
-		local x,y,c,n = self:moveWithCollisions(self.x + self.deltaX, self.y + self.deltaY)
-		
+		local x,y = self:getPosition()
+		self:moveTo(x + self.deltaX, y + self.deltaY)
+
+		local cx,cy,c,n = self:checkCollisions(self.x, self.y)
 		for i=1,n do
-			self:bulletHit(c[i].other)
+			if self:alphaCollision(c[i].other) then
+				-- The first real collision is sufficient to stop the bullet
+				self:bulletHit(c[i].other, cx, cy)
+				break
+			end
 		end
 		
-		if self.x < 0 or self.x > 400 or self.y < 0 or self.y > 240 then
+		if x < 0 or x > 400 or y < 0 or y > 240 then
 			self:setVisible(false)
 			self:remove()
 		end
 	end
 
-	function self:bulletHit(other)
-		other:bulletHit()
+	function self:bulletHit(other, x, y)
+		other:bulletHit(self, x, y)
 
 		self:setVisible(false)
 		self:remove()
-	end
-
-	function self:draw()
-		gfx.setColor(gfx.kColorWhite)
-		gfx.fillRect(0, 0, 3, 3)
-	end
-	
-	function self:collisionResponse(other)
-		return "overlap"
 	end
 
 	return self

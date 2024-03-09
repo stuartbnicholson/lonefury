@@ -66,7 +66,7 @@ function EnemyBase.new(x, y)
 		gfx.popContext()
 	end
 
-	function self:bulletHit()
+	function self:bulletHit(x, y)
 		if self.isVertical then
 			-- TODO: Figure how which dome or gun was hit
 		else

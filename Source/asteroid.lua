@@ -25,7 +25,7 @@ function Asteroid.new(x, y)
         self:moveTo(x + deltaX, y + deltaY)
     end
 
-    function self:bulletHit()
+    function self:bulletHit(x, y)
         Explode(self:getPosition())
         self:setVisible(false)
         self:remove()
