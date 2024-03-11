@@ -39,8 +39,8 @@ local enemies <const> = {}
 enemies[1] = Asteroid.new(50, 50)
 enemies[2] = Asteroid.new(350, 50)
 enemies[3] = Asteroid.new(50, 150)
-enemies[4] = EnemyBase.new(300,140)
-enemies[5] = Enemy.new(80,50)
+enemies[4] = EnemyBase.new(100,240)
+-- enemies[5] = Enemy.new(80,50)
 -- enemies[6] = Enemy.new(-30,-30)
 -- enemies[7] = Enemy.new(-10,-10)
 
@@ -87,7 +87,6 @@ function ButtonUpdate()
 end
 
 function playdate.update()
-    -- Reset
     worldDeltaX *= 0.65 -- If we don't reset these, but delta them down to 0 we'd have thrust simulation
     worldDeltaY *= 0.65
 

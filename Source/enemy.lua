@@ -55,13 +55,8 @@ function Enemy.new(x, y)
     end
 
     function self:turnTowards(x, y, targetX, targetY, currentAngle)
-        local angle = math.deg(math.atan(targetY - y, targetX - x))
-        angle += 90 -- TODO: Why is this +90 req'd? Something in the way math.atan works?
+        local angle = PointsAngle(x, y, targetX, targetY)
 
-        if angle < 0 then
-            angle += 360
-        end
-        
         -- Turn angle has to be divisble by ROTATE_SPEED so we have the appropriate image
         angle = self:roundToNearestMultiple(math.floor(angle), ROTATE_SPEED)
 

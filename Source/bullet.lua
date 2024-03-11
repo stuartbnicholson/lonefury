@@ -30,11 +30,11 @@ function Bullet:new()
 		local x,y = self:getPosition()
 		self:moveTo(x + self.deltaX, y + self.deltaY)
 
-		local cx,cy,c,n = self:checkCollisions(self.x, self.y)
+		local _,_,c,n = self:checkCollisions(self.x, self.y)
 		for i=1,n do
 			if self:alphaCollision(c[i].other) then
 				-- The first real collision is sufficient to stop the bullet
-				self:bulletHit(c[i].other, cx, cy)
+				self:bulletHit(c[i].other, c[i].touch.x, c[i].touch.y)
 				break
 			end
 		end
