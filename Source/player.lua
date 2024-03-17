@@ -27,6 +27,8 @@ function Player:new()
     self:add()
 
     self.isAlive = true
+    self.score = 0
+    -- TODO: self.lives = 3
 
     self.bullets = {}
     self.bullets[1] = Bullet.new()
@@ -47,11 +49,17 @@ function Player:new()
         end
     end
 
+    function self:scored(points)
+        self.score += points
+        
+        -- TODO: Extra lives? Other bonuses? Difficulty increase?
+    end
+
     function self:collide(other)
         self:setVisible(false)
         self.isAlive = false
 
-        Explode(self:getPosition())
+        Explode(ExplosionSmall, self:getPosition())
     end
 
     function self:thrust()

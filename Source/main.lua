@@ -30,7 +30,6 @@ local starfield  <const> = Starfield.new()
 FrameCount = 0
 
 local player <const> = Player.new()
-PlayerScore = 0
 local worldDeltaX = 0
 local worldDeltaY = 0
 
@@ -43,23 +42,6 @@ enemies[4] = EnemyBase.new(100,240)
 -- enemies[5] = Enemy.new(80,50)
 -- enemies[6] = Enemy.new(-30,-30)
 -- enemies[7] = Enemy.new(-10,-10)
-
--- Manage explosions, we only cycle three
-local explosions <const> = {}
-local explosionIdx = 1
-local explosionMaxIdx = 3
-explosions[1] = Explosion.new()
-explosions[2] = Explosion.new()
-explosions[3] = Explosion.new()
-
-function Explode(x, y)
-    explosions[explosionIdx]:explode(x, y)
-    if explosionIdx == explosionMaxIdx then
-        explosionIdx = 1
-    else
-        explosionIdx += 1
-    end
-end
 
 function GetPlayer()
     return player
@@ -101,9 +83,7 @@ function playdate.update()
     starfield:draw()    -- This works, it just doesn't work if you draw it via a background function? Odd
     gfx.sprite.update()
 
-    for i = 1, #explosions do
-        explosions[i]:update()
-    end 
+    ExplosionsUpdate()
 
     dashboard:draw()
 

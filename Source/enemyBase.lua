@@ -72,6 +72,9 @@ sphereVertRuinFlip[Sphere4] = gfx.kImageFlippedXY
 sphereVertRuinFlip[Sphere5] = gfx.kImageFlippedY
 sphereVertRuinFlip[Sphere6] = gfx.kImageUnflipped
 
+local SphereScore <const> = 25 -- * 6 = 150
+local BaseOneShotScore <const> = 200
+
 function EnemyBase.new(x, y)
 	-- A base is composed of several parts, 4 x 32x32 corners and a 8x16 gun
 	local img = gfx.image.new(32 * 2 + 8, 32 * 2 + 8)
@@ -144,6 +147,7 @@ function EnemyBase.new(x, y)
 	function self:centreHit()
 		-- TODO: Centre hit is an instant kill unless shields are down
 		print('center hit')
+		self:baseExplodes()
 	end
 
 	function self:sphereHit(angle, cx, cy)
@@ -201,20 +205,28 @@ function EnemyBase.new(x, y)
 	end
 
 	function self:baseExplodes()
+		if self.spheresAlive == SpheresAlive then
+			GetPlayer():scored(BaseOneShotScore)
+		end
+
 		-- TODO:
 		print('Base explodes!')
 	end
 
 	function self:sphereExplodes(sphere)
-		-- TODO: Sphere explosion
+		GetPlayer():scored(SphereScore)
 
-		-- TODO: Redraw correct sphere ruined
+		-- Redraw correct sphere ruined
 		local point
 		if self.isVertical then
 			point = sphereVertPos[sphere]
 		else
 			point = sphereHorizPos[sphere]
 		end
+
+		-- Start sphere explosion
+		local x, y = self:getPosition()
+		Explode(ExplosionMed, x + point.x - 36 + 10 - 1, y + point.y - 36 + 10 - 1) -- TODO: Annoying conversion back to World x,y
 
 		-- Select ruined sphere image
 		local ruinImg = baseRuin1

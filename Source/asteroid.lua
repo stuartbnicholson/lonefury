@@ -6,7 +6,7 @@ Asteroid = {}
 Asteroid.__index = Asteroid
 
 function Asteroid.new(x, y)
-    local POINTS <const> = 1
+    local POINTS <const> = 5
 
     local img, err = gfx.image.new("images/asteroid.png")
     assert(img, err)
@@ -26,11 +26,11 @@ function Asteroid.new(x, y)
     end
 
     function self:bulletHit(x, y)
-        Explode(self:getPosition())
+        Explode(ExplosionSmall, self:getPosition())
         self:setVisible(false)
         self:remove()
 
-        PlayerScore += POINTS
+        GetPlayer():scored(POINTS)
     end
 
     return self

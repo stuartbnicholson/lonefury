@@ -7,15 +7,18 @@ A good description of the flocking algo: https://www.oreilly.com/library/view/ai
 - Dashboard
     - Minimap
 
-## Player:
-- Death anim
+## World
+- Button input and then WorldX,Y updates PRIOR to any delta movement with collision detection. Otherwise things get funky...!
+
+## Player
+- Lives
+- Dashboard
+- Multiple bullets
 
 ## Enemies
 - Asteroids
-    - Death anim
-
+ 
 - Dive Bombers:
-    - Death anim
     - Limit their turn
     - Avoid colliding with friends
 

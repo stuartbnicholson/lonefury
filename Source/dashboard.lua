@@ -17,7 +17,8 @@ function Dashboard:draw()
     gfx.setColor(playdate.graphics.kColorWhite)
     gfx.fillRect(0, 0, 40, 10)
     gfx.setColor(playdate.graphics.kColorBlack)
-    gfx.drawText('' .. PlayerScore, 1, 1)
+
+    gfx.drawText('' .. GetPlayer().score, 1, 1)
 
     playdate.drawFPS(0,12)
 end

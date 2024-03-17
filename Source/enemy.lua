@@ -6,7 +6,7 @@ Enemy = {}
 Enemy.__index = Enemy
 
 function Enemy.new(x, y)
-    local POINTS <const> = 5
+    local POINTS <const> = 15
     local SPEED <const> = 1.5
 
     local img, err = gfx.image.new(15, 15)
@@ -84,11 +84,11 @@ function Enemy.new(x, y)
     end
 
     function self:bulletHit(x, y)
-        Explode(self:getPosition())
+        Explode(ExplosionSmall, self:getPosition())
         self:setVisible(false)
         self:remove()
 
-        PlayerScore += POINTS
+        GetPlayer():scored(POINTS)
     end
 
     return self
