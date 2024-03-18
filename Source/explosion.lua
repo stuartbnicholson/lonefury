@@ -14,7 +14,8 @@ local exploSmallImgTable, err = gfx.imagetable.new("images/explosmall-table-15-1
 assert(exploSmallImgTable, err)
 local exploMedImgTable, err = gfx.imagetable.new("images/explomed-table-20-20.png")
 assert(exploMedImgTable, err)
--- TODO: ExplosionLarge
+local exploLargeImgTable, err = gfx.imagetable.new("images/explobase-table-72-72.png")
+assert(exploLargeImgTable, err)
 
 function Explosion.new(size)
     local w,h,imgTable
@@ -27,7 +28,9 @@ function Explosion.new(size)
         w = 20
         h = 20
     elseif size == ExplosionLarge then
-        assert(false, "TODO!")
+        imgTable = exploLargeImgTable
+        w = 72
+        h = 72
     end
 
     local self = gfx.animation.loop.new(120, imgTable, false)
@@ -38,15 +41,14 @@ function Explosion.new(size)
     self.y = -100
 
     function self:update()
-        if self:isValid() then
-            self:draw(self.x - (self.width >> 1), self.y - (self.height >> 1))
-        end
+        self:draw(self.x - (self.width >> 1), self.y - (self.height >> 1))
     end
 
     function self:explode(x, y)
         self.x = x
         self.y = y
         self.frame = 1
+        self.paused = false
     end
 
     return self
@@ -59,20 +61,27 @@ explosions[2] = Explosion.new(ExplosionSmall)
 explosions[3] = Explosion.new(ExplosionSmall)
 explosions[4] = Explosion.new(ExplosionMed)
 explosions[5] = Explosion.new(ExplosionMed)
+explosions[6] = Explosion.new(ExplosionLarge)
+
 local exploSmallIdx = 1
 local exploSmallMaxIdx <const> = exploSmallIdx + 2
+
 local exploMedIdx = exploSmallMaxIdx + 1
 local exploMedMaxIdx <const> = exploMedIdx + 1
 
+local exploLargeIdx = exploMedMaxIdx + 1
+local exploLargeMaxIdx <const> = exploLargeIdx
+
 function ExplosionsUpdate()
     for i = 1, #explosions do
-        explosions[i]:update()
+        if explosions[i]:isValid() then
+            explosions[i]:update()
+        end
     end
 end
 
 function Explode(size, x, y)
     if size == ExplosionSmall then
-        print('Explode: ' .. size .. ' ' .. exploSmallIdx)
         explosions[exploSmallIdx]:explode(x, y)
         if exploSmallIdx == exploSmallMaxIdx then
             exploSmallIdx = 1
@@ -80,7 +89,6 @@ function Explode(size, x, y)
             exploSmallIdx += 1
         end
     elseif size == ExplosionMed then
-        print('Explode: ' .. size .. ' ' .. exploMedIdx)
         explosions[exploMedIdx]:explode(x, y)
         if exploMedIdx == exploMedMaxIdx then
             exploMedIdx = exploSmallMaxIdx + 1
@@ -88,6 +96,11 @@ function Explode(size, x, y)
             exploMedIdx += 1
         end
     else
-        assert(false, "TODO!")
+        explosions[exploLargeIdx]:explode(x, y)
+        if exploLargeIdx == exploLargeMaxIdx then
+            exploLargeIdx = exploMedMaxIdx + 1
+        else
+            exploLargeIdx += 1
+        end
     end
 end

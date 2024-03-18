@@ -146,7 +146,6 @@ function EnemyBase.new(x, y)
 
 	function self:centreHit()
 		-- TODO: Centre hit is an instant kill unless shields are down
-		print('center hit')
 		self:baseExplodes()
 	end
 
@@ -209,8 +208,16 @@ function EnemyBase.new(x, y)
 			GetPlayer():scored(BaseOneShotScore)
 		end
 
-		-- TODO:
-		print('Base explodes!')
+		local x, y = self:getPosition()
+		Explode(ExplosionLarge, x, y)
+		--[[
+		Explode(ExplosionLarge, x - 36 + 6 + 16, y - 36 + 8 + 16)
+		Explode(ExplosionLarge, x - 36 + 38 + 16, y - 36 + 13 + 16)
+		Explode(ExplosionLarge, x - 36 + 14 + 16, y - 36 + 38 + 16)
+		]]--
+
+		self:remove()
+		self.isAlive = SpheresDead
 	end
 
 	function self:sphereExplodes(sphere)
