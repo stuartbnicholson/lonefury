@@ -23,12 +23,16 @@ A good description of the flocking algo: https://www.oreilly.com/library/view/ai
     - Avoid colliding with friends
 
 - Bases
-    - Firing
+    - Firing - they fire from the domes! 
     - Spawning dive bombers
     
 Try it out on an actual device
 
 ## History
+
+### 18-Mar-24
+
+- Base explosions!
 
 ### 9-Mar-24
 

@@ -5,6 +5,9 @@ local gfx = playdate.graphics
 Enemy = {}
 Enemy.__index = Enemy
 
+local imgTable, err = gfx.imagetable.new("images/enemy-table-15-15.png")
+assert(imgTable, err)
+
 function Enemy.new(x, y)
     local POINTS <const> = 15
     local SPEED <const> = 1.5
@@ -13,8 +16,6 @@ function Enemy.new(x, y)
     assert(img, err)
 
     local self = gfx.sprite:new(img)
-    local imgTable, err = gfx.imagetable.new("images/enemy-table-15-15.png")
-    assert(imgTable, err)
     self.angle = 0
     self.imgTable = imgTable
     self:setImage(self.imgTable:getImage(1))
@@ -39,7 +40,7 @@ function Enemy.new(x, y)
     end
 
     function self:doLOSChase()
-        --[[
+        --[[ TODO:
             Vector u, v;
             bool left = false;
             bool right = false;

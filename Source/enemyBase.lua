@@ -1,6 +1,8 @@
 local gfx = playdate.graphics
 local geom = playdate.geometry
 
+import "bigBullet"
+
 EnemyBase = {}
 EnemyBase.__index = EnemyBase
 
@@ -81,8 +83,26 @@ function EnemyBase.new(x, y)
 	local self = gfx.sprite.new(img)
 	self.spheresAlive = SpheresAlive
  
+	self.bullets = {}
+	self.bullets[1] = BigBullet:new()
+	self.bullets[2] = BigBullet:new()
+	self.bullets[3] = BigBullet:new()
+	self.bullets[4] = BigBullet:new()
+	self.bullets[5] = BigBullet:new()
+	self.bullets[6] = BigBullet:new()
+	self.bulletIdx = 1
+
 	function self:update()
-		-- TODO: Something here. Fire. Spawn bombers?
+		local x, y = self:getPosition()
+
+		-- TODO: Fire! And fix updating!
+		if not self.bullets[self.bulletIdx]:isVisible() then
+			self.bullets[self.bulletIdx]:fire(x, y, 1, -1)
+		else 
+			self.bullets[self.bulletIdx]:update()
+		end
+
+		-- TODO: Spawn!
 	end
 
 	function self:updateWorldPos(deltaX, deltaY)

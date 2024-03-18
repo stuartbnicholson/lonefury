@@ -6,6 +6,9 @@ local gfx = playdate.graphics
 Player = {}
 Player.__index = Player
 
+local imgTable, err = gfx.imagetable.new("images/player-table-15-15.png") 
+assert(imgTable, err)
+
 function Player:new()
     local SPEED <const> = 5.0
 
@@ -13,8 +16,6 @@ function Player:new()
     assert(img, err)
 
     local self = gfx.sprite:new(img)
-    local imgTable, err = gfx.imagetable.new("images/player-table-15-15.png") 
-    assert(imgTable, err)
     self.imgTable = imgTable
     self:setImage(self.imgTable:getImage(1))
     self:setTag(SPRITE_TAGS.player)
