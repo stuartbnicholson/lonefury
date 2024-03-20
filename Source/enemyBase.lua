@@ -74,6 +74,8 @@ sphereVertRuinFlip[Sphere4] = gfx.kImageFlippedXY
 sphereVertRuinFlip[Sphere5] = gfx.kImageFlippedY
 sphereVertRuinFlip[Sphere6] = gfx.kImageUnflipped
 
+local fireSpheres = { Sphere1, Sphere5, Sphere3, Sphere4, Sphere6, Sphere2 }
+
 local SphereScore <const> = 25 -- * 6 = 150
 local BaseOneShotScore <const> = 200
 
@@ -82,32 +84,141 @@ function EnemyBase.new(x, y)
 	local img = gfx.image.new(32 * 2 + 8, 32 * 2 + 8)
 	local self = gfx.sprite.new(img)
 	self.spheresAlive = SpheresAlive
+	-- TODO: Once bases are off-screen they shouldn't be awake? Grid system?
+	self.isAwake = true
+	self.lastFiredIdx = 1
  
 	self.bullets = {}
 	self.bullets[1] = BigBullet:new()
 	self.bullets[2] = BigBullet:new()
 	self.bullets[3] = BigBullet:new()
+	--[[
 	self.bullets[4] = BigBullet:new()
 	self.bullets[5] = BigBullet:new()
 	self.bullets[6] = BigBullet:new()
-	self.bulletIdx = 1
+	--]]
 
-	function self:update()
-		local x, y = self:getPosition()
-
-		-- TODO: Fire! And fix updating!
-		if not self.bullets[self.bulletIdx]:isVisible() then
-			self.bullets[self.bulletIdx]:fire(x, y, 1, -1)
-		else 
-			self.bullets[self.bulletIdx]:update()
+	function self:findBulletToFire()
+		for i = 1,#self.bullets do
+			if not self.bullets[i]:isVisible() then
+				return i
+			end
 		end
 
-		-- TODO: Spawn!
+		return 0
+	end
+
+	function self:sphereFire(firingSpheres)
+		assert(firingSpheres > 0, 'No spheres to fire')
+		-- TODO: HERE: Some wierd bug? Why does firingSpheres change?
+		print('firingSpheres: ' .. firingSpheres)
+
+		-- Alternate which sphere fires next
+		local i = self.lastFiredIdx
+		repeat
+			print(i)
+			if i == 6 then
+				i = 1
+			else
+				i += 1
+			end
+
+			if firingSpheres & fireSpheres[i] > 0 then
+				print('firing ' .. i)
+				self.lastFiredSphere = i
+				return fireSpheres[i]
+			end
+		until i == self.lastFiredIdx
+		assert(true, 'No firing sphere?')
+	end
+
+	function self:fire()
+		local x, y = self:getPosition()
+		local px, py = GetPlayer():getPosition()
+		local angleToPlayer = PointsAngle(x, y, px, py)
+		local dx, dy = AngleToDeltaXY(angleToPlayer)
+		dx = -dx
+		dy = -dy
+		local firingSpheres = 0
+
+		if self.isVertical then
+			if angleToPlayer < 60 then
+				firingSpheres = Sphere1|Sphere2|Sphere3
+			elseif angleToPlayer < 120 then
+				firingSpheres = Sphere2|Sphere3|Sphere4
+			elseif angleToPlayer < 180 then
+				firingSpheres = Sphere3|Sphere4|Sphere5
+			elseif angleToPlayer < 240 then
+				firingSpheres = Sphere4|Sphere5|Sphere6
+			elseif angleToPlayer < 300 then
+				firingSpheres = Sphere5|Sphere6|Sphere1
+			else
+				firingSpheres = Sphere6|Sphere1|Sphere2
+			end
+		else
+			if angleToPlayer < 45 then
+				firingSpheres = Sphere6|Sphere1|Sphere2
+			elseif angleToPlayer < 90 then
+				firingSpheres = Sphere1|Sphere2|Sphere3
+			elseif angleToPlayer < 135 then
+				firingSpheres = Sphere2|Sphere3|Sphere4
+			elseif angleToPlayer < 225 then
+				firingSpheres = Sphere3|Sphere4|Sphere5
+			elseif angleToPlayer < 270 then
+				firingSpheres = Sphere4|Sphere5|Sphere6
+			else
+				firingSpheres = Sphere5|Sphere6|Sphere1
+			end
+		end
+
+
+		-- Mask out the dead spheres, and the remaining spheres (if any) can fire
+		firingSpheres = self.spheresAlive & firingSpheres
+		while firingSpheres > 0 do
+			local bulletIdx = self:findBulletToFire()
+			if bulletIdx > 0 then
+				local sphere = self:sphereFire(firingSpheres)
+				local spherePos = self.spherePos[sphere]
+				self.bullets[bulletIdx]:fire(x + spherePos.x - 36, y + spherePos.y - 36, dx, dy)
+				firingSpheres = firingSpheres ~ sphere
+			else
+				-- Nothing to fire
+				break
+			end
+		end
+	end
+
+	function self:spawn()
+		-- TODO: Spawn bombers and other enemies
+	end
+
+	function self:update()
+		if self.isAwake then
+			-- Update the existing bullets world position
+			for i = 1, #self.bullets do
+				if self.bullets[i]:isVisible() then
+					self.bullets[i]:update()
+				end
+			end
+		
+			-- Fire some new bullets
+			self:fire()
+
+			-- TODO:
+			-- self:spawn()
+		end
 	end
 
 	function self:updateWorldPos(deltaX, deltaY)
         local x, y = self:getPosition()
         self:moveTo(x + deltaX, y + deltaY)
+
+		for i = 1, #self.bullets do
+			if self.bullets[i]:isVisible() then
+				x, y = self.bullets[i]:getPosition()
+				self.bullets[i]:moveTo(x + deltaX, y + deltaY)
+			end	
+		end 
     end
 
 	function self:buildBase()
@@ -121,6 +232,7 @@ function EnemyBase.new(x, y)
 			-- For drawing ruined spheres
 			self.sphereRuin1 = sphereVertRuin1
 			self.sphereRuinFlip = sphereVertRuinFlip
+			self.spherePos = sphereVertPos
 
 			baseQuarterVert:draw(0,4)
 			baseQuarterVert:draw(0,4+32,gfx.kImageFlippedY)
@@ -133,6 +245,7 @@ function EnemyBase.new(x, y)
 			-- For drawing ruined spheres
 			self.sphereRuin1 = sphereHorizRuin1
 			self.sphereRuinFlip = sphereHorizRuinFlip
+			self.spherePos = sphereHorizPos
 
 			baseQuarterHoriz:draw(4,0)
 			baseQuarterHoriz:draw(4+32,0,gfx.kImageFlippedX)
@@ -244,12 +357,7 @@ function EnemyBase.new(x, y)
 		GetPlayer():scored(SphereScore)
 
 		-- Redraw correct sphere ruined
-		local point
-		if self.isVertical then
-			point = sphereVertPos[sphere]
-		else
-			point = sphereHorizPos[sphere]
-		end
+		local point = self.spherePos[sphere]
 
 		-- Start sphere explosion
 		local x, y = self:getPosition()

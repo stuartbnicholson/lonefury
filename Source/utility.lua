@@ -47,3 +47,7 @@ function PointsAngle(x1, y1, x2, y2)
 
 	return angle
 end
+
+function AngleToDeltaXY(angle)
+	return -math.sin(math.rad(angle)), math.cos(math.rad(angle))
+end

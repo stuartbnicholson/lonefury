@@ -57,7 +57,7 @@ function Player:new()
     end
 
     function self:collide(other)
-        self:setVisible(false)
+        self:remove()
         self.isAlive = false
 
         Explode(ExplosionSmall, self:getPosition())
@@ -68,13 +68,16 @@ function Player:new()
         local deltaY = 0
 
         if self.isAlive then
-            deltaX = -math.sin(math.rad(self.angle))
-            deltaY = math.cos(math.rad(self.angle))
+            deltaX, deltaY = AngleToDeltaXY(self.angle)
         end
 
         return deltaX, deltaY
     end
     
+    function self:bulletHit(other, x, y)
+        self:collide()
+    end
+
     function self:fire()
         if self.isAlive and self.bullets[1]:isVisible() == false and self.bullets[2]:isVisible() == false then
             local x, y = self:getPosition()
