@@ -14,7 +14,7 @@ local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
 -- Thrust the player ship constantly, or require button input
-local PlayerConstantThrust <const> = true
+local PlayerConstantThrust <const> = false
 local CrankTicksPerRev <const> = 24 -- 360/15
 
 -- Collision Groups
@@ -54,11 +54,11 @@ function GetPlayer()
 end
 
 function ButtonUpdate()
-    if playdate.buttonIsPressed(playdate.kButtonB) or playDate.buttonIsPressed(playdate.kButtonDown) then
+    if pd.buttonIsPressed(pd.kButtonB) or pd.buttonIsPressed(pd.kButtonDown) then
         player:fire()
     end
 
-    if PlayerConstantThrust or playdate.buttonIsPressed(playdate.kButtonUp) then
+    if PlayerConstantThrust or pd.buttonIsPressed(pd.kButtonUp) then
         worldDeltaX, worldDeltaY = player:thrust()
 
         worldDeltaX *= 2.0
@@ -67,11 +67,11 @@ function ButtonUpdate()
  
     -- Crank overrides buttons
     if pd.isCrankDocked() then
-        if playdate.buttonIsPressed(playdate.kButtonLeft) then
+        if pd.buttonIsPressed(pd.kButtonLeft) then
             player:left()
         end
         
-        if playdate.buttonIsPressed(playdate.kButtonRight) then
+        if pd.buttonIsPressed(pd.kButtonRight) then
             player:right()
         end     
     else

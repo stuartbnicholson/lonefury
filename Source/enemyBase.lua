@@ -83,6 +83,7 @@ function EnemyBase.new(x, y)
 	-- A base is composed of several parts, 4 x 32x32 corners and a 8x16 gun
 	local img = gfx.image.new(32 * 2 + 8, 32 * 2 + 8)
 	local self = gfx.sprite.new(img)
+
 	self.spheresAlive = SpheresAlive
 	-- TODO: Once bases are off-screen they shouldn't be awake? Grid system?
 	self.isAwake = true
@@ -110,13 +111,10 @@ function EnemyBase.new(x, y)
 
 	function self:sphereFire(firingSpheres)
 		assert(firingSpheres > 0, 'No spheres to fire')
-		-- TODO: HERE: Some wierd bug? Why does firingSpheres change?
-		print('firingSpheres: ' .. firingSpheres)
 
 		-- Alternate which sphere fires next
 		local i = self.lastFiredIdx
 		repeat
-			print(i)
 			if i == 6 then
 				i = 1
 			else
@@ -124,8 +122,7 @@ function EnemyBase.new(x, y)
 			end
 
 			if firingSpheres & fireSpheres[i] > 0 then
-				print('firing ' .. i)
-				self.lastFiredSphere = i
+				self.lastFiredIdx = i
 				return fireSpheres[i]
 			end
 		until i == self.lastFiredIdx
@@ -179,7 +176,7 @@ function EnemyBase.new(x, y)
 			if bulletIdx > 0 then
 				local sphere = self:sphereFire(firingSpheres)
 				local spherePos = self.spherePos[sphere]
-				self.bullets[bulletIdx]:fire(x + spherePos.x - 36, y + spherePos.y - 36, dx, dy)
+				self.bullets[bulletIdx]:fire(x + spherePos.x - 36 + 9, y + spherePos.y - 36 + 9, dx, dy)
 				firingSpheres = firingSpheres ~ sphere
 			else
 				-- Nothing to fire
@@ -343,11 +340,6 @@ function EnemyBase.new(x, y)
 
 		local x, y = self:getPosition()
 		Explode(ExplosionLarge, x, y)
-		--[[
-		Explode(ExplosionLarge, x - 36 + 6 + 16, y - 36 + 8 + 16)
-		Explode(ExplosionLarge, x - 36 + 38 + 16, y - 36 + 13 + 16)
-		Explode(ExplosionLarge, x - 36 + 14 + 16, y - 36 + 38 + 16)
-		]]--
 
 		self:remove()
 		self.isAlive = SpheresDead
@@ -386,7 +378,6 @@ function EnemyBase.new(x, y)
 	self:buildBase()
 	self:moveTo(x, y)
 	self:setZIndex(20)
-	-- self:setCollideRect(0, 0, 3, 3)
 	self:setGroupMask(GROUP_ENEMY)
 	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
 	self:add()

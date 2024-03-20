@@ -12,6 +12,7 @@ function Bullet:new()
 	gfx.popContext(img)
 	local self = gfx.sprite:new(img)
 	
+	self:setZIndex(0)
 	self:setCollideRect(0, 0, 3, 3)
 	self:setGroupMask(GROUP_BULLET)
 	self:setCollidesWithGroupsMask(GROUP_ENEMY)
