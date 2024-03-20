@@ -1,4 +1,5 @@
 import 'CoreLibs/sprites'
+import 'CoreLibs/crank'
 
 import "player"
 import "asteroid"
@@ -9,7 +10,12 @@ import "explosion"
 import "dashboard"
 import "starfield"
 
+local pd <const> = playdate
 local gfx <const> = playdate.graphics
+
+-- Thrust the player ship constantly, or require button input
+local PlayerConstantThrust <const> = true
+local CrankTicksPerRev <const> = 24 -- 360/15
 
 -- Collision Groups
 GROUP_PLAYER = 0x01
@@ -48,24 +54,34 @@ function GetPlayer()
 end
 
 function ButtonUpdate()
-    if playdate.buttonIsPressed(playdate.kButtonB) then
+    if playdate.buttonIsPressed(playdate.kButtonB) or playDate.buttonIsPressed(playdate.kButtonDown) then
         player:fire()
     end
 
-    if playdate.buttonIsPressed(playdate.kButtonUp) then
+    if PlayerConstantThrust or playdate.buttonIsPressed(playdate.kButtonUp) then
         worldDeltaX, worldDeltaY = player:thrust()
 
         worldDeltaX *= 2.0
         worldDeltaY *= 2.0
     end
  
-    if playdate.buttonIsPressed(playdate.kButtonLeft) then
-        player:left()
+    -- Crank overrides buttons
+    if pd.isCrankDocked() then
+        if playdate.buttonIsPressed(playdate.kButtonLeft) then
+            player:left()
+        end
+        
+        if playdate.buttonIsPressed(playdate.kButtonRight) then
+            player:right()
+        end     
+    else
+        local crankTicks = pd.getCrankTicks(CrankTicksPerRev)
+        if crankTicks > 0 then
+            player:right()
+        elseif crankTicks < 0 then
+            player:left()
+        end
     end
-    
-    if playdate.buttonIsPressed(playdate.kButtonRight) then
-        player:right()
-    end     
 end
 
 function playdate.update()
