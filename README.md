@@ -4,6 +4,7 @@ A good description of the flocking algo: https://www.oreilly.com/library/view/ai
 
 ## Game:
 - Levels etc.
+- Lives, respawning
 - Dashboard
     - Minimap
 
@@ -21,14 +22,20 @@ A good description of the flocking algo: https://www.oreilly.com/library/view/ai
 - Dive Bombers:
     - Limit their turn
     - Avoid colliding with friends
+    - AI flight from the ORielly book
 
 - Bases
     - Firing - they fire from the domes! 
     - Spawning dive bombers
     
-Try it out on an actual device
-
 ## History
+
+### 20-Mar-24
+
+- Cranking the ship
+- Bases
+    - Firing - they fire from the domes! 
+- Try it out on an actual device
 
 ### 18-Mar-24
 
