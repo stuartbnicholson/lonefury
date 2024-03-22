@@ -1,3 +1,5 @@
+-- State: Game title screen before game starts.
+
 import 'CoreLibs/animation'
 
 local pd = playdate
@@ -19,8 +21,8 @@ function StateMenu.new()
 end
 
 function StateMenu:update()
-    Starfield:draw()
-    Dashboard:draw()
+    Starfield:update()
+    Dashboard:update()
 
     titleImg:draw(50, 50)
 
@@ -28,6 +30,7 @@ function StateMenu:update()
     if self.blinker.on then
         gfx.pushContext()
         gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+        gfx.setFont(Font)
         gfx.drawText('PRESS ANY BUTTON', 50, 144)
         gfx.popContext()
     end

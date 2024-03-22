@@ -1,3 +1,5 @@
+-- State: Game is actively running, player is fighting and dying but has lives left.
+
 import 'CoreLibs/sprites'
 import 'CoreLibs/crank'
 
@@ -35,11 +37,13 @@ StateGame.__index = StateGame
 function StateGame.new()
     local self = setmetatable({}, StateGame)
 
+    self.level = 1  -- ad astra!
+
     return self
 end
 
 function StateGame:buttonUpdate()
-    if pd.buttonIsPressed(pd.kButtonA) or pd.buttonIsPressed(pd.kButtonDown) then
+    if pd.buttonIsPressed(pd.kButtonA|pd.kButtonB|pd.kButtonDown) then
         Player:fire()
     end
 
@@ -81,12 +85,12 @@ function StateGame:update()
     end
 
     -- Draw
-    Starfield:draw()    -- This works, it just doesn't work if you draw it via a background function? Odd
+    Starfield:update()    -- This works, it just doesn't work if you draw it via a background function? Odd
     gfx.sprite.update()
 
     ExplosionsUpdate()
 
-    Dashboard:draw()
+    Dashboard:update()
 
     -- TODO: How do we keep everything else in the world running, but the player not re-spawning?
 

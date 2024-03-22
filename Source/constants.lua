@@ -11,3 +11,7 @@ SPRITE_TAGS = {
     enemyBullet = 5,
     enemyBase = 6,
 }
+
+-- World gameplay occurs in (minus the dashboard)
+WORLD_WIDTH = 400 - 80
+WORLD_HEIGHT = 240

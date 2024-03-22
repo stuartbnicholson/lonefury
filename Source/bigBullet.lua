@@ -41,7 +41,7 @@ function BigBullet:new()
 			end
 		end
 		
-		if x < 0 or x > 400 or y < 0 or y > 240 then
+		if x < 0 or x > WORLD_WIDTH or y < 0 or y > WORLD_HEIGHT then
 			self:setVisible(false)
 			self:remove()
 		end

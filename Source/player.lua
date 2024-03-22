@@ -6,7 +6,7 @@ local gfx = playdate.graphics
 Player = {}
 Player.__index = Player
 
-local imgTable, err = gfx.imagetable.new("images/player-table-15-15.png") 
+local imgTable, err = gfx.imagetable.new("images/player-table-15-15.png")
 assert(imgTable, err)
 
 function Player:new()
@@ -29,7 +29,7 @@ function Player:new()
 
     self.isAlive = true
     self.score = 0
-    -- TODO: self.lives = 3
+    self.livesLeft = 2
 
     self.bullets = {}
     self.bullets[1] = Bullet.new()
@@ -54,6 +54,8 @@ function Player:new()
         self.score += points
         
         -- TODO: Extra lives? Other bonuses? Difficulty increase?
+
+        Dashboard:drawPlayerScore()
     end
 
     function self:collide(other)

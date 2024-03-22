@@ -8,12 +8,12 @@ function Starfield.new()
 
     self.x = 0
     self.y = 0
-    self.image = gfx.image.new(400, 240, gfx.kColorBlack)
+    self.image = gfx.image.new(WORLD_WIDTH, WORLD_HEIGHT, gfx.kColorBlack)
     
     gfx.pushContext(self.image)
     gfx.setColor(gfx.kColorWhite)
     for i = 1, 160 do
-        gfx.drawPixel(math.random(400), math.random(240))
+        gfx.drawPixel(math.random(WORLD_WIDTH), math.random(WORLD_HEIGHT))
     end
     gfx.popContext()
 
@@ -27,45 +27,45 @@ function Starfield:updateWorldPos(deltaX, deltaY)
     self.x += deltaX * 0.5
     self.y += deltaY * 0.5
 
-    if math.floor(self.x) % 400 == 0 then
+    if math.floor(self.x) % WORLD_WIDTH == 0 then
         self.x = 0
     end
 
-    if math.floor(self.y) % 240 == 0 then
+    if math.floor(self.y) % WORLD_HEIGHT == 0 then
         self.y = 0
     end
 end
 
-function Starfield:draw()
+function Starfield:update()
     self.image:draw(self.x, self.y)
 
     if self.y > 0 then
         -- Draw additional stafield above
-        self.image:draw(self.x, self.y - 240)
+        self.image:draw(self.x, self.y - WORLD_HEIGHT)
 
         -- Don't forget the corners
         if self.x > 0 then
-            self.image:draw(self.x - 400, self.y - 240)
+            self.image:draw(self.x - WORLD_WIDTH, self.y - WORLD_HEIGHT)
         elseif self.x < 0 then
-            self.image:draw(self.x + 400, self.y - 240)
+            self.image:draw(self.x + WORLD_WIDTH, self.y - WORLD_HEIGHT)
         end
     elseif self.y < 0 then
         -- Draw additional starfield below
-        self.image:draw(self.x, self.y + 240)
+        self.image:draw(self.x, self.y + WORLD_HEIGHT)
 
         -- Don't forget the corners
         if self.x > 0 then
-            self.image:draw(self.x - 400, self.y + 240)
+            self.image:draw(self.x - WORLD_WIDTH, self.y + WORLD_HEIGHT)
         elseif self.x < 0 then
-            self.image:draw(self.x + 400, self.y + 240)
+            self.image:draw(self.x + WORLD_WIDTH, self.y + WORLD_HEIGHT)
         end
     end
 
     if self.x > 0 then
         -- Draw additional starfield left
-        self.image:draw(self.x - 400, self.y)
+        self.image:draw(self.x - WORLD_WIDTH, self.y)
     elseif self.x < 0 then
         -- Draw additional starfield right
-        self.image:draw(self.x + 400, self.y)
+        self.image:draw(self.x + WORLD_WIDTH, self.y)
     end
 end

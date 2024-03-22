@@ -1,3 +1,5 @@
+-- State: Game is in credit roll
+
 StateCredits = {}
 StateCredits.__index = StateCredits
 

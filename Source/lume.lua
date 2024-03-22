@@ -22,7 +22,7 @@
 -- SOFTWARE.
 --
 
-local lume = { _version = "2.3.0" }
+lume = { _version = "2.3.0" }
 
 local pairs, ipairs = pairs, ipairs
 local type, assert, unpack = type, assert, unpack or table.unpack
