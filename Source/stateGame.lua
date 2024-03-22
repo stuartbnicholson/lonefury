@@ -8,18 +8,12 @@ import 'enemy'
 import 'enemyBase'
 import 'explosion'
 
-import 'dashboard'
-import 'starfield'
-
 local pd = playdate
 local gfx = pd.graphics
 
 -- Thrust the player ship constantly, or require button input
 local PlayerConstantThrust <const> = not pd.isSimulator
 local CrankTicksPerRev <const> = 24 -- 360/15
-
-local dashboard <const> = Dashboard.new()
-local starfield <const> = Starfield.new()
 
 Player = Player.new()
 local worldDeltaX = 0
@@ -45,7 +39,7 @@ function StateGame.new()
 end
 
 function StateGame:buttonUpdate()
-    if pd.buttonIsPressed(pd.kButtonB) or pd.buttonIsPressed(pd.kButtonDown) then
+    if pd.buttonIsPressed(pd.kButtonA) or pd.buttonIsPressed(pd.kButtonDown) then
         Player:fire()
     end
 
@@ -81,16 +75,20 @@ function StateGame:update()
 
     -- Update
     self:buttonUpdate()
-    starfield:updateWorldPos(worldDeltaX, worldDeltaY)
+    Starfield:updateWorldPos(worldDeltaX, worldDeltaY)
     for i = 1, #enemies do
         enemies[i]:updateWorldPos(worldDeltaX, worldDeltaY)
     end
 
     -- Draw
-    starfield:draw()    -- This works, it just doesn't work if you draw it via a background function? Odd
+    Starfield:draw()    -- This works, it just doesn't work if you draw it via a background function? Odd
     gfx.sprite.update()
 
     ExplosionsUpdate()
 
-    dashboard:draw()    
+    Dashboard:draw()
+
+    -- TODO: How do we keep everything else in the world running, but the player not re-spawning?
+
+    return self
 end

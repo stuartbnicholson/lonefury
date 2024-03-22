@@ -202,8 +202,10 @@ function EnemyBase.new(x, y)
 				end
 			end
 		
-			-- Fire some new bullets
-			self:fire()
+			if Player.isAlive then 
+				-- Fire some new bullets
+				self:fire()
+			end
 
 			-- TODO:
 			-- self:spawn()
