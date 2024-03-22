@@ -11,7 +11,7 @@ function Bullet:new()
 	gfx.fillRect(0, 0, 3, 3)
 	gfx.popContext(img)
 	local self = gfx.sprite:new(img)
-	
+	self:setTag(SPRITE_TAGS.playerBullet)	
 	self:setZIndex(0)
 	self:setCollideRect(0, 0, 3, 3)
 	self:setGroupMask(GROUP_BULLET)

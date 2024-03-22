@@ -8,7 +8,7 @@ assert(imgTable, err)
 
 function BigBullet:new()
 	local self = gfx.sprite:new()
-
+	self:setTag(SPRITE_TAGS.enemyBullet)
 	self:setZIndex(5)
 	self:setCollideRect(0, 0, 4, 4)
 	self:setGroupMask(GROUP_BULLET)

@@ -68,7 +68,7 @@ function Enemy.new(x, y)
     end
 
     function self:update()
-        local playerX, playerY = GetPlayer():getPosition()
+        local playerX, playerY = Player:getPosition()
         local x, y = self:getPosition()
         
         self.angle = self:turnTowards(x - playerX, y - playerY, 0, 0, self.angle) -- Sprite vs world coords. Player is always 0,0
@@ -89,7 +89,7 @@ function Enemy.new(x, y)
         self:setVisible(false)
         self:remove()
 
-        GetPlayer():scored(POINTS)
+        Player:scored(POINTS)
     end
 
     return self

@@ -24,6 +24,6 @@ function Dashboard:draw()
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRect(400 - 80, 0, 400, 26)
     gfx.setColor(gfx.kColorBlack)
-    gfx.drawText('' .. GetPlayer().score, 400 - 78, 3)
+    gfx.drawText('' .. Player.score, 400 - 78, 3)
     pd.drawFPS(400 - 16, 3)
 end

@@ -8,6 +8,20 @@ A good description of the flocking algo: https://www.oreilly.com/library/view/ai
 - Dashboard
     - Minimap
 
+- States!
+
+::: mermaid
+graph TD;
+    stateMenu-->stateStart;
+    stateMenu-->stateCredits;
+    stateCredits-->stateMenu;
+    stateStart-->stateGame;
+    stateGame-->stateDead;
+    stateDead-->stateGame;
+    stateDead-->stateGameOver;
+    stateGameOver-->stateMenu;
+:::
+
 ## World
 - Button input and then WorldX,Y updates PRIOR to any delta movement with collision detection. Otherwise things get funky...!
 

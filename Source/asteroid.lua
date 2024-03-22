@@ -12,6 +12,7 @@ function Asteroid.new(x, y)
     local POINTS <const> = 5
 
     local self = gfx.sprite.new(asteroidImg)
+    self:setTag(SPRITE_TAGS.asteroid)
     self:moveTo(x, y)
     self:setZIndex(10)
     self:setCollideRect(2, 2, 12, 12)
@@ -30,7 +31,7 @@ function Asteroid.new(x, y)
         self:setVisible(false)
         self:remove()
 
-        GetPlayer():scored(POINTS)
+        Player:scored(POINTS)
     end
 
     return self

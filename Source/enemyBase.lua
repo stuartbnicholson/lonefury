@@ -83,7 +83,11 @@ function EnemyBase.new(x, y)
 	-- A base is composed of several parts, 4 x 32x32 corners and a 8x16 gun
 	local img = gfx.image.new(32 * 2 + 8, 32 * 2 + 8)
 	local self = gfx.sprite.new(img)
-
+	self:setTag(SPRITE_TAGS.enemyBase)
+	self:moveTo(x, y)
+	self:setZIndex(20)
+	self:setGroupMask(GROUP_ENEMY)
+	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
 	self.spheresAlive = SpheresAlive
 	-- TODO: Once bases are off-screen they shouldn't be awake? Grid system?
 	self.isAwake = true
@@ -131,7 +135,7 @@ function EnemyBase.new(x, y)
 
 	function self:fire()
 		local x, y = self:getPosition()
-		local px, py = GetPlayer():getPosition()
+		local px, py = Player:getPosition()
 		local angleToPlayer = PointsAngle(x, y, px, py)
 		local dx, dy = AngleToDeltaXY(angleToPlayer)
 		dx = -dx
@@ -335,7 +339,7 @@ function EnemyBase.new(x, y)
 
 	function self:baseExplodes()
 		if self.spheresAlive == SpheresAlive then
-			GetPlayer():scored(BaseOneShotScore)
+			Player:scored(BaseOneShotScore)
 		end
 
 		local x, y = self:getPosition()
@@ -346,7 +350,7 @@ function EnemyBase.new(x, y)
 	end
 
 	function self:sphereExplodes(sphere)
-		GetPlayer():scored(SphereScore)
+		Player:scored(SphereScore)
 
 		-- Redraw correct sphere ruined
 		local point = self.spherePos[sphere]
@@ -374,12 +378,7 @@ function EnemyBase.new(x, y)
 
 	-- Setup
 	self.isVertical = math.random(2) == 1
-	self:setTag(SPRITE_TAGS.enemyBase)
 	self:buildBase()
-	self:moveTo(x, y)
-	self:setZIndex(20)
-	self:setGroupMask(GROUP_ENEMY)
-	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
 	self:add()
 
 	return self
