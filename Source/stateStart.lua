@@ -11,8 +11,13 @@ end
 
 function StateStart:start()
     print('StateStart start')
+
+    LevelManager:reset()
+    Player.lives = 3
+    Dashboard:drawLivesMedals()
+    Player:spawn()
 end
 
 function StateStart:update()
-    return self
+    return StateGame
 end

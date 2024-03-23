@@ -10,6 +10,14 @@ StateDead.__index = StateDead
 function StateDead.new()
     local self = setmetatable({}, StateDead)
 
+    self.timer = pd.timer.new(3000,
+        function()
+            self.timerComplete = true
+        end
+    )
+    self.timer.discardOnCompletion = false
+    self.timer:pause()
+
     return self
 end
 
@@ -17,10 +25,8 @@ function StateDead:start()
     print('StateDead start')
 
     self.timerComplete = false
-    self.timer = pd.timer.new(3000, function() 
-        self.timerComplete = true
-        self.timer:remove() 
-    end)
+    self.timer:reset()
+    self.timer:start()
 end
 
 function StateDead:update()

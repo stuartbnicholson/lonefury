@@ -4,6 +4,7 @@ import 'levelManager'
 import 'soundManager'
 import 'stateMenu'
 import 'stateCredits'
+import 'stateStart'
 import 'stateGame'
 import 'stateDead'
 import 'stateRespawn'
@@ -19,6 +20,7 @@ SoundManager = SoundManager.new()
 -- TODO: The game state machine
 StateMenu = StateMenu.new()
 StateCredits = StateCredits.new()
+StartStart = StateStart.new()
 StateGame = StateGame.new()
 StateDead = StateDead.new()
 StateRespawn = StateRespawn.new()

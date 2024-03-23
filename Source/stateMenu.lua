@@ -39,8 +39,8 @@ function StateMenu:update()
     end
 
     if pd.buttonIsPressed(pd.kButtonA|pd.kButtonB|pd.kButtonUp|pd.kButtonDown|pd.kButtonLeft|pd.kButtonRight) then
-        StateGame:start()
-        return StateGame
+        StateStart:start()
+        return StateStart
     else
         return self
     end

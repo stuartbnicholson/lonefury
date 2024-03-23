@@ -5,9 +5,13 @@ LevelManager.__index = LevelManager
 function LevelManager.new()
     local self = setmetatable({}, LevelManager)
 
-    self.level = 0  -- ad astra!
- 
+    self:reset()
+    
     return self
+end
+
+function LevelManager:reset()
+    self.level = 1  -- ad astra!
 end
 
 function LevelManager:nextLevel()
