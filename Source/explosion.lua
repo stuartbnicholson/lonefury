@@ -1,3 +1,5 @@
+-- Explosions are non-critical pieces of animation. We create enough to share around,
+-- but won't be particularly distressed if there are explosions missing from an in-flight game.
 import 'Corelibs/animation'
 
 local gfx = playdate.graphics
@@ -55,7 +57,7 @@ function Explosion.new(size)
 end
 
 -- Manage explosions, we only cycle a limited set
-local explosions <const> = {}
+local explosions = {}
 explosions[1] = Explosion.new(ExplosionSmall)
 explosions[2] = Explosion.new(ExplosionSmall)
 explosions[3] = Explosion.new(ExplosionSmall)

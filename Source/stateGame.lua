@@ -51,16 +51,16 @@ function StateGame:buttonUpdate()
         worldDeltaX *= 2.0
         worldDeltaY *= 2.0
     end
- 
+
     -- Crank overrides buttons
     if pd.isCrankDocked() then
         if pd.buttonIsPressed(pd.kButtonLeft) then
             Player:left()
         end
-        
+
         if pd.buttonIsPressed(pd.kButtonRight) then
             Player:right()
-        end     
+        end
     else
         local crankTicks = pd.getCrankTicks(CrankTicksPerRev)
         if crankTicks > 0 then
@@ -85,13 +85,18 @@ function StateGame:update()
     worldDeltaX *= 0.65
     worldDeltaY *= 0.65
 
-    -- Update
+    -- Player input might change things.
     self:buttonUpdate()
+
+    -- Update world positions
+    -- TODO: Could perhaps check if worldDelta is changing enough as an optimisation, but during gameplay Player is likely thrusting constantly anyway.
     Starfield:updateWorldPos(worldDeltaX, worldDeltaY)
     for i = 1, #Enemies do
         Enemies[i]:updateWorldPos(worldDeltaX, worldDeltaY)
     end
+    EnemyBigBulletsWorldPosUpdate(worldDeltaX, worldDeltaY)
 
+    -- ...then update world entities WITH collisions etc.
     WorldUpdate()
 
     if not Player.isAlive then

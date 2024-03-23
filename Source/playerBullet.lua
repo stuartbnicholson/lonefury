@@ -1,21 +1,22 @@
+-- From the Asheteroids example 
 local gfx = playdate.graphics
 
-BigBullet = {}
-BigBullet.__index = BigBullet
+PlayerBullet = {}
+PlayerBullet.__index = PlayerBullet
 
-local imgTable, err = gfx.imagetable.new('images/bigBullet-table-4-4.png')
-assert(imgTable, err)
-
-function BigBullet:new()
-	local self = gfx.sprite:new()
-	self:setTag(SPRITE_TAGS.enemyBullet)
-	self:setZIndex(5)
-	self:setCollideRect(0, 0, 4, 4)
+function PlayerBullet:new()
+	local img = gfx.image.new(3,3)
+	gfx.pushContext(img)
+	gfx.setColor(gfx.kColorWhite)
+	gfx.fillRect(0, 0, 3, 3)
+	gfx.popContext(img)
+	local self = gfx.sprite:new(img)
+	self:setTag(SPRITE_TAGS.playerBullet)	
+	self:setZIndex(0)
+	self:setCollideRect(0, 0, 3, 3)
 	self:setGroupMask(GROUP_BULLET)
-	self:setCollidesWithGroupsMask(GROUP_PLAYER)
+	self:setCollidesWithGroupsMask(GROUP_ENEMY)
 	self:setVisible(false)
-	
-	self.loop = gfx.animation.loop.new(50, imgTable, true)
 	
 	function self:fire(x, y, deltaX, deltaY)
 		self.deltaX = deltaX
@@ -27,8 +28,6 @@ function BigBullet:new()
 	end
 	
 	function self:update()
-		self:setImage(self.loop:image())
-
 		local x,y = self:getPosition()
 		self:moveTo(x + self.deltaX, y + self.deltaY)
 
@@ -41,7 +40,7 @@ function BigBullet:new()
 			end
 		end
 		
-		if x < 0 or x > WORLD_WIDTH or y < 0 or y > WORLD_HEIGHT then
+		if x < 0 or x > 400 or y < 0 or y > 240 then
 			self:setVisible(false)
 			self:remove()
 		end

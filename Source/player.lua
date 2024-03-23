@@ -1,6 +1,6 @@
 import "CoreLibs/sprites"
 
-import "bullet"
+import "playerBullet"
 
 local gfx = playdate.graphics
 
@@ -32,8 +32,8 @@ function Player:new()
     self.lives = 3
 
     self.bullets = {}
-    self.bullets[1] = Bullet.new()
-    self.bullets[2] = Bullet.new()
+    self.bullets[1] = PlayerBullet.new()
+    self.bullets[2] = PlayerBullet.new()
 
     function self:resetAngle()
         self.angle = 0

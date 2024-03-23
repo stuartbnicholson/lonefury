@@ -2,14 +2,18 @@
 
 A good description of the flocking algo: https://www.oreilly.com/library/view/ai-for-game/0596005555/ch04.html
 
+## Limits:
+
+With some simple testing (giving enemy bases 30 bullets to fire), it seems that around 25 sprites on screen is where the FPS starts to drop.
+There is a lot of arithmetic going on each update cycle thanks to my (possibly janky) code though. Fairly confident there's optimisations that could be made.
+Nice having limits though, forces you to care and get a bit creative.
+
 ## Game:
-- Levels etc.
-- Lives, respawning
+- LevelsManager.
 - Dashboard
     - Minimap
 
-- States!
-
+- States, have been added somewhat.
 ::: mermaid
 graph TD;
     stateMenu-->stateStart;
@@ -32,23 +36,23 @@ graph TD;
 
 ## Enemies
 - Asteroids
- 
+
 - Dive Bombers:
     - Limit their turn
     - Avoid colliding with friends
     - AI flight from the ORielly book
 
 - Bases
-    - Firing - they fire from the domes! 
+    - Firing - they fire from the domes!
     - Spawning dive bombers
-    
+
 ## History
 
 ### 20-Mar-24
 
 - Cranking the ship
 - Bases
-    - Firing - they fire from the domes! 
+    - Firing - they fire from the domes!
 - Try it out on an actual device
 
 ### 18-Mar-24

@@ -5,7 +5,7 @@ local geom = playdate.geometry
 
 -- See OReilly AI for Game Developers
 function Vrotate2d(angle, uV)
-    local x, y 
+    local x, y
 
 	x = uV.x * math.cos(math.rad(-angle)) + uV.y * math.sin(math.rad(-angle));
 	y = -uV.x * math.sin(math.rad(-angle)) + uV.y * math.cos(math.rad(-angle));
@@ -50,4 +50,15 @@ end
 
 function AngleToDeltaXY(angle)
 	return -math.sin(math.rad(angle)), math.cos(math.rad(angle))
+end
+
+-- Increments i, wrapping around 1 .. n
+function IncWrap(i, n)
+	if i >= n then
+		i = 1
+	else
+		i += 1
+	end
+
+	return i
 end

@@ -1,7 +1,7 @@
 local gfx = playdate.graphics
 local geom = playdate.geometry
 
-import "bigBullet"
+import "enemyBigBullet"
 
 EnemyBase = {}
 EnemyBase.__index = EnemyBase
@@ -88,16 +88,6 @@ function EnemyBase.new(x, y)
 	self:setZIndex(20)
 	self:setGroupMask(GROUP_ENEMY)
 	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
- 
-	self.bullets = {}
-	self.bullets[1] = BigBullet:new()
-	self.bullets[2] = BigBullet:new()
-	self.bullets[3] = BigBullet:new()
-	--[[
-	self.bullets[4] = BigBullet:new()
-	self.bullets[5] = BigBullet:new()
-	self.bullets[6] = BigBullet:new()
-	--]]
 
 	function self:reset()
 		self.spheresAlive = SpheresAlive
@@ -107,27 +97,13 @@ function EnemyBase.new(x, y)
 		self:buildBase()
 	end
 
-	function self:findBulletToFire()
-		for i = 1,#self.bullets do
-			if not self.bullets[i]:isVisible() then
-				return i
-			end
-		end
-
-		return 0
-	end
-
 	function self:sphereFire(firingSpheres)
 		assert(firingSpheres > 0, 'No spheres to fire')
 
 		-- Alternate which sphere fires next
 		local i = self.lastFiredIdx
 		repeat
-			if i == 6 then
-				i = 1
-			else
-				i += 1
-			end
+			i = IncWrap(i, 6)
 
 			if firingSpheres & fireSpheres[i] > 0 then
 				self.lastFiredIdx = i
@@ -179,12 +155,12 @@ function EnemyBase.new(x, y)
 		-- Mask out the dead spheres, and the remaining spheres (if any) can fire
 		firingSpheres = self.spheresAlive & firingSpheres
 		while firingSpheres > 0 do
-			local bulletIdx = self:findBulletToFire()
-			if bulletIdx > 0 then
+			local bullet = FindFreeEnemyBigBullet()
+			if bullet then
 				SoundManager:enemyBaseShoots()
 				local sphere = self:sphereFire(firingSpheres)
 				local spherePos = self.spherePos[sphere]
-				self.bullets[bulletIdx]:fire(x + spherePos.x - 36 + 9, y + spherePos.y - 36 + 9, dx, dy)
+				bullet:fire(x + spherePos.x - 36 + 9, y + spherePos.y - 36 + 9, dx, dy)
 				firingSpheres = firingSpheres ~ sphere
 			else
 				-- Nothing to fire
@@ -199,14 +175,7 @@ function EnemyBase.new(x, y)
 
 	function self:update()
 		if self.isAwake then
-			-- Update the existing bullets world position
-			for i = 1, #self.bullets do
-				if self.bullets[i]:isVisible() then
-					self.bullets[i]:update()
-				end
-			end
-		
-			if Player.isAlive then 
+			if Player.isAlive then
 				-- Fire some new bullets
 				self:fire()
 			end
@@ -219,13 +188,6 @@ function EnemyBase.new(x, y)
 	function self:updateWorldPos(deltaX, deltaY)
         local x, y = self:getPosition()
         self:moveTo(x + deltaX, y + deltaY)
-
-		for i = 1, #self.bullets do
-			if self.bullets[i]:isVisible() then
-				x, y = self.bullets[i]:getPosition()
-				self.bullets[i]:moveTo(x + deltaX, y + deltaY)
-			end	
-		end 
     end
 
 	function self:buildBase()
@@ -269,7 +231,7 @@ function EnemyBase.new(x, y)
 	function self:bulletHit(bullet, cx, cy)
 		-- We know the bullet has hit a base pixel.
 		-- We're trying to find out which sphere is most likely to have been hit
-	
+
 		-- Sprites are default positioned by centre
 		local x, y = self:getPosition()
 		hitDist = PointsDistance(x, y, cx, cy)
@@ -333,7 +295,7 @@ function EnemyBase.new(x, y)
 			if self.spheresAlive & sphere > 0 then
 				-- If this is the last sphere in the base, destroy the whole base
 				self.spheresAlive = self.spheresAlive ~ sphere
-							
+
 				if self.spheresAlive == SpheresDead then
 					self:baseExplodes()
 				else
