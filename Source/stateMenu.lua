@@ -1,5 +1,4 @@
 -- State: Game title screen before game starts.
-
 import 'CoreLibs/animation'
 
 local pd = playdate
@@ -20,6 +19,10 @@ function StateMenu.new()
     return self
 end
 
+function StateMenu:start()
+    print('StateMenu start')
+end
+
 function StateMenu:update()
     Starfield:update()
     Dashboard:update()
@@ -36,6 +39,7 @@ function StateMenu:update()
     end
 
     if pd.buttonIsPressed(pd.kButtonA|pd.kButtonB|pd.kButtonUp|pd.kButtonDown|pd.kButtonLeft|pd.kButtonRight) then
+        StateGame:start()
         return StateGame
     else
         return self

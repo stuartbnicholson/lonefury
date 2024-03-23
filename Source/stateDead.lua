@@ -1,3 +1,9 @@
+import 'CoreLibs/sprites'
+import 'CoreLibs/timer'
+
+local pd = playdate
+local gfx = pd.graphics
+
 StateDead = {}
 StateDead.__index = StateDead
 
@@ -7,8 +13,31 @@ function StateDead.new()
     return self
 end
 
-function StateDead:update()
-    -- TODO: Now this gets interesting. We probably don't want a 'StateDead' because the rest of the game has to keep running
+function StateDead:start()
+    print('StateDead start')
 
-    return self
+    self.timerComplete = false
+    self.timer = pd.timer.new(3000, function() 
+        self.timerComplete = true
+        self.timer:remove() 
+    end)
+end
+
+function StateDead:update()
+    -- Player is dead, the world goes on without them. Press F for respects
+    WorldUpdate()
+
+    pd.timer.updateTimers()
+    if self.timerComplete then
+        if Player.lives > 1 then
+            Player.lives -= 1
+            StateRespawn:start()
+            return StateRespawn
+        else
+            StateGameOver:start()
+            return StateGameOver
+        end
+    else
+        return self
+    end
 end

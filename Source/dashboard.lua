@@ -53,8 +53,8 @@ function Dashboard:drawLivesMedals()
     gfx.pushContext(self.img)
 
     -- Medals
-    local medal1 = StateGame.level % 5
-    local medal5 = math.floor(StateGame.level / 5)
+    local medal1 = LevelManager.level % 5
+    local medal5 = math.floor(LevelManager.level / 5)
     local x = 4
     local y = 205
     gfx.setColor(gfx.kColorBlack)
@@ -76,7 +76,7 @@ function Dashboard:drawLivesMedals()
     y = 222
     gfx.setColor(gfx.kColorBlack)
     gfx.fillRect(x, y, 75, 15)
-    for i = 1, lume.clamp(Player.livesLeft, 0, 5) do
+    for i = 1, lume.clamp(Player.lives, 1, 6) - 1 do
         playerLifeImg:draw(x, y)
         x += 15
     end

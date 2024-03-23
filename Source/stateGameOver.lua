@@ -9,6 +9,10 @@ function StateGameOver.new()
     return self
 end
 
+function StateGameOver:start()
+    print('StateGameOver start')
+end
+
 function StateGameOver:update()
     return self
 end

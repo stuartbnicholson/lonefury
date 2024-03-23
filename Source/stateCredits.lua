@@ -9,6 +9,10 @@ function StateCredits.new()
     return self
 end
 
+function StateCredits:start()
+    print('StateCredits start')
+end
+
 function StateCredits:update()
     return self
 end

@@ -22,22 +22,20 @@ local worldDeltaX = 0
 local worldDeltaY = 0
 
 -- Generate some placeholder enemies
-local enemies <const> = {}
-enemies[1] = Asteroid.new(50, 50)
-enemies[2] = Asteroid.new(350, 50)
-enemies[3] = Asteroid.new(50, 150)
-enemies[4] = EnemyBase.new(100,240)
--- enemies[5] = Enemy.new(80,50)
--- enemies[6] = Enemy.new(-30,-30)
--- enemies[7] = Enemy.new(-10,-10)
+Enemies = {}
+Enemies[1] = Asteroid.new(50, 50)
+Enemies[2] = Asteroid.new(350, 50)
+Enemies[3] = Asteroid.new(50, 150)
+Enemies[4] = EnemyBase.new(100,240)
+-- Enemies[5] = Enemy.new(80,50)
+-- Enemies[6] = Enemy.new(-30,-30)
+-- Enemies[7] = Enemy.new(-10,-10)
 
 StateGame = {}
 StateGame.__index = StateGame
 
 function StateGame.new()
     local self = setmetatable({}, StateGame)
-
-    self.level = 1  -- ad astra!
 
     return self
 end
@@ -73,26 +71,31 @@ function StateGame:buttonUpdate()
     end
 end
 
+function StateGame:start()
+    print('StateGame start')
+
+    Player:spawn()
+end
+
 function StateGame:update()
-    worldDeltaX *= 0.65 -- If we don't reset these, but delta them down to 0 we'd have thrust simulation
+    -- If we don't reset these, but delta them down to 0 we'd have thrust simulation\
+    -- We also only care about worldDelta when the Player is alive and scorllin'
+    worldDeltaX *= 0.65
     worldDeltaY *= 0.65
 
     -- Update
     self:buttonUpdate()
     Starfield:updateWorldPos(worldDeltaX, worldDeltaY)
-    for i = 1, #enemies do
-        enemies[i]:updateWorldPos(worldDeltaX, worldDeltaY)
+    for i = 1, #Enemies do
+        Enemies[i]:updateWorldPos(worldDeltaX, worldDeltaY)
     end
 
-    -- Draw
-    Starfield:update()    -- This works, it just doesn't work if you draw it via a background function? Odd
-    gfx.sprite.update()
+    WorldUpdate()
 
-    ExplosionsUpdate()
-
-    Dashboard:update()
-
-    -- TODO: How do we keep everything else in the world running, but the player not re-spawning?
-
-    return self
+    if not Player.isAlive then
+        StateDead:start()
+        return StateDead
+    else
+        return self
+    end
 end

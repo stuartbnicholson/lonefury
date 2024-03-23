@@ -9,6 +9,10 @@ function StateStart.new()
     return self
 end
 
+function StateStart:start()
+    print('StateStart start')
+end
+
 function StateStart:update()
     return self
 end

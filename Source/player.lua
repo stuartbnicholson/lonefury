@@ -1,4 +1,5 @@
 import "CoreLibs/sprites"
+
 import "bullet"
 
 local gfx = playdate.graphics
@@ -6,13 +7,16 @@ local gfx = playdate.graphics
 Player = {}
 Player.__index = Player
 
+PLAYER_WIDTH = 15
+PLAYER_HEIGHT = 15
+
 local imgTable, err = gfx.imagetable.new("images/player-table-15-15.png")
 assert(imgTable, err)
 
 function Player:new()
     local SPEED <const> = 5.0
 
-    local img, err = gfx.image.new(15, 15)
+    local img, err = gfx.image.new(PLAYER_WIDTH, PLAYER_HEIGHT)
     assert(img, err)
 
     local self = gfx.sprite:new(img)
@@ -20,20 +24,26 @@ function Player:new()
     self:setImage(self.imgTable:getImage(1))
     self:setTag(SPRITE_TAGS.player)
     self.angle = 0
-    self:moveTo(200,120)
+    self:moveTo(WORLD_WIDTH >> 1, WORLD_HEIGHT >> 1)
     self:setZIndex(100)
     self:setCollideRect(2, 2, 11, 11)
     self:setGroupMask(GROUP_PLAYER)
     self:setCollidesWithGroupsMask(GROUP_ENEMY)
-    self:add()
 
-    self.isAlive = true
     self.score = 0
-    self.livesLeft = 2
+    self.lives = 3
 
     self.bullets = {}
     self.bullets[1] = Bullet.new()
     self.bullets[2] = Bullet.new()
+
+    function self:spawn()
+        assert(self.lives > 0)
+        self.angle = 0
+        SetTableImage(self.angle, self, self.imgTable)
+        self.isAlive = true
+        self:add()
+    end
 
     function self:update()
         if self.isAlive then
@@ -82,6 +92,7 @@ function Player:new()
 
     function self:fire()
         if self.isAlive and self.bullets[1]:isVisible() == false and self.bullets[2]:isVisible() == false then
+            SoundManager:playerShoots()
             local x, y = self:getPosition()
             local deltaX = -math.sin(math.rad(self.angle)) * SPEED
             local deltaY = math.cos(math.rad(self.angle)) * SPEED

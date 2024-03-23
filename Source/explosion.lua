@@ -82,6 +82,7 @@ end
 
 function Explode(size, x, y)
     if size == ExplosionSmall then
+        SoundManager.smallExplosion()
         explosions[exploSmallIdx]:explode(x, y)
         if exploSmallIdx == exploSmallMaxIdx then
             exploSmallIdx = 1
@@ -89,6 +90,7 @@ function Explode(size, x, y)
             exploSmallIdx += 1
         end
     elseif size == ExplosionMed then
+        SoundManager.mediumExplosion()
         explosions[exploMedIdx]:explode(x, y)
         if exploMedIdx == exploMedMaxIdx then
             exploMedIdx = exploSmallMaxIdx + 1
@@ -96,6 +98,7 @@ function Explode(size, x, y)
             exploMedIdx += 1
         end
     else
+        SoundManager.largeExplosion()
         explosions[exploLargeIdx]:explode(x, y)
         if exploLargeIdx == exploLargeMaxIdx then
             exploLargeIdx = exploMedMaxIdx + 1

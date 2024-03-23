@@ -178,6 +178,7 @@ function EnemyBase.new(x, y)
 		while firingSpheres > 0 do
 			local bulletIdx = self:findBulletToFire()
 			if bulletIdx > 0 then
+				SoundManager:enemyBaseShoots()
 				local sphere = self:sphereFire(firingSpheres)
 				local spherePos = self.spherePos[sphere]
 				self.bullets[bulletIdx]:fire(x + spherePos.x - 36 + 9, y + spherePos.y - 36 + 9, dx, dy)
