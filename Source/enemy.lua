@@ -16,9 +16,7 @@ function Enemy.new(x, y)
     assert(img, err)
 
     local self = gfx.sprite:new(img)
-    self.angle = 0
     self.imgTable = imgTable
-    self:setImage(self.imgTable:getImage(1))
     self:setTag(SPRITE_TAGS.enemy)
     self:moveTo(x, y)
     self:setZIndex(15)
@@ -26,6 +24,11 @@ function Enemy.new(x, y)
 	self:setGroupMask(GROUP_ENEMY)
 	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
     self:add()
+
+    function self:reset()
+        self.angle = 0
+        self:setImage(self.imgTable:getImage(1))
+    end
 
     function self:roundToNearestMultiple(number, multiple)
         local sign = number >= 0 and 1 or -1
@@ -92,5 +95,6 @@ function Enemy.new(x, y)
         Player:scored(POINTS)
     end
 
+    self:reset()
     return self
 end

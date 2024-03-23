@@ -74,6 +74,8 @@ end
 function StateGame:start()
     print('StateGame start')
 
+    worldDeltaX = 0
+    worldDeltaY = 0
     Player:spawn()
 end
 

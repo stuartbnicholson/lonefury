@@ -88,10 +88,6 @@ function EnemyBase.new(x, y)
 	self:setZIndex(20)
 	self:setGroupMask(GROUP_ENEMY)
 	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
-	self.spheresAlive = SpheresAlive
-	-- TODO: Once bases are off-screen they shouldn't be awake? Grid system?
-	self.isAwake = true
-	self.lastFiredIdx = 1
  
 	self.bullets = {}
 	self.bullets[1] = BigBullet:new()
@@ -102,6 +98,14 @@ function EnemyBase.new(x, y)
 	self.bullets[5] = BigBullet:new()
 	self.bullets[6] = BigBullet:new()
 	--]]
+
+	function self:reset()
+		self.spheresAlive = SpheresAlive
+		-- TODO: Once bases are off-screen they shouldn't be awake? Grid system?
+		self.isAwake = true
+		self.lastFiredIdx = 1
+		self:buildBase()
+	end
 
 	function self:findBulletToFire()
 		for i = 1,#self.bullets do
@@ -171,7 +175,6 @@ function EnemyBase.new(x, y)
 				firingSpheres = Sphere5|Sphere6|Sphere1
 			end
 		end
-
 
 		-- Mask out the dead spheres, and the remaining spheres (if any) can fire
 		firingSpheres = self.spheresAlive & firingSpheres
@@ -381,7 +384,7 @@ function EnemyBase.new(x, y)
 
 	-- Setup
 	self.isVertical = math.random(2) == 1
-	self:buildBase()
+	self:reset()
 	self:add()
 
 	return self

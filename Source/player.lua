@@ -21,9 +21,7 @@ function Player:new()
 
     local self = gfx.sprite:new(img)
     self.imgTable = imgTable
-    self:setImage(self.imgTable:getImage(1))
     self:setTag(SPRITE_TAGS.player)
-    self.angle = 0
     self:moveTo(WORLD_WIDTH >> 1, WORLD_HEIGHT >> 1)
     self:setZIndex(100)
     self:setCollideRect(2, 2, 11, 11)
@@ -37,11 +35,17 @@ function Player:new()
     self.bullets[1] = Bullet.new()
     self.bullets[2] = Bullet.new()
 
+    function self:resetAngle()
+        self.angle = 0
+        self:setImage(self.imgTable:getImage(1))
+    end
+
     function self:spawn()
         assert(self.lives > 0)
         self.angle = 0
         SetTableImage(self.angle, self, self.imgTable)
         self.isAlive = true
+        self:setVisible(true)
         self:add()
     end
 
@@ -125,5 +129,6 @@ function Player:new()
         end
     end
 
+    self:resetAngle()
     return self
 end
