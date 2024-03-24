@@ -38,7 +38,7 @@ function StateGameOver:update()
     gfx.pushContext()
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
     gfx.setFont(Font)
-    gfx.drawText('GAME OVER', (WORLD_WIDTH >> 1) - 59, (WORLD_HEIGHT >> 1) - 10) --118 x 20
+    gfx.drawText('GAME OVER', (VIEWPORT_WIDTH >> 1) - 59, (VIEWPORT_HEIGHT >> 1) - 10) --118 x 20
     gfx.popContext()
 
     if self.timerComplete then

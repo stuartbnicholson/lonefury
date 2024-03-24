@@ -62,3 +62,23 @@ function IncWrap(i, n)
 
 	return i
 end
+
+-- Returns true if the rectangle in world coordinates is near enough to the Viewport to be an active sprite
+-- Assumed worldX, worldY is centred on the entities bounding box
+function NearViewport(worldX, worldY, width, height)
+	local viewX, viewY = WorldToViewPort(worldX, worldY)
+	local halfWidth = width >> 1
+	local halfHeight = height >> 1
+
+	if viewX >= 0 - halfWidth and viewX <= VIEWPORT_WIDTH + halfWidth then
+		if viewY >= 0 - halfHeight and viewY <= VIEWPORT_HEIGHT + halfHeight then
+			return true
+		end
+	end
+
+	return false
+end
+
+function WorldToViewPort(worldX, worldY)
+	return worldX - ViewPortWorldX + (VIEWPORT_WIDTH >> 1), worldY - ViewPortWorldY + (VIEWPORT_HEIGHT >> 1)
+end

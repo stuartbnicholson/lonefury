@@ -8,6 +8,16 @@ With some simple testing (giving enemy bases 30 bullets to fire), it seems that 
 There is a lot of arithmetic going on each update cycle thanks to my (possibly janky) code though. Fairly confident there's optimisations that could be made.
 Nice having limits though, forces you to care and get a bit creative.
 
+## Bugs!!
+
+- Starfield still has some weird issue when scrolling to the edges, something is off in the rounding?
+    - REPRO: Fly to the left for a while, you appear to hit invisible wall (because starfield stops scrolling).
+
+## World coordinates vs Viewport
+
+- In game every entity needs world coordinates, including the player.
+- The Viewport **follows the player's world coordinates** - because of this, the player ship always appears in the middle of the Viewport.
+
 ## Game:
 - LevelsManager.
 - Dashboard

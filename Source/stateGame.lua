@@ -18,18 +18,22 @@ local PlayerConstantThrust <const> = not pd.isSimulator
 local CrankTicksPerRev <const> = 24 -- 360/15
 
 Player = Player.new()
-local worldDeltaX = 0
-local worldDeltaY = 0
+
+-- Where is the CENTRE of the ViewPort in the World?
+ViewPortWorldX = 0
+ViewPortWorldY = 0
 
 -- Generate some placeholder enemies
+-- TODO: This is effectively 'level generation' :)
 Enemies = {}
-Enemies[1] = Asteroid.new(50, 50)
-Enemies[2] = Asteroid.new(350, 50)
-Enemies[3] = Asteroid.new(50, 150)
-Enemies[4] = EnemyBase.new(100,240)
--- Enemies[5] = Enemy.new(80,50)
--- Enemies[6] = Enemy.new(-30,-30)
--- Enemies[7] = Enemy.new(-10,-10)
+Enemies[1] = Asteroid.new(-85, -60)
+Enemies[2] = Asteroid.new(85, 60)
+Enemies[3] = Asteroid.new(85, -60)
+Enemies[4] = EnemyBase.new(-85, 60)
+--[[ Enemies[5] = Enemy.new(80,50)
+Enemies[6] = Enemy.new(-30,-30)
+Enemies[7] = Enemy.new(-10,-10)
+]]--
 
 StateGame = {}
 StateGame.__index = StateGame
@@ -46,10 +50,7 @@ function StateGame:buttonUpdate()
     end
 
     if PlayerConstantThrust or pd.buttonIsPressed(pd.kButtonUp) then
-        worldDeltaX, worldDeltaY = Player:thrust()
-
-        worldDeltaX *= 2.0
-        worldDeltaY *= 2.0
+        Player:thrust()
     end
 
     -- Crank overrides buttons
@@ -74,27 +75,17 @@ end
 function StateGame:start()
     print('StateGame start')
 
-    worldDeltaX = 0
-    worldDeltaY = 0
     Player:spawn()
 end
 
 function StateGame:update()
-    -- If we don't reset these, but delta them down to 0 we'd have thrust simulation\
-    -- We also only care about worldDelta when the Player is alive and scorllin'
-    worldDeltaX *= 0.65
-    worldDeltaY *= 0.65
-
     -- Player input might change things.
     self:buttonUpdate()
 
-    -- Update world positions
-    -- TODO: Could perhaps check if worldDelta is changing enough as an optimisation, but during gameplay Player is likely thrusting constantly anyway.
-    Starfield:updateWorldPos(worldDeltaX, worldDeltaY)
-    for i = 1, #Enemies do
-        Enemies[i]:updateWorldPos(worldDeltaX, worldDeltaY)
-    end
-    EnemyBigBulletsWorldPosUpdate(worldDeltaX, worldDeltaY)
+    -- Update world positions based on the viewport - which is tied to the Player
+    ViewPortWorldX, ViewPortWorldY = Player:getWorldPosition()
+    -- TODO: Starfield is a bit of a special case due to parallax scrolling and wrapping, leave it for now.
+    -- Starfield:updateWorldPos(ViewPortX, ViewPortY)
 
     -- ...then update world entities WITH collisions etc.
     WorldUpdate()

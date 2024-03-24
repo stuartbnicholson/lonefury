@@ -79,20 +79,20 @@ local fireSpheres = { Sphere1, Sphere5, Sphere3, Sphere4, Sphere6, Sphere2 }
 local SphereScore <const> = 25 -- * 6 = 150
 local BaseOneShotScore <const> = 200
 
-function EnemyBase.new(x, y)
+function EnemyBase.new(worldX, worldY)
 	-- A base is composed of several parts, 4 x 32x32 corners and a 8x16 gun
 	local img = gfx.image.new(32 * 2 + 8, 32 * 2 + 8)
 	local self = gfx.sprite.new(img)
 	self:setTag(SPRITE_TAGS.enemyBase)
-	self:moveTo(x, y)
+	self.worldX = worldX
+    self.worldY = worldY
+    self:setVisible(false)
 	self:setZIndex(20)
 	self:setGroupMask(GROUP_ENEMY)
 	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
 
 	function self:reset()
 		self.spheresAlive = SpheresAlive
-		-- TODO: Once bases are off-screen they shouldn't be awake? Grid system?
-		self.isAwake = true
 		self.lastFiredIdx = 1
 		self:buildBase()
 	end
@@ -114,9 +114,9 @@ function EnemyBase.new(x, y)
 	end
 
 	function self:fire()
-		local x, y = self:getPosition()
-		local px, py = Player:getPosition()
-		local angleToPlayer = PointsAngle(x, y, px, py)
+		local playerWorldX, playerWorldY = Player:getWorldPosition()
+		local angleToPlayer = PointsAngle(self.worldX, self.worldY, playerWorldX, playerWorldY)
+		print('player: ' .. playerWorldX .. ',' .. playerWorldY .. ' base:' .. self.worldX .. ',' .. self.worldY .. ' angle: ' .. angleToPlayer)
 		local dx, dy = AngleToDeltaXY(angleToPlayer)
 		dx = -dx
 		dy = -dy
@@ -160,7 +160,7 @@ function EnemyBase.new(x, y)
 				SoundManager:enemyBaseShoots()
 				local sphere = self:sphereFire(firingSpheres)
 				local spherePos = self.spherePos[sphere]
-				bullet:fire(x + spherePos.x - 36 + 9, y + spherePos.y - 36 + 9, dx, dy)
+				bullet:fire(self.worldX + spherePos.x - 36 + 9, self.worldY + spherePos.y - 36 + 9, dx, dy)
 				firingSpheres = firingSpheres ~ sphere
 			else
 				-- Nothing to fire
@@ -174,7 +174,17 @@ function EnemyBase.new(x, y)
 	end
 
 	function self:update()
-		if self.isAwake then
+        -- TODO: visible only controls drawing, not being part of collisions. etc.
+        -- Should we add/remove sprites? This is harder book-keeping and we'd STILL need an update function to be called...?
+        -- We'd still need an update function to be called for some entities that are active off-screen like bombers too...
+        if NearViewport(self.worldX, self.worldY, self.width, self.height) then
+            self:moveTo(WorldToViewPort(self.worldX, self.worldY))
+            self:setVisible(true)
+        else
+            self:setVisible(false)
+		end
+
+		if self:isVisible() then
 			if Player.isAlive then
 				-- Fire some new bullets
 				self:fire()
@@ -184,11 +194,6 @@ function EnemyBase.new(x, y)
 			-- self:spawn()
 		end
 	end
-
-	function self:updateWorldPos(deltaX, deltaY)
-        local x, y = self:getPosition()
-        self:moveTo(x + deltaX, y + deltaY)
-    end
 
 	function self:buildBase()
 		local w,h = self:getSize()

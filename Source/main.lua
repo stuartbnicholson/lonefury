@@ -45,6 +45,5 @@ function WorldUpdate()
     gfx.sprite.update()
 
     ExplosionsUpdate()
-    EnemyBigBulletsUpdate()
     Dashboard:update()
 end

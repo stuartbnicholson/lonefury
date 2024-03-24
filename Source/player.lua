@@ -1,3 +1,5 @@
+-- The one and only Player sprite, which is a special case because it's controlled by player input
+-- and it's being 'alive' or not is separated from sprite functionality so it can be animated re-spawning etc.
 import "CoreLibs/sprites"
 
 import "playerBullet"
@@ -22,7 +24,9 @@ function Player:new()
     local self = gfx.sprite:new(img)
     self.imgTable = imgTable
     self:setTag(SPRITE_TAGS.player)
-    self:moveTo(WORLD_WIDTH >> 1, WORLD_HEIGHT >> 1)
+    -- While the player's worldX, worldY change, the player sprite never deviates from the centre of the Viewport.
+    -- The Viewport also chases the player's worldX, worldY too.
+    self:moveTo(VIEWPORT_WIDTH >> 1, VIEWPORT_HEIGHT >> 1)
     self:setZIndex(100)
     self:setCollideRect(2, 2, 11, 11)
     self:setGroupMask(GROUP_PLAYER)
@@ -30,10 +34,18 @@ function Player:new()
 
     self.score = 0
     self.lives = 3
+    self.worldX = 0
+    self.worldY = 0
+    self.deltaX = 0
+    self.deltaY = 0
 
     self.bullets = {}
     self.bullets[1] = PlayerBullet.new()
     self.bullets[2] = PlayerBullet.new()
+
+    function self:getWorldPosition()
+        return self.worldX, self.worldY
+    end
 
     function self:resetAngle()
         self.angle = 0
@@ -49,9 +61,25 @@ function Player:new()
         self:add()
     end
 
+    -- Only called if sprite is in sprite list
     function self:update()
+        self.worldX -= self.deltaX * 2.0
+        self.worldY -= self.deltaY * 2.0
+
+        -- Decel rather than chop, zero once we're close enough
+        if self.deltaX < 0.001 then
+            self.deltaX = 0
+        else
+            self.deltaX *= 0.65
+        end
+        if self.deltaY < 0.001 then
+            self.deltaY = 0
+        else
+            self.deltaY *= 0.65
+        end
+
         if self.isAlive then
-            local _,_,c,n = self:checkCollisions(self:getPosition())            
+            local _,_,c,n = self:checkCollisions(self:getPosition())
             if n > 0 then
                 for i = 1, #c do
                     if self:alphaCollision(c[i].other) then
@@ -66,7 +94,7 @@ function Player:new()
 
     function self:scored(points)
         self.score += points
-        
+
         -- TODO: Extra lives? Other bonuses? Difficulty increase?
 
         Dashboard:drawPlayerScore()
@@ -80,22 +108,15 @@ function Player:new()
     end
 
     function self:thrust()
-        local deltaX = 0
-        local deltaY = 0
-
-        if self.isAlive then
-            deltaX, deltaY = AngleToDeltaXY(self.angle)
-        end
-
-        return deltaX, deltaY
+        self.deltaX, self.deltaY = AngleToDeltaXY(self.angle)
     end
-    
+
     function self:bulletHit(other, x, y)
         self:collide()
     end
 
     function self:fire()
-        if self.isAlive and self.bullets[1]:isVisible() == false and self.bullets[2]:isVisible() == false then
+        if self.bullets[1]:isVisible() == false and self.bullets[2]:isVisible() == false then
             SoundManager:playerShoots()
             local x, y = self:getPosition()
             local deltaX = -math.sin(math.rad(self.angle)) * SPEED
@@ -104,29 +125,25 @@ function Player:new()
             self.bullets[2]:fire(x, y, -deltaX, -deltaY)
         end
     end
-    
+
     function self:left()
-        if self.isAlive then
-            if self.angle == 0 then
-                self.angle = 360 - ROTATE_SPEED
-            else
-                self.angle -= ROTATE_SPEED
-            end
-
-            SetTableImage(self.angle, self, self.imgTable)
+        if self.angle == 0 then
+            self.angle = 360 - ROTATE_SPEED
+        else
+            self.angle -= ROTATE_SPEED
         end
+
+        SetTableImage(self.angle, self, self.imgTable)
     end
-    
-    function self:right()
-        if self.isAlive then
-            if self.angle == 360 - ROTATE_SPEED then
-                self.angle = 0
-            else
-                self.angle += ROTATE_SPEED
-            end
 
-            SetTableImage(self.angle, self, self.imgTable)
+    function self:right()
+        if self.angle == 360 - ROTATE_SPEED then
+            self.angle = 0
+        else
+            self.angle += ROTATE_SPEED
         end
+
+        SetTableImage(self.angle, self, self.imgTable)
     end
 
     self:resetAngle()

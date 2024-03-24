@@ -21,7 +21,7 @@ assert(medal5Img, err)
 
 function Dashboard.new()
     local self = setmetatable({}, Dashboard)
-    
+
     self.img = dashImg
 
     -- Initial dashboard draw
@@ -32,9 +32,9 @@ function Dashboard.new()
 end
 
 function Dashboard:update()
-    self.img:draw(WORLD_WIDTH, 0)
+    self.img:draw(VIEWPORT_WIDTH, 0)
 
-    pd.drawFPS(WORLD_WIDTH + 64, 3)
+    pd.drawFPS(VIEWPORT_WIDTH + 64, 3)
 end
 
 function Dashboard:drawPlayerScore()
@@ -70,7 +70,7 @@ function Dashboard:drawLivesMedals()
         x += 8
     end
     -- TODO: Higher values
-            
+
     -- Lives
     x = 4
     y = 222

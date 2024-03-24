@@ -13,5 +13,5 @@ SPRITE_TAGS = {
 }
 
 -- World gameplay occurs in (minus the dashboard)
-WORLD_WIDTH = 400 - 80
-WORLD_HEIGHT = 240
+VIEWPORT_WIDTH = 400 - 80
+VIEWPORT_HEIGHT = 240
