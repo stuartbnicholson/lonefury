@@ -8,7 +8,7 @@ Enemy.__index = Enemy
 local imgTable, err = gfx.imagetable.new("images/enemy-table-15-15.png")
 assert(imgTable, err)
 
-function Enemy.new(x, y)
+function Enemy.new(worldX, worldY)
     local POINTS <const> = 15
     local SPEED <const> = 1.5
 
@@ -18,12 +18,14 @@ function Enemy.new(x, y)
     local self = gfx.sprite:new(img)
     self.imgTable = imgTable
     self:setTag(SPRITE_TAGS.enemy)
-    self:moveTo(x, y)
     self:setZIndex(15)
 	self:setCollideRect(2, 2, 11, 10)
 	self:setGroupMask(GROUP_ENEMY)
 	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
     self:add()
+
+    self.worldX = worldX
+    self.worldY = worldY
 
     function self:reset()
         self.angle = 0
@@ -71,20 +73,18 @@ function Enemy.new(x, y)
     end
 
     function self:update()
-        local playerX, playerY = Player:getPosition()
-        local x, y = self:getPosition()
-        
-        self.angle = self:turnTowards(x - playerX, y - playerY, 0, 0, self.angle) -- Sprite vs world coords. Player is always 0,0
-        SetTableImage(self.angle, self, self.imgTable)
-    end
-   
-    function self:updateWorldPos(deltaX, deltaY)
-        local x, y = self:getPosition()
+        -- As enemy bombers are always in flight, regardless if they're in the viewport or not, we always update them...
+        if Player.isAlive then
+            -- ...however they only ever chase live players
+            local pWX, pWY = Player:getWorldPosition()
+            self.angle = self:turnTowards(self.worldX, self.worldY, pWX, pWY, self.angle)
+            SetTableImage(self.angle, self, self.imgTable)
+        end
 
-        -- Combine world and enemy move
-        local dX = -math.sin(math.rad(self.angle)) * SPEED
-        local dY = math.cos(math.rad(self.angle)) * SPEED
-        self:moveTo(x + deltaX - dX, y + deltaY - dY)
+        self.worldX -= -math.sin(math.rad(self.angle)) * SPEED
+        self.worldY -= math.cos(math.rad(self.angle)) * SPEED
+
+        self:moveTo(WorldToViewPort(self.worldX, self.worldY))
     end
 
     function self:bulletHit(x, y)

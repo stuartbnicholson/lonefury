@@ -80,5 +80,5 @@ function NearViewport(worldX, worldY, width, height)
 end
 
 function WorldToViewPort(worldX, worldY)
-	return worldX - ViewPortWorldX + (VIEWPORT_WIDTH >> 1), worldY - ViewPortWorldY + (VIEWPORT_HEIGHT >> 1)
+	return worldX - ViewPortWorldX + (HALF_VIEWPORT_WIDTH), worldY - ViewPortWorldY + (HALF_VIEWPORT_HEIGHT)
 end

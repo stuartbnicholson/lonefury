@@ -116,7 +116,6 @@ function EnemyBase.new(worldX, worldY)
 	function self:fire()
 		local playerWorldX, playerWorldY = Player:getWorldPosition()
 		local angleToPlayer = PointsAngle(self.worldX, self.worldY, playerWorldX, playerWorldY)
-		print('player: ' .. playerWorldX .. ',' .. playerWorldY .. ' base:' .. self.worldX .. ',' .. self.worldY .. ' angle: ' .. angleToPlayer)
 		local dx, dy = AngleToDeltaXY(angleToPlayer)
 		dx = -dx
 		dy = -dy

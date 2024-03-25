@@ -26,7 +26,7 @@ function Player:new()
     self:setTag(SPRITE_TAGS.player)
     -- While the player's worldX, worldY change, the player sprite never deviates from the centre of the Viewport.
     -- The Viewport also chases the player's worldX, worldY too.
-    self:moveTo(VIEWPORT_WIDTH >> 1, VIEWPORT_HEIGHT >> 1)
+    self:moveTo(HALF_VIEWPORT_WIDTH, HALF_VIEWPORT_HEIGHT)
     self:setZIndex(100)
     self:setCollideRect(2, 2, 11, 11)
     self:setGroupMask(GROUP_PLAYER)
@@ -34,8 +34,8 @@ function Player:new()
 
     self.score = 0
     self.lives = 3
-    self.worldX = 0
-    self.worldY = 0
+    self.worldX = WORLD_PLAYER_STARTX
+    self.worldY = WORLD_PLAYER_STARTY
     self.deltaX = 0
     self.deltaY = 0
 

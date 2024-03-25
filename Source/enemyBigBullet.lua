@@ -1,3 +1,5 @@
+import 'CoreLibs/animation'
+
 -- All enemy bases and other large enemies share these bullets. This is as way of
 -- easily controlling the number of big bullets in flight at any one time during a game.
 local gfx = playdate.graphics
@@ -73,15 +75,49 @@ function EnemyBigBullet:new()
 end
 
 -- Manage big bullets, we only cycle a limited set
+-- TODO: Multiple enemy bases firing a set number of bullets each
 local bigBullets = {}
 bigBullets[1] = EnemyBigBullet:new()
 bigBullets[2] = EnemyBigBullet:new()
 bigBullets[3] = EnemyBigBullet:new()
---[[ TODO: Multiple enemy bases firing a set number of bullets each
 bigBullets[4] = EnemyBigBullet:new()
 bigBullets[5] = EnemyBigBullet:new()
 bigBullets[6] = EnemyBigBullet:new()
-]]--
+bigBullets[7] = EnemyBigBullet:new()
+bigBullets[8] = EnemyBigBullet:new()
+bigBullets[9] = EnemyBigBullet:new()
+bigBullets[10] = EnemyBigBullet:new()
+bigBullets[11] = EnemyBigBullet:new()
+bigBullets[12] = EnemyBigBullet:new()
+bigBullets[13] = EnemyBigBullet:new()
+bigBullets[14] = EnemyBigBullet:new()
+bigBullets[15] = EnemyBigBullet:new()
+bigBullets[16] = EnemyBigBullet:new()
+bigBullets[17] = EnemyBigBullet:new()
+bigBullets[18] = EnemyBigBullet:new()
+bigBullets[19] = EnemyBigBullet:new()
+bigBullets[20] = EnemyBigBullet:new()
+bigBullets[21] = EnemyBigBullet:new()
+bigBullets[22] = EnemyBigBullet:new()
+bigBullets[23] = EnemyBigBullet:new()
+bigBullets[24] = EnemyBigBullet:new()
+bigBullets[25] = EnemyBigBullet:new()
+bigBullets[26] = EnemyBigBullet:new()
+bigBullets[27] = EnemyBigBullet:new()
+bigBullets[28] = EnemyBigBullet:new()
+bigBullets[29] = EnemyBigBullet:new()
+bigBullets[30] = EnemyBigBullet:new()
+bigBullets[31] = EnemyBigBullet:new()
+bigBullets[32] = EnemyBigBullet:new()
+bigBullets[33] = EnemyBigBullet:new()
+bigBullets[34] = EnemyBigBullet:new()
+bigBullets[35] = EnemyBigBullet:new()
+bigBullets[36] = EnemyBigBullet:new()
+bigBullets[37] = EnemyBigBullet:new()
+bigBullets[38] = EnemyBigBullet:new()
+bigBullets[39] = EnemyBigBullet:new()
+bigBullets[40] = EnemyBigBullet:new()
+
 local bigBulletIdx = 1
 
 function FindFreeEnemyBigBullet()

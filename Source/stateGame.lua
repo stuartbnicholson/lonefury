@@ -23,18 +23,6 @@ Player = Player.new()
 ViewPortWorldX = 0
 ViewPortWorldY = 0
 
--- Generate some placeholder enemies
--- TODO: This is effectively 'level generation' :)
-Enemies = {}
-Enemies[1] = Asteroid.new(-85, -60)
-Enemies[2] = Asteroid.new(85, 60)
-Enemies[3] = Asteroid.new(85, -60)
-Enemies[4] = EnemyBase.new(-85, 60)
---[[ Enemies[5] = Enemy.new(80,50)
-Enemies[6] = Enemy.new(-30,-30)
-Enemies[7] = Enemy.new(-10,-10)
-]]--
-
 StateGame = {}
 StateGame.__index = StateGame
 
