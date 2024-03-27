@@ -14,16 +14,16 @@ local pd = playdate
 -- Load JSON level part definitions
 local levelFile, err = pd.file.open('assets/levelParts.json')
 assert(levelFile, error)
-local levelJson = json.decodeFile(levelFile)
+local levelDef = json.decodeFile(levelFile)
 levelFile:close()
 
 -- TODO: We need a pool of each enemy type, so they can be re-used rather than constantly created.
 -- Consider the limit of around 25 sprites...
 
 local enemyNew = {}
-enemyNew[SPRITE_TAGS.asteroid] = Asteroid.new
-enemyNew[SPRITE_TAGS.enemy] = Enemy.new
-enemyNew[SPRITE_TAGS.enemyBase] = EnemyBase.new
+enemyNew["a"] = Asteroid.new
+enemyNew["e"] = Enemy.new
+enemyNew["b"] = EnemyBase.new
 
 -- Generate some placeholder enemies
 -- TODO: This is effectively 'level generation' :)
@@ -33,6 +33,7 @@ function LevelManager.new()
     local self = setmetatable({}, LevelManager)
 
     self.level = 1
+    self.basesToKill = 0
 
     return self
 end
@@ -60,14 +61,36 @@ function LevelManager:applyLevelPart(part, worldX, worldY)
     for i = 1, #part.objs do
         enemyX = worldX + part.objs[i].x
         enemyY = worldY + part.objs[i].y
-        Enemies[#Enemies + i] = enemyNew[part.objs[i].type](enemyX, enemyY)
+        Enemies[#Enemies + i] = enemyNew[part.objs[i].obj](enemyX, enemyY)
     end
 end
 
 function LevelManager:generateLevelAndMinimap()
-    print('level parts loaded: ' .. #levelJson.parts)
+    -- TODO: Multiple level options?
+    local lvl = levelDef.levels[tostring(self.level)]
+    local row
+    local cell
+    local part
+    local wX
+    local wY = 0
+    if lvl then
+        for y = 1, #lvl.map do
+            wX = 0
+            row = lvl.map[y]
+            for x = 1, 9 do
+                wX += VIEWPORT_WIDTH
+                -- TODO: Wonder how inefficient this is?
+                cell = string.sub(row,x,x)
+                if cell ~= "-" then
+                    part = levelDef.parts[cell]
+                    assert(part, "Unknown part: " .. cell)
+                    self:applyLevelPart(part, wX, wY)
+                end
+            end
 
-    -- TODO: Initially just set up a test 'level' part around the player
-    local part = lume.randomchoice(levelJson.parts)
-    self:applyLevelPart(part, WORLD_PLAYER_STARTX, WORLD_PLAYER_STARTY)
+            wY += VIEWPORT_HEIGHT
+        end
+    else
+        assert("no level " .. self.level .. "?")
+    end
 end

@@ -18,10 +18,13 @@ end
 
 function StateRespawn:start()
     print('StateRespawn start')
-    -- TODO: Recenter world, make sure player isn't near anything dangerous
 
+    -- Recenter world, make sure player isn't near anything dangerous
+    Player.worldX = WORLD_PLAYER_STARTX
+    Player.worldY = WORLD_PLAYER_STARTY
     Player:resetAngle()
     Player:add()
+
     Dashboard:drawLivesMedals()
     self.blinker:start()
 end
@@ -30,7 +33,7 @@ function StateRespawn:update()
     WorldUpdate()
 
     gfx.animation.blinker.updateAll()
-    if self.blinker.running then 
+    if self.blinker.running then
         if self.blinker.on then
             Player:setVisible(true)
         else
