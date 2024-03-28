@@ -17,9 +17,6 @@ MINIMAP_HEIGHT = 72
 MINIMAP_CELLW = 8
 MINIMAP_CELLH = 6
 
-MINIPLAYER_WIDTH = 7
-MINIPLAYER_HEIGHT = 6
-
 local dashImg, mapBaseImg, mapPlayerTable, playerLifeImg, medal1Img, medal5Img, err
 dashImg, err = gfx.image.new('images/dashboard.png')
 
@@ -33,8 +30,6 @@ medal5Img, err = gfx.image.new('images/medal5.png')
 assert(medal5Img, err)
 
 -- Minimap
-mapBaseImg, err = gfx.image.new('images/mapBase.png')
-assert(mapBaseImg, err)
 local mapPlayerTable, err = gfx.imagetable.new("images/mapPlayer-table-7-6.png")
 assert(mapPlayerTable, err)
 
@@ -42,7 +37,7 @@ function Dashboard.new()
     local self = setmetatable({}, Dashboard)
 
     self.dash = dashImg
-    self.miniMap = gfx.image.new(MINIMAP_WIDTH, MINIMAP_HEIGHT)
+    self.miniMap = gfx.image.new(MINIMAP_WIDTH * MINIMAP_CELLW, MINIMAP_HEIGHT * MINIMAP_CELLH)
 
     -- Initial dashboard draw
     self:drawPlayerScore()
@@ -51,18 +46,45 @@ function Dashboard.new()
     return self
 end
 
+function Dashboard:worldToDashXY(worldX, worldY)
+    local mx, my
+
+    mx = worldX / VIEWPORT_WIDTH
+    mx = (lume.clamp(mx, 0, MINIMAP_WIDTH)) * MINIMAP_CELLW
+
+    my = worldY / VIEWPORT_HEIGHT
+    my = (lume.clamp(my, 0, MINIMAP_HEIGHT)) * MINIMAP_CELLH
+
+    return mx, my
+end
+
+function Dashboard:addEnemyBase(worldX, worldY)
+    local mx, my = self:worldToDashXY(worldX, worldY)
+
+    gfx.pushContext(self.miniMap)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRect(mx, my, 2, 2)
+    print(mx,my)
+    gfx.popContext()
+end
+
+function Dashboard:removeEnemyBase(worldX, worldY)
+    local mx, my = self:worldToDashXY(worldX, worldY)
+
+    gfx.pushContext(self.miniMap)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillRect(mx, my, 2, 2)
+    gfx.popContext()
+end
+
 function Dashboard:update()
     self.dash:draw(VIEWPORT_WIDTH, 0)
     self.miniMap:draw(MINIMAP_SX, MINIMAP_SY)
 
     -- Draw the player ship roughly pointing the right way, but clipped to the mini map
-    local px, py = Player:getWorldPosition()
-    px /= VIEWPORT_WIDTH
-    px = (lume.clamp(px, 0, MINIMAP_WIDTH) - 0.5) * MINIMAP_CELLW
-    py /= VIEWPORT_HEIGHT
-    py = (lume.clamp(py, 0, MINIMAP_HEIGHT) - 0.5) * MINIMAP_CELLH
+    local mx, my = self:worldToDashXY(Player:getWorldPosition())
     local pAngle = math.floor(Player.angle / 90)
-    mapPlayerTable:drawImage(1 + pAngle, px + MINIMAP_SX + (MINIPLAYER_WIDTH >> 1), py + MINIMAP_SY + (MINIPLAYER_HEIGHT >> 1))
+    mapPlayerTable:drawImage(1 + pAngle, mx + MINIMAP_SX - 4, my + MINIMAP_SY  - 3)
 
     pd.drawFPS(VIEWPORT_WIDTH + 64, 3)
 end

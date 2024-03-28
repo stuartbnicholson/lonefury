@@ -23,7 +23,10 @@ levelFile:close()
 local enemyNew = {}
 enemyNew["a"] = Asteroid.new
 enemyNew["e"] = Enemy.new
-enemyNew["b"] = EnemyBase.new
+enemyNew["b"] = function(x, y)
+    Dashboard:addEnemyBase(x, y)
+    return EnemyBase.new(x, y)
+end
 
 -- Generate some placeholder enemies
 -- TODO: This is effectively 'level generation' :)

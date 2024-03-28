@@ -54,6 +54,6 @@ fs.createReadStream(process.argv[2])
 
     const post = `
             ]
-        },`;
+        }`;
     console.log(post);
   });

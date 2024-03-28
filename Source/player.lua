@@ -47,6 +47,10 @@ function Player:new()
         return self.worldX, self.worldY
     end
 
+    function self:getWorldDelta()
+        return self.deltaX, self.deltaY
+    end
+
     function self:resetAngle()
         self.angle = 0
         self:setImage(self.imgTable:getImage(1))
@@ -103,6 +107,8 @@ function Player:new()
     function self:collide(other)
         self:remove()
         self.isAlive = false
+        self.deltaX = 0
+        self.deltaY = 0
 
         Explode(ExplosionSmall, self:getPosition())
     end

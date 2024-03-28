@@ -6,6 +6,7 @@ Starfield.__index = Starfield
 
 STATIC_STARS = 160
 HINT_STARS = 10
+HINT_STAR_VELOCITY = 4.0
 
 function Starfield.new()
     local self = setmetatable({}, Starfield)
@@ -37,5 +38,22 @@ function Starfield:update()
     -- which consumes about 5fps so probably isn't worth the effort. Instead we'll draw a stationary background and some 'hint' stars.
     self.image:draw(0, 0)
 
-    -- TODO: Draw some hint stars that move
+    -- Draw some hint stars that move
+    local pdx, pdy = Player:getWorldDelta()
+    pdx *= HINT_STAR_VELOCITY
+    pdy *= HINT_STAR_VELOCITY
+
+    gfx.pushContext()
+    gfx.setColor(gfx.kColorWhite)
+    for i = 1, #self.hintStars do
+        local x = self.hintStars[i].x
+        local y = self.hintStars[i].y
+        x = (x + pdx) % VIEWPORT_WIDTH
+        y = (y + pdy) % VIEWPORT_HEIGHT
+        self.hintStars[i].x = x
+        self.hintStars[i].y = y
+
+        gfx.drawPixel(self.hintStars[i])
+    end
+    gfx.popContext()
 end

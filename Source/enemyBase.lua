@@ -319,6 +319,8 @@ function EnemyBase.new(worldX, worldY)
 
 		self:remove()
 		self.isAlive = SpheresDead
+
+		Dashboard:removeEnemyBase(self.worldX, self.worldY)
 	end
 
 	function self:sphereExplodes(sphere)
