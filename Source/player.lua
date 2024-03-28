@@ -62,6 +62,11 @@ function Player:new()
         SetTableImage(self.angle, self, self.imgTable)
         self.isAlive = true
         self:setVisible(true)
+
+        self.worldX = WORLD_PLAYER_STARTX
+        self.worldY = WORLD_PLAYER_STARTY
+
+        -- TODO: add() is called multiple times. See StateRespawn. Is this an issue?
         self:add()
     end
 
@@ -88,7 +93,7 @@ function Player:new()
                 for i = 1, #c do
                     if self:alphaCollision(c[i].other) then
                         -- The first real collision is sufficient to kill the player
-                        self:collide()
+                        self:collide(c[i].other)
                         break
                     end
                 end
@@ -118,7 +123,7 @@ function Player:new()
     end
 
     function self:bulletHit(other, x, y)
-        self:collide()
+        self:collide(other)
     end
 
     function self:fire()

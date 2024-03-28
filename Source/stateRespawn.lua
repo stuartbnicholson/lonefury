@@ -25,6 +25,8 @@ function StateRespawn:start()
     Player:resetAngle()
     Player:add()
 
+    ViewPortWorldX, ViewPortWorldY = Player:getWorldPosition()
+
     Dashboard:drawLivesMedals()
     self.blinker:start()
 end

@@ -84,7 +84,16 @@ function Enemy.new(worldX, worldY)
         self.worldX -= -math.sin(math.rad(self.angle)) * SPEED
         self.worldY -= math.cos(math.rad(self.angle)) * SPEED
 
-        self:moveTo(WorldToViewPort(self.worldX, self.worldY))
+        -- TODO: visible only controls drawing, not being part of collisions. etc.
+        if NearViewport(self.worldX, self.worldY, self.width, self.height) then
+            self:setVisible(true)
+        else
+            self:setVisible(false)
+        end
+
+        -- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
+		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
+		self:moveTo(WorldToViewPort(self.worldX, self.worldY))
     end
 
     function self:bulletHit(x, y)

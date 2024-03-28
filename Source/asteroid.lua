@@ -24,14 +24,15 @@ function Asteroid.new(worldX, worldY)
 
     function self:update()
         -- TODO: visible only controls drawing, not being part of collisions. etc.
-        -- Should we add/remove sprites? This is harder book-keeping and we'd STILL need an update function to be called...?
-        -- We'd still need an update function to be called for some entities that are active off-screen like bombers too...
         if NearViewport(self.worldX, self.worldY, self.width, self.height) then
-            self:moveTo(WorldToViewPort(self.worldX, self.worldY))
             self:setVisible(true)
         else
             self:setVisible(false)
         end
+
+        -- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
+		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
+		self:moveTo(WorldToViewPort(self.worldX, self.worldY))
     end
 
     function self:bulletHit(x, y)

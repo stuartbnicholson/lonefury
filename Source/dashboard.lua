@@ -19,9 +19,9 @@ MINIMAP_CELLH = 6
 
 local dashImg, mapBaseImg, mapPlayerTable, playerLifeImg, medal1Img, medal5Img, err
 dashImg, err = gfx.image.new('images/dashboard.png')
+assert(dashImg, err)
 
 -- Lives and medals
-assert(dashImg, err)
 playerLifeImg, err = gfx.image.new('images/playerLife.png')
 assert(playerLifeImg, err)
 medal1Img, err = gfx.image.new('images/medal1.png')
@@ -64,7 +64,6 @@ function Dashboard:addEnemyBase(worldX, worldY)
     gfx.pushContext(self.miniMap)
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRect(mx, my, 2, 2)
-    print(mx,my)
     gfx.popContext()
 end
 

@@ -43,10 +43,11 @@ function EnemyBigBullet:new()
 
 		-- ...before all other checks
 		if NearViewport(self.worldX, self.worldY, self.width, self.height) then
+        -- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
+		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
 			self:moveTo(WorldToViewPort(self.worldX, self.worldY))
-            self:setVisible(true)
-
 			self:setImage(self.loop:image())
+	        self:setVisible(true)
 
 			local _,_,c,n = self:checkCollisions(self.x, self.y)
 			for i=1,n do

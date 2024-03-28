@@ -72,8 +72,6 @@ function StateGame:update()
 
     -- Update world positions based on the viewport - which is tied to the Player
     ViewPortWorldX, ViewPortWorldY = Player:getWorldPosition()
-    -- TODO: Starfield is a bit of a special case due to parallax scrolling and wrapping, leave it for now.
-    -- Starfield:updateWorldPos(ViewPortX, ViewPortY)
 
     -- ...then update world entities WITH collisions etc.
     WorldUpdate()

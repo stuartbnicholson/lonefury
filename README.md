@@ -30,8 +30,11 @@ graph TD;
     stateMenu-->stateCredits;
     stateCredits-->stateMenu;
     stateStart-->stateGame;
+    stateGame-->stateNewLevel;
+    stateNewLevel-->stateRespawn;
     stateGame-->stateDead;
-    stateDead-->stateGame;
+    stateDead-->stateRespawn;
+    stateRespawn-->stateGame;
     stateDead-->stateGameOver;
     stateGameOver-->stateMenu;
 :::
