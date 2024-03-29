@@ -19,10 +19,13 @@ levelFile:close()
 
 -- TODO: We need a pool of each enemy type, so they can be re-used rather than constantly created.
 -- Consider the limit of around 25 sprites...
-
 local enemyNew = {}
-enemyNew["a"] = Asteroid.new
-enemyNew["e"] = Enemy.new
+enemyNew["a"] = function(x,y)
+    Asteroid.new(x,y)
+end
+enemyNew["e"] = function(x,y)
+    Enemy.new(x,y)
+end
 enemyNew["b"] = function(x, y)
     Dashboard:addEnemyBase(x, y)
     return EnemyBase.new(x, y)
@@ -56,10 +59,6 @@ function LevelManager:nextLevel()
 end
 
 function LevelManager:applyLevelPart(part, worldX, worldY)
-    -- Translate from centre of level part to top left
-    worldX -= HALF_VIEWPORT_WIDTH
-    worldY -= HALF_VIEWPORT_HEIGHT
-
     local enemyX, enemyY
     for i = 1, #part.objs do
         enemyX = worldX + part.objs[i].x
@@ -74,14 +73,13 @@ function LevelManager:generateLevelAndMinimap()
     local row
     local cell
     local part
-    local wX
+    local wX = 0
     local wY = 0
     if lvl then
         for y = 1, #lvl.map do
             wX = 0
             row = lvl.map[y]
             for x = 1, 9 do
-                wX += VIEWPORT_WIDTH
                 -- TODO: Wonder how inefficient this is?
                 cell = string.sub(row,x,x)
                 if cell ~= "-" then
@@ -89,6 +87,8 @@ function LevelManager:generateLevelAndMinimap()
                     assert(part, "Unknown part: " .. cell)
                     self:applyLevelPart(part, wX, wY)
                 end
+
+                wX += VIEWPORT_WIDTH
             end
 
             wY += VIEWPORT_HEIGHT
