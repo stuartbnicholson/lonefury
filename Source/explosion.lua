@@ -1,6 +1,7 @@
 -- Explosions are non-critical pieces of animation. We create enough to share around,
 -- but won't be particularly distressed if there are explosions missing from an in-flight game.
 import 'Corelibs/animation'
+import 'assets'
 
 local gfx = playdate.graphics
 
@@ -11,13 +12,9 @@ ExplosionSmall  = 0x01 -- Player, enemies, bullets
 ExplosionMed    = 0x02 -- Enemy base spheres, larger enemies
 ExplosionLarge  = 0x04 -- Enemy base destruction
 
-local err
-local exploSmallImgTable, err = gfx.imagetable.new("images/explosmall-table-15-15.png")
-assert(exploSmallImgTable, err)
-local exploMedImgTable, err = gfx.imagetable.new("images/explomed-table-20-20.png")
-assert(exploMedImgTable, err)
-local exploLargeImgTable, err = gfx.imagetable.new("images/explobase-table-72-72.png")
-assert(exploLargeImgTable, err)
+local exploSmallImgTable = Assets.getImagetable('images/explosmall-table-15-15.png')
+local exploMedImgTable = Assets.getImagetable('images/explomed-table-20-20.png')
+local exploLargeImgTable = Assets.getImagetable('images/explobase-table-72-72.png')
 
 function Explosion.new(size)
     local w,h,imgTable

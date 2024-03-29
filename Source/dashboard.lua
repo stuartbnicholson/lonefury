@@ -1,5 +1,6 @@
 -- The game dashboard. Shows the player's score, lives, minimap, condition etc.
 import 'lume'
+import 'assets'
 
 local gfx = playdate.graphics
 local pd = playdate
@@ -17,26 +18,15 @@ MINIMAP_HEIGHT = 72
 MINIMAP_CELLW = 8
 MINIMAP_CELLH = 6
 
-local dashImg, mapBaseImg, mapPlayerTable, playerLifeImg, medal1Img, medal5Img, err
-dashImg, err = gfx.image.new('images/dashboard.png')
-assert(dashImg, err)
-
--- Lives and medals
-playerLifeImg, err = gfx.image.new('images/playerLife.png')
-assert(playerLifeImg, err)
-medal1Img, err = gfx.image.new('images/medal1.png')
-assert(medal1Img, err)
-medal5Img, err = gfx.image.new('images/medal5.png')
-assert(medal5Img, err)
-
--- Minimap
-local mapPlayerTable, err = gfx.imagetable.new("images/mapPlayer-table-7-6.png")
-assert(mapPlayerTable, err)
+local medal1Img = Assets.getImage('images/medal1.png')
+local medal5Img = Assets.getImage('images/medal5.png')
+local playerLifeImg = Assets.getImage('images/playerLife.png')
+local mapPlayerTable = Assets.getImagetable('images/mapPlayer-table-7-6.png')
 
 function Dashboard.new()
     local self = setmetatable({}, Dashboard)
 
-    self.dash = dashImg
+    self.dash = Assets.getImage('images/dashboard.png')
     self.miniMap = gfx.image.new(MINIMAP_WIDTH * MINIMAP_CELLW, MINIMAP_HEIGHT * MINIMAP_CELLH)
 
     -- Initial dashboard draw

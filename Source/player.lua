@@ -1,7 +1,7 @@
 -- The one and only Player sprite, which is a special case because it's controlled by player input
 -- and it's being 'alive' or not is separated from sprite functionality so it can be animated re-spawning etc.
 import "CoreLibs/sprites"
-
+import 'assets'
 import "playerBullet"
 
 local gfx = playdate.graphics
@@ -12,8 +12,7 @@ Player.__index = Player
 PLAYER_WIDTH = 15
 PLAYER_HEIGHT = 15
 
-local imgTable, err = gfx.imagetable.new("images/player-table-15-15.png")
-assert(imgTable, err)
+local imgTable = Assets.getImagetable('images/player-table-15-15.png')
 
 function Player:new()
     local SPEED <const> = 5.0

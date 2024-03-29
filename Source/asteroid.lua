@@ -1,3 +1,4 @@
+import "Assets"
 import "CoreLibs/sprites"
 
 local gfx = playdate.graphics
@@ -5,8 +6,7 @@ local gfx = playdate.graphics
 Asteroid = {}
 Asteroid.__index = Asteroid
 
-local asteroidImg, err = gfx.image.new("images/asteroid.png")
-assert(asteroidImg, err)
+local asteroidImg = Assets.getImage('images/asteroid.png')
 
 function Asteroid.new(worldX, worldY)
     local POINTS <const> = 5

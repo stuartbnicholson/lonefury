@@ -1,34 +1,23 @@
+import 'assets'
+import 'enemyBigBullet'
+
 local gfx = playdate.graphics
 local geom = playdate.geometry
-
-import "enemyBigBullet"
 
 EnemyBase = {}
 EnemyBase.__index = EnemyBase
 
+-- Images
 local err
 
 -- EnemyBase sprites
--- TODO: Just a tilemap here?
-local baseQuarterVert, baseGunVert
-baseQuarterVert, err = gfx.image.new("images/baseQuarterVert.png")
-assert(baseQuarterVert, err)
-baseGunVert, err = gfx.image.new("images/baseGunVert.png")
-assert(baseGunVert, err)
-
-local baseQuarterHoriz, baseGunHoriz
-baseQuarterHoriz, err = gfx.image.new("images/baseQuarterHoriz.png")
-assert(baseQuarterHoriz, err)
-baseGunHoriz, err = gfx.image.new("images/baseGunHoriz.png")
-assert(baseGunHoriz, err)
-
-local baseRuin1, baseRuin2, baseSphereMask
-baseRuin1, err = gfx.image.new("images/baseRuin1.png")
-assert(baseRuin1, err)
-baseRuin2, err = gfx.image.new("images/baseRuin2.png")
-assert(baseRuin2, err)
-baseSphereMask, err = gfx.image.new("images/baseSphereMask.png")
-assert(baseSphereMask, err)
+local baseQuarterVert = Assets.getImage('images/baseQuarterVert.png')
+local baseGunVert = Assets.getImage('images/baseGunVert.png')
+local baseQuarterHoriz = Assets.getImage('images/baseQuarterHoriz.png')
+local baseGunHoriz = Assets.getImage('images/baseGunHoriz.png')
+local baseRuin1 = Assets.getImage('images/baseRuin1.png')
+local baseRuin2 = Assets.getImage('images/baseRuin2.png')
+local baseSphereMask = Assets.getImage('images/baseSphereMask.png')
 
 local Sphere1 <const> = 0x01
 local Sphere2 <const> = 0x02
@@ -81,8 +70,7 @@ local BaseOneShotScore <const> = 200
 
 function EnemyBase.new(worldX, worldY)
 	-- A base is composed of several parts, 4 x 32x32 corners and a 8x16 gun
-	local img = gfx.image.new(32 * 2 + 8, 32 * 2 + 8)
-	local self = gfx.sprite.new(img)
+	local self = gfx.sprite.new(gfx.image.new(32 * 2 + 8, 32 * 2 + 8))
 	self:setTag(SPRITE_TAGS.enemyBase)
 	self.worldX = worldX
     self.worldY = worldY

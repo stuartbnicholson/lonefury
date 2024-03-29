@@ -1,12 +1,12 @@
 import "utility"
+import "Assets"
 
 local gfx = playdate.graphics
 
 Enemy = {}
 Enemy.__index = Enemy
 
-local imgTable, err = gfx.imagetable.new("images/enemy-table-15-15.png")
-assert(imgTable, err)
+local enemyTable = Assets.getImage('images/enemy-table-15-15.png')
 
 function Enemy.new(worldX, worldY)
     local POINTS <const> = 15
@@ -16,7 +16,6 @@ function Enemy.new(worldX, worldY)
     assert(img, err)
 
     local self = gfx.sprite:new(img)
-    self.imgTable = imgTable
     self:setTag(SPRITE_TAGS.enemy)
     self:setZIndex(15)
 	self:setCollideRect(2, 2, 11, 10)
@@ -29,7 +28,7 @@ function Enemy.new(worldX, worldY)
 
     function self:reset()
         self.angle = 0
-        self:setImage(self.imgTable:getImage(1))
+        self:setImage(enemyTable:getImage(1))
     end
 
     function self:roundToNearestMultiple(number, multiple)
