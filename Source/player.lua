@@ -31,8 +31,6 @@ function Player:new()
     self:setGroupMask(GROUP_PLAYER)
     self:setCollidesWithGroupsMask(GROUP_ENEMY)
 
-    self.score = 0
-    self.lives = 3
     self.worldX = WORLD_PLAYER_STARTX
     self.worldY = WORLD_PLAYER_STARTY
     self.deltaX = 0
@@ -41,6 +39,12 @@ function Player:new()
     self.bullets = {}
     self.bullets[1] = PlayerBullet.new()
     self.bullets[2] = PlayerBullet.new()
+
+    function self:reset()
+        self:resetAngle()
+        self.lives = 3
+        self.score = 0
+    end
 
     function self:getWorldPosition()
         return self.worldX, self.worldY
@@ -156,6 +160,6 @@ function Player:new()
         SetTableImage(self.angle, self, self.imgTable)
     end
 
-    self:resetAngle()
+    self:reset()
     return self
 end

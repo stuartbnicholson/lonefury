@@ -13,7 +13,8 @@ function StateStart:start()
     print('StateStart start')
 
     LevelManager:reset()
-    Player.lives = 3
+    Player:reset()
+    Dashboard:drawPlayerScore()
     Dashboard:drawLivesMedals()
     Player:spawn()
 end

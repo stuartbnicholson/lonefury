@@ -8,19 +8,32 @@ Asteroid.__index = Asteroid
 
 local asteroidImg = Assets.getImage('images/asteroid.png')
 
-function Asteroid.new(worldX, worldY)
+function Asteroid.new()
     local POINTS <const> = 5
 
     local self = gfx.sprite.new(asteroidImg)
     self:setTag(SPRITE_TAGS.asteroid)
-    self.worldX = worldX
-    self.worldY = worldY
     self:setVisible(false)
     self:setZIndex(10)
     self:setCollideRect(2, 2, 12, 12)
     self:setGroupMask(GROUP_ENEMY)
     self:setCollidesWithGroupsMask(GROUP_PLAYER|GROUP_BULLET)
-    self:add()
+
+    -- Pool management
+    function self:spawn(worldX, worldY)
+        self.worldX = worldX
+        self.worldY = worldY
+        self.isSpawned = true
+
+        self:add()
+    end
+
+    function self:despawn()
+        self:setVisible(false)
+        self.isSpawned = false
+
+        self:remove()
+    end
 
     function self:update()
         -- TODO: visible only controls drawing, not being part of collisions. etc.
@@ -37,10 +50,9 @@ function Asteroid.new(worldX, worldY)
 
     function self:bulletHit(x, y)
         Explode(ExplosionSmall, self:getPosition())
-        self:setVisible(false)
-        self:remove()
-
         Player:scored(POINTS)
+
+        self:despawn()
     end
 
     return self

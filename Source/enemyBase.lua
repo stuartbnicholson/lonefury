@@ -7,10 +7,7 @@ local geom = playdate.geometry
 EnemyBase = {}
 EnemyBase.__index = EnemyBase
 
--- Images
-local err
-
--- EnemyBase sprites
+-- EnemyBase images
 local baseQuarterVert = Assets.getImage('images/baseQuarterVert.png')
 local baseGunVert = Assets.getImage('images/baseGunVert.png')
 local baseQuarterHoriz = Assets.getImage('images/baseQuarterHoriz.png')
@@ -68,22 +65,39 @@ local fireSpheres = { Sphere1, Sphere5, Sphere3, Sphere4, Sphere6, Sphere2 }
 local SphereScore <const> = 25 -- * 6 = 150
 local BaseOneShotScore <const> = 200
 
-function EnemyBase.new(worldX, worldY)
+function EnemyBase.new()
 	-- A base is composed of several parts, 4 x 32x32 corners and a 8x16 gun
 	local self = gfx.sprite.new(gfx.image.new(32 * 2 + 8, 32 * 2 + 8))
 	self:setTag(SPRITE_TAGS.enemyBase)
-	self.worldX = worldX
-    self.worldY = worldY
-    self:setVisible(false)
 	self:setZIndex(20)
 	self:setGroupMask(GROUP_ENEMY)
 	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
 
-	function self:reset()
+	-- Pool management
+	function self:spawn(worldX, worldY)
+		self.worldX = worldX
+		self.worldY = worldY
+		Dashboard:addEnemyBase(self.worldX, self.worldY)
+
+		self:setVisible(false)
 		self.spheresAlive = SpheresAlive
 		self.lastFiredIdx = 1
+		self.isVertical = math.random(2) == 1
 		self:buildBase()
+		self.isSpawned = true
+
+		self:add()
 	end
+
+    function self:despawn()
+		Dashboard:removeEnemyBase(self.worldX, self.worldY)
+
+		self:setVisible(false)
+		self.isAlive = SpheresDead
+        self.isSpawned = false
+
+        self:remove()
+    end
 
 	function self:sphereFire(firingSpheres)
 		assert(firingSpheres > 0, 'No spheres to fire')
@@ -156,10 +170,6 @@ function EnemyBase.new(worldX, worldY)
 		end
 	end
 
-	function self:spawn()
-		-- TODO: Spawn bombers and other enemies
-	end
-
 	function self:update()
         -- TODO: visible only controls drawing, not being part of collisions. etc.
         if NearViewport(self.worldX, self.worldY, self.width, self.height) then
@@ -179,7 +189,7 @@ function EnemyBase.new(worldX, worldY)
 			end
 
 			-- TODO:
-			-- self:spawn()
+			-- self:spawnEnemy()
 		end
 	end
 
@@ -306,10 +316,7 @@ function EnemyBase.new(worldX, worldY)
 		local x, y = self:getPosition()
 		Explode(ExplosionLarge, x, y)
 
-		self:remove()
-		self.isAlive = SpheresDead
-
-		Dashboard:removeEnemyBase(self.worldX, self.worldY)
+		self:despawn()
 	end
 
 	function self:sphereExplodes(sphere)
@@ -338,11 +345,6 @@ function EnemyBase.new(worldX, worldY)
 		ruinImg:draw(point, flip)
 		gfx.popContext()
 	end
-
-	-- Setup
-	self.isVertical = math.random(2) == 1
-	self:reset()
-	self:add()
 
 	return self
 end

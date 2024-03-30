@@ -6,29 +6,35 @@ local gfx = playdate.graphics
 Enemy = {}
 Enemy.__index = Enemy
 
-local enemyTable = Assets.getImage('images/enemy-table-15-15.png')
+local enemyTable = Assets.getImagetable('images/enemy-table-15-15.png')
 
-function Enemy.new(worldX, worldY)
+function Enemy.new()
     local POINTS <const> = 15
     local SPEED <const> = 1.5
 
-    local img, err = gfx.image.new(15, 15)
-    assert(img, err)
-
-    local self = gfx.sprite:new(img)
+    local self = gfx.sprite:new(enemyTable:getImage(1))
     self:setTag(SPRITE_TAGS.enemy)
     self:setZIndex(15)
 	self:setCollideRect(2, 2, 11, 10)
 	self:setGroupMask(GROUP_ENEMY)
 	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
-    self:add()
 
-    self.worldX = worldX
-    self.worldY = worldY
-
-    function self:reset()
+    -- Pool management
+    function self:spawn(worldX, worldY)
+        self.worldX = worldX
+        self.worldY = worldY
         self.angle = 0
         self:setImage(enemyTable:getImage(1))
+        self.isSpawned = true
+
+        self:add()
+    end
+
+    function self:despawn()
+        self:setVisible(false)
+        self.isSpawned = false
+
+        self:remove()
     end
 
     function self:roundToNearestMultiple(number, multiple)
@@ -97,12 +103,10 @@ function Enemy.new(worldX, worldY)
 
     function self:bulletHit(x, y)
         Explode(ExplosionSmall, self:getPosition())
-        self:setVisible(false)
-        self:remove()
-
         Player:scored(POINTS)
+
+        self:despawn()
     end
 
-    self:reset()
     return self
 end
