@@ -19,7 +19,7 @@ function EnemyBigBullet:new()
 	self:setZIndex(5)
 	self:setCollideRect(0, 0, 4, 4)
 	self:setGroupMask(GROUP_BULLET)
-	self:setCollidesWithGroupsMask(GROUP_PLAYER)
+	self:setCollidesWithGroupsMask(GROUP_PLAYER|GROUP_OBSTACLE)
 	self:setVisible(false)
 
 	self.loop = gfx.animation.loop.new(50, imgTable, true)

@@ -1,4 +1,4 @@
--- From the Asheteroids example 
+-- From the Asheteroids example
 local gfx = playdate.graphics
 
 PlayerBullet = {}
@@ -11,13 +11,13 @@ function PlayerBullet:new()
 	gfx.fillRect(0, 0, 3, 3)
 	gfx.popContext(img)
 	local self = gfx.sprite:new(img)
-	self:setTag(SPRITE_TAGS.playerBullet)	
+	self:setTag(SPRITE_TAGS.playerBullet)
 	self:setZIndex(0)
 	self:setCollideRect(0, 0, 3, 3)
 	self:setGroupMask(GROUP_BULLET)
-	self:setCollidesWithGroupsMask(GROUP_ENEMY)
+	self:setCollidesWithGroupsMask(GROUP_ENEMY|GROUP_OBSTACLE)
 	self:setVisible(false)
-	
+
 	function self:fire(x, y, deltaX, deltaY)
 		self.deltaX = deltaX
 		self.deltaY = deltaY
@@ -26,7 +26,7 @@ function PlayerBullet:new()
 		self:setVisible(true)
 		self:add()
 	end
-	
+
 	function self:update()
 		local x,y = self:getPosition()
 		self:moveTo(x + self.deltaX, y + self.deltaY)
@@ -39,7 +39,7 @@ function PlayerBullet:new()
 				break
 			end
 		end
-		
+
 		if x < 0 or x > 400 or y < 0 or y > 240 then
 			self:setVisible(false)
 			self:remove()

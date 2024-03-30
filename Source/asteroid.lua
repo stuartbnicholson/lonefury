@@ -16,8 +16,8 @@ function Asteroid.new()
     self:setVisible(false)
     self:setZIndex(10)
     self:setCollideRect(2, 2, 12, 12)
-    self:setGroupMask(GROUP_ENEMY)
-    self:setCollidesWithGroupsMask(GROUP_PLAYER|GROUP_BULLET)
+    self:setGroupMask(GROUP_OBSTACLE)
+    self:setCollidesWithGroupsMask(GROUP_PLAYER|GROUP_BULLET|GROUP_ENEMY)
 
     -- Pool management
     function self:spawn(worldX, worldY)
@@ -48,9 +48,12 @@ function Asteroid.new()
 		self:moveTo(WorldToViewPort(self.worldX, self.worldY))
     end
 
-    function self:bulletHit(x, y)
+    function self:bulletHit(other, x, y)
         Explode(ExplosionSmall, self:getPosition())
-        Player:scored(POINTS)
+
+        if other:getTag() == SPRITE_TAGS.playerBullet then
+            Player:scored(POINTS)
+        end
 
         self:despawn()
     end

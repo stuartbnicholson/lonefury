@@ -13,11 +13,12 @@ function Enemy.new()
     local SPEED <const> = 1.5
 
     local self = gfx.sprite:new(enemyTable:getImage(1))
+    self.imgTable = enemyTable  -- TODO: Enemies could have different appearance
     self:setTag(SPRITE_TAGS.enemy)
     self:setZIndex(15)
 	self:setCollideRect(2, 2, 11, 10)
 	self:setGroupMask(GROUP_ENEMY)
-	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
+	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_OBSTACLE)
 
     -- Pool management
     function self:spawn(worldX, worldY)
@@ -98,12 +99,29 @@ function Enemy.new()
 
         -- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
 		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
-		self:moveTo(WorldToViewPort(self.worldX, self.worldY))
+        self:moveTo(WorldToViewPort(self.worldX, self.worldY))
+
+        local _,_,c,n = self:checkCollisions(self.x, self.y)
+        for i=1,n do
+            if self:alphaCollision(c[i].other) then
+                self:collision(c[i].other, c[i].touch.x, c[i].touch.y)
+                break
+            end
+        end
     end
 
-    function self:bulletHit(x, y)
+    function self:collision(other, x, y)
         Explode(ExplosionSmall, self:getPosition())
-        Player:scored(POINTS)
+
+        self:despawn()
+    end
+
+    function self:bulletHit(other, x, y)
+        Explode(ExplosionSmall, self:getPosition())
+
+        if other:getTag() == SPRITE_TAGS.playerBullet then
+            Player:scored(POINTS)
+        end
 
         self:despawn()
     end

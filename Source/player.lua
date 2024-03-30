@@ -29,7 +29,7 @@ function Player:new()
     self:setZIndex(100)
     self:setCollideRect(2, 2, 11, 11)
     self:setGroupMask(GROUP_PLAYER)
-    self:setCollidesWithGroupsMask(GROUP_ENEMY)
+    self:setCollidesWithGroupsMask(GROUP_ENEMY|GROUP_OBSTACLE)
 
     self.worldX = WORLD_PLAYER_STARTX
     self.worldY = WORLD_PLAYER_STARTY
@@ -91,7 +91,7 @@ function Player:new()
         end
 
         if self.isAlive then
-            local _,_,c,n = self:checkCollisions(self:getPosition())
+            local _,_,c,n = self:checkCollisions(self.x, self.y)
             if n > 0 then
                 for i = 1, #c do
                     if self:alphaCollision(c[i].other) then
