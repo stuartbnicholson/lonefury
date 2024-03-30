@@ -11,12 +11,12 @@ Player.__index = Player
 
 PLAYER_WIDTH = 15
 PLAYER_HEIGHT = 15
+local SPEED <const> = 4.0
+local BULLET_SPEED <const> = 12.0
 
 local imgTable = Assets.getImagetable('images/player-table-15-15.png')
 
 function Player:new()
-    local SPEED <const> = 5.0
-
     local img, err = gfx.image.new(PLAYER_WIDTH, PLAYER_HEIGHT)
     assert(img, err)
 
@@ -75,8 +75,8 @@ function Player:new()
 
     -- Only called if sprite is in sprite list
     function self:update()
-        self.worldX -= self.deltaX * 2.0
-        self.worldY -= self.deltaY * 2.0
+        self.worldX -= self.deltaX * SPEED
+        self.worldY -= self.deltaY * SPEED
 
         -- Decel rather than chop, zero once we're close enough
         if self.deltaX < 0.001 then
@@ -132,11 +132,12 @@ function Player:new()
     function self:fire()
         if self.bullets[1]:isVisible() == false and self.bullets[2]:isVisible() == false then
             SoundManager:playerShoots()
-            local x, y = self:getPosition()
-            local deltaX = -math.sin(math.rad(self.angle)) * SPEED
-            local deltaY = math.cos(math.rad(self.angle)) * SPEED
-            self.bullets[1]:fire(x, y, deltaX, deltaY)
-            self.bullets[2]:fire(x, y, -deltaX, -deltaY)
+            local deltaX = -math.sin(math.rad(self.angle))
+            local deltaY = math.cos(math.rad(self.angle))
+            -- Forward
+            self.bullets[1]:fire(self.worldX, self.worldY, -deltaX * (BULLET_SPEED + SPEED), -deltaY * (BULLET_SPEED + SPEED))
+            -- Rear
+            self.bullets[2]:fire(self.worldX, self.worldY, deltaX * (BULLET_SPEED - SPEED), deltaY * (BULLET_SPEED - SPEED))
         end
     end
 

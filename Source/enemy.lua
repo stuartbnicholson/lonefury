@@ -8,10 +8,10 @@ Enemy.__index = Enemy
 
 local enemyTable = Assets.getImagetable('images/enemy-table-15-15.png')
 
-function Enemy.new()
-    local POINTS <const> = 15
-    local SPEED <const> = 1.5
+local POINTS <const> = 15
+local SPEED <const> = 2.0
 
+function Enemy.new()
     local self = gfx.sprite:new(enemyTable:getImage(1))
     self.imgTable = enemyTable  -- TODO: Enemies could have different appearance
     self:setTag(SPRITE_TAGS.enemy)

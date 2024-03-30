@@ -18,29 +18,38 @@ function PlayerBullet:new()
 	self:setCollidesWithGroupsMask(GROUP_ENEMY|GROUP_OBSTACLE)
 	self:setVisible(false)
 
-	function self:fire(x, y, deltaX, deltaY)
+	function self:fire(worldX, worldY, deltaX, deltaY)
+		self.worldX = worldX
+		self.worldY = worldY
 		self.deltaX = deltaX
 		self.deltaY = deltaY
 
-		self:moveTo(x, y)
+		self:moveTo(WorldToViewPort(self.worldX, self.worldY))
 		self:setVisible(true)
 		self:add()
 	end
 
 	function self:update()
-		local x,y = self:getPosition()
-		self:moveTo(x + self.deltaX, y + self.deltaY)
+		-- Travel the bullet...
+		self.worldX += self.deltaX
+		self.worldY += self.deltaY
 
-		local _,_,c,n = self:checkCollisions(self.x, self.y)
-		for i=1,n do
-			if self:alphaCollision(c[i].other) then
-				-- The first real collision is sufficient to stop the bullet
-				self:bulletHit(c[i].other, c[i].touch.x, c[i].touch.y)
-				break
+		-- ...before all other checks
+		if NearViewport(self.worldX, self.worldY, self.width, self.height) then
+			-- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
+			-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
+			self:moveTo(WorldToViewPort(self.worldX, self.worldY))
+
+			local _,_,c,n = self:checkCollisions(self.x, self.y)
+			for i=1,n do
+				if self:alphaCollision(c[i].other) then
+					-- The first real collision is sufficient to stop the bullet
+					self:bulletHit(c[i].other, c[i].touch.x, c[i].touch.y)
+					break
+				end
 			end
-		end
-
-		if x < 0 or x > 400 or y < 0 or y > 240 then
+		else
+			-- Bullet can be re-used
 			self:setVisible(false)
 			self:remove()
 		end
