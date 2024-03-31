@@ -5,6 +5,7 @@ import 'assets'
 import "playerBullet"
 
 local gfx = playdate.graphics
+local geom = playdate.geometry
 
 Player = {}
 Player.__index = Player
@@ -31,8 +32,7 @@ function Player:new()
     self:setGroupMask(GROUP_PLAYER)
     self:setCollidesWithGroupsMask(GROUP_ENEMY|GROUP_OBSTACLE)
 
-    self.worldX = WORLD_PLAYER_STARTX
-    self.worldY = WORLD_PLAYER_STARTY
+    self.worldV = geom.vector2D.new(WORLD_PLAYER_STARTX, WORLD_PLAYER_STARTY)
     self.deltaX = 0
     self.deltaY = 0
 
@@ -47,7 +47,7 @@ function Player:new()
     end
 
     function self:getWorldPosition()
-        return self.worldX, self.worldY
+        return self.worldV:unpack()
     end
 
     function self:getWorldDelta()
@@ -66,8 +66,8 @@ function Player:new()
         self.isAlive = true
         self:setVisible(true)
 
-        self.worldX = WORLD_PLAYER_STARTX
-        self.worldY = WORLD_PLAYER_STARTY
+        self.worldV.dx = WORLD_PLAYER_STARTX
+        self.worldV.dy = WORLD_PLAYER_STARTY
 
         -- TODO: add() is called multiple times. See StateRespawn. Is this an issue?
         self:add()
@@ -75,8 +75,8 @@ function Player:new()
 
     -- Only called if sprite is in sprite list
     function self:update()
-        self.worldX -= self.deltaX * SPEED
-        self.worldY -= self.deltaY * SPEED
+        self.worldV.dx -= self.deltaX * SPEED
+        self.worldV.dy -= self.deltaY * SPEED
 
         -- Decel rather than chop, zero once we're close enough
         if self.deltaX < 0.001 then
@@ -135,9 +135,9 @@ function Player:new()
             local deltaX = -math.sin(math.rad(self.angle))
             local deltaY = math.cos(math.rad(self.angle))
             -- Forward
-            self.bullets[1]:fire(self.worldX, self.worldY, -deltaX * (BULLET_SPEED + SPEED), -deltaY * (BULLET_SPEED + SPEED))
+            self.bullets[1]:fire(self.worldV.dx, self.worldV.dy, -deltaX * (BULLET_SPEED + SPEED), -deltaY * (BULLET_SPEED + SPEED))
             -- Rear
-            self.bullets[2]:fire(self.worldX, self.worldY, deltaX * (BULLET_SPEED - SPEED), deltaY * (BULLET_SPEED - SPEED))
+            self.bullets[2]:fire(self.worldV.dx, self.worldV.dy, deltaX * (BULLET_SPEED - SPEED), deltaY * (BULLET_SPEED - SPEED))
         end
     end
 

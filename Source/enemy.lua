@@ -2,6 +2,7 @@ import "utility"
 import "Assets"
 
 local gfx = playdate.graphics
+local geom = playdate.geometry
 
 Enemy = {}
 Enemy.__index = Enemy
@@ -10,6 +11,7 @@ local enemyTable = Assets.getImagetable('images/enemy-table-15-15.png')
 
 local POINTS <const> = 15
 local SPEED <const> = 2.0
+local TURN_ANGLE = 5
 
 function Enemy.new()
     local self = gfx.sprite:new(enemyTable:getImage(1))
@@ -19,11 +21,12 @@ function Enemy.new()
 	self:setCollideRect(2, 2, 11, 10)
 	self:setGroupMask(GROUP_ENEMY)
 	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_OBSTACLE)
+    self.worldV = geom.vector2D.new(0, 0)
 
     -- Pool management
     function self:spawn(worldX, worldY)
-        self.worldX = worldX
-        self.worldY = worldY
+        self.worldV.dx = worldX
+        self.worldV.dy = worldY
         self.angle = 0
         self:setImage(enemyTable:getImage(1))
         self.isSpawned = true
@@ -50,20 +53,29 @@ function Enemy.new()
         return sign * number
     end
 
+    -- See OReilly AI for Game Developers
+    function self:Vrotate2d(angle, uV)
+        local x, y
+
+        x = uV.x * math.cos(math.rad(-angle)) + uV.y * math.sin(math.rad(-angle));
+        y = -uV.x * math.sin(math.rad(-angle)) + uV.y * math.cos(math.rad(-angle));
+
+        return geom.vector2D.new(x, y)
+    end
+
     function self:doLOSChase()
-        --[[ TODO:
-            Vector u, v;
-            bool left = false;
-            bool right = false;
-            u = VRotate2D(-Predator.fOrientation,
-            (Prey.vPosition - Predator.vPosition));
-            u.Normalize();
-            if (u.x < -_TOL)
-            left = true;
-            else if (u.x > _TOL)
-            right = true;
-            Predator.SetThrusters(left, right);
-        ]]
+        local TOL = 1e-10
+        local u = self:Vrotate2d(-self.angle, (Player.worldV - self.worldV))
+        u:normalize()
+        local left = u.dx < -TOL
+        local right = u.dx > TOL
+
+        if left and not right then
+            self.angle -= TURN_ANGLE
+        elseif right and not left then
+            self.angle += TURN_ANGLE
+        end
+        self.angle = (self.angle + 360) % 360
     end
 
     function self:turnTowards(x, y, targetX, targetY, currentAngle)
@@ -83,15 +95,18 @@ function Enemy.new()
         if Player.isAlive then
             -- ...however they only ever chase live players
             local pWX, pWY = Player:getWorldPosition()
-            self.angle = self:turnTowards(self.worldX, self.worldY, pWX, pWY, self.angle)
+            -- TODO: Original hackery which has issues with turning on a dime etc.
+            -- self.angle = self:turnTowards(self.worldV.dx, self.worldV.dy, pWX, pWY, self.angle)
+            -- TODO: The turn logic derived from O'Reilly code
+            self:doLOSChase()
             SetTableImage(self.angle, self, self.imgTable)
         end
 
-        self.worldX -= -math.sin(math.rad(self.angle)) * SPEED
-        self.worldY -= math.cos(math.rad(self.angle)) * SPEED
+        self.worldV.dx -= -math.sin(math.rad(self.angle)) * SPEED
+        self.worldV.dy -= math.cos(math.rad(self.angle)) * SPEED
 
         -- TODO: visible only controls drawing, not being part of collisions. etc.
-        if NearViewport(self.worldX, self.worldY, self.width, self.height) then
+        if NearViewport(self.worldV.dx, self.worldV.dy, self.width, self.height) then
             self:setVisible(true)
         else
             self:setVisible(false)
@@ -99,7 +114,7 @@ function Enemy.new()
 
         -- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
 		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
-        self:moveTo(WorldToViewPort(self.worldX, self.worldY))
+        self:moveTo(WorldToViewPort(self.worldV.dx, self.worldV.dy))
 
         local _,_,c,n = self:checkCollisions(self.x, self.y)
         for i=1,n do

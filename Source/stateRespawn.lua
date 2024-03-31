@@ -20,8 +20,8 @@ function StateRespawn:start()
     print('StateRespawn start')
 
     -- Recenter world, make sure player isn't near anything dangerous
-    Player.worldX = WORLD_PLAYER_STARTX
-    Player.worldY = WORLD_PLAYER_STARTY
+    Player.worldV.dx = WORLD_PLAYER_STARTX
+    Player.worldV.dy = WORLD_PLAYER_STARTY
     Player:resetAngle()
     Player:add()
 
