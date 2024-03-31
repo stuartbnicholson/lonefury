@@ -2,10 +2,10 @@
 -- and it's being 'alive' or not is separated from sprite functionality so it can be animated re-spawning etc.
 import "CoreLibs/sprites"
 import 'assets'
-import "playerBullet"
 
-local gfx = playdate.graphics
-local geom = playdate.geometry
+local pd = playdate
+local gfx = pd.graphics
+local geom = pd.geometry
 
 Player = {}
 Player.__index = Player
@@ -14,6 +14,7 @@ PLAYER_WIDTH = 15
 PLAYER_HEIGHT = 15
 local SPEED <const> = 3.5
 local BULLET_SPEED <const> = 10.0
+local FIRE_MS = 330
 
 local imgTable = Assets.getImagetable('images/player-table-15-15.png')
 
@@ -35,15 +36,13 @@ function Player:new()
     self.worldV = geom.vector2D.new(WORLD_PLAYER_STARTX, WORLD_PLAYER_STARTY)
     self.deltaX = 0
     self.deltaY = 0
-
-    self.bullets = {}
-    self.bullets[1] = PlayerBullet.new()
-    self.bullets[2] = PlayerBullet.new()
+    self.lastFiredMs = 0
 
     function self:reset()
         self:resetAngle()
         self.lives = 3
         self.score = 0
+        self.shotsFired = 0
     end
 
     function self:getWorldPosition()
@@ -130,14 +129,22 @@ function Player:new()
     end
 
     function self:fire()
-        if self.bullets[1]:isVisible() == false and self.bullets[2]:isVisible() == false then
-            SoundManager:playerShoots()
-            local deltaX = -math.sin(math.rad(self.angle))
-            local deltaY = math.cos(math.rad(self.angle))
-            -- Forward
-            self.bullets[1]:fire(self.worldV.dx, self.worldV.dy, -deltaX * (BULLET_SPEED + SPEED), -deltaY * (BULLET_SPEED + SPEED))
-            -- Rear
-            self.bullets[2]:fire(self.worldV.dx, self.worldV.dy, deltaX * (BULLET_SPEED - SPEED), deltaY * (BULLET_SPEED - SPEED))
+        -- If we haven't fired recently we can fire
+        local now = pd.getCurrentTimeMilliseconds()
+        if now - self.lastFiredMs >= FIRE_MS then
+            -- If we can find two free player bullets, we can fire
+            local bullet1, bullet2 = PoolManager:freeInPool(PlayerBullet, 2)
+            if bullet1 and bullet2 then
+                SoundManager:playerShoots()
+                local deltaX = -math.sin(math.rad(self.angle))
+                local deltaY = math.cos(math.rad(self.angle))
+                -- Forward
+                bullet1:spawn(self.worldV.dx, self.worldV.dy, -deltaX * (BULLET_SPEED + SPEED), -deltaY * (BULLET_SPEED + SPEED))
+                -- Rear
+                bullet2:spawn(self.worldV.dx, self.worldV.dy, deltaX * (BULLET_SPEED - SPEED), deltaY * (BULLET_SPEED - SPEED))
+                self.lastFiredMs = now
+                self.shotsFired += 2
+            end
         end
     end
 

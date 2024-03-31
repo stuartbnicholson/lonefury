@@ -1,4 +1,6 @@
 import 'CoreLibs/animation'
+
+import 'constants'
 import 'assets'
 
 -- All enemy bases and other large enemies share these bullets. This is as way of
@@ -24,16 +26,24 @@ function EnemyBigBullet:new()
 
 	self.loop = gfx.animation.loop.new(50, imgTable, true)
 
-	function self:fire(worldX, worldY, deltaX, deltaY)
+	-- Spawning a bullet == firing a bullet
+	function self:spawn(worldX, worldY, deltaX, deltaY)
 		self.worldX = worldX
 		self.worldY = worldY
 		self.deltaX = deltaX * VELOCITY
 		self.deltaY = deltaY * VELOCITY
+		self.isSpawned = true
 
 		self:moveTo(WorldToViewPort(self.worldX, self.worldY))
 		self:setVisible(true)
 		self:add()
 	end
+
+    function self:despawn()
+		self:setVisible(false)
+        self.isSpawned = false
+        self:remove()
+    end
 
 	-- Update will only be called on sprites in the list, regardless of visibility. Bullets we can add and remove from sprite list easily
 	function self:update()
@@ -59,8 +69,7 @@ function EnemyBigBullet:new()
 			end
         else
 			-- Bullet can be re-used
-            self:setVisible(false)
-			self:remove()
+			self:despawn()
         end
 	end
 
@@ -68,40 +77,8 @@ function EnemyBigBullet:new()
 		other:bulletHit(self, x, y)
 
 		-- Bullet can be re-used
-		self:setVisible(false)
-		self:remove()
+		self:despawn()
 	end
 
 	return self
-end
-
--- Manage big bullets, we only cycle a limited set
--- TODO: Multiple enemy bases firing a set number of bullets each
-local bigBullets = {}
-bigBullets[1] = EnemyBigBullet:new()
-bigBullets[2] = EnemyBigBullet:new()
-bigBullets[3] = EnemyBigBullet:new()
-bigBullets[4] = EnemyBigBullet:new()
-bigBullets[5] = EnemyBigBullet:new()
-bigBullets[6] = EnemyBigBullet:new()
-
-local bigBulletIdx = 1
-
-function FindFreeEnemyBigBullet()
-	local idx = bigBulletIdx
-	repeat
-		if not bigBullets[bigBulletIdx]:isVisible() then
-			-- Prep for next find
-			idx = bigBulletIdx
-			bigBulletIdx = IncWrap(bigBulletIdx, #bigBullets)
-
-			-- Incoming!
-			return bigBullets[idx]
-		end
-
-		bigBulletIdx = IncWrap(bigBulletIdx, #bigBullets)
-	until bigBulletIdx == idx
-
-	-- No free plomo
-	return nil
 end

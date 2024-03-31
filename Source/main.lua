@@ -1,6 +1,7 @@
 import 'assets'
 import 'dashboard'
 import 'starfield'
+import 'poolManager'
 import 'levelManager'
 import 'soundManager'
 import 'stateMenu'
@@ -47,6 +48,7 @@ Assets.preloadImagetables({
 )
 
 -- Managers
+PoolManager = PoolManager.new()
 LevelManager = LevelManager.new()
 SoundManager = SoundManager.new()
 

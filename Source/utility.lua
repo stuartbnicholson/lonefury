@@ -71,3 +71,26 @@ end
 function WorldToViewPort(worldX, worldY)
 	return worldX - ViewPortWorldX + (HALF_VIEWPORT_WIDTH), worldY - ViewPortWorldY + (HALF_VIEWPORT_HEIGHT)
 end
+
+-- Borrowed from: https://devforum.play.date/t/tracking-memory-usage-throughout-your-game/1132
+local MemoryInit = collectgarbage("count") * 1024
+local MemoryUsed = MemoryInit
+function MemoryCheck()
+	local new <const> = collectgarbage("count") * 1024
+	local diff <const> = new - MemoryUsed
+
+	-- still making large numbers of allocations
+	if diff > MemoryInit then
+		MemoryUsed = new
+		return
+	end
+
+	-- fine grained memory changes
+	if diff > 0 then
+		print(string.format("Memory use\t+%dKB (%d bytes)", diff//1024, new - MemoryInit))
+	elseif diff < 0 then
+		print(string.format("Memory free\t%dKB (%d bytes)", diff//1024, new - MemoryInit))
+	end
+
+	MemoryUsed = new
+end

@@ -74,11 +74,17 @@ function EnemyBase.new()
 	self:setGroupMask(GROUP_ENEMY)
 	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
 
+	self.lastFiredMs = 0
+
 	-- Pool management
-	function self:spawn(worldX, worldY)
+	function self:spawn(worldX, worldY, level)
 		self.worldX = worldX
 		self.worldY = worldY
 		Dashboard:addEnemyBase(self.worldX, self.worldY)
+
+		-- TODO: game level dictates the bases's rage.
+		self.multiShot = 1
+		self.fireMs = 1000
 
 		self:setVisible(false)
 		self.spheresAlive = SpheresAlive
@@ -117,56 +123,67 @@ function EnemyBase.new()
 	end
 
 	function self:fire()
-		local playerWorldX, playerWorldY = Player:getWorldPosition()
-		local angleToPlayer = PointsAngle(self.worldX, self.worldY, playerWorldX, playerWorldY)
-		local dx, dy = AngleToDeltaXY(angleToPlayer)
-		dx = -dx
-		dy = -dy
-		local firingSpheres = 0
+		-- Check if enough time has elapsed since base last fired
+		local now = pd.getCurrentTimeMilliseconds()
+		if now - self.lastFiredMs >= self.fireMs then
+			local playerWorldX, playerWorldY = Player:getWorldPosition()
+			local angleToPlayer = PointsAngle(self.worldX, self.worldY, playerWorldX, playerWorldY)
+			local dx, dy = AngleToDeltaXY(angleToPlayer)
+			dx = -dx
+			dy = -dy
+			local firingSpheres = 0
 
-		if self.isVertical then
-			if angleToPlayer < 60 then
-				firingSpheres = Sphere1|Sphere2|Sphere3
-			elseif angleToPlayer < 120 then
-				firingSpheres = Sphere2|Sphere3|Sphere4
-			elseif angleToPlayer < 180 then
-				firingSpheres = Sphere3|Sphere4|Sphere5
-			elseif angleToPlayer < 240 then
-				firingSpheres = Sphere4|Sphere5|Sphere6
-			elseif angleToPlayer < 300 then
-				firingSpheres = Sphere5|Sphere6|Sphere1
+			if self.isVertical then
+				if angleToPlayer < 60 then
+					firingSpheres = Sphere1|Sphere2|Sphere3
+				elseif angleToPlayer < 120 then
+					firingSpheres = Sphere2|Sphere3|Sphere4
+				elseif angleToPlayer < 180 then
+					firingSpheres = Sphere3|Sphere4|Sphere5
+				elseif angleToPlayer < 240 then
+					firingSpheres = Sphere4|Sphere5|Sphere6
+				elseif angleToPlayer < 300 then
+					firingSpheres = Sphere5|Sphere6|Sphere1
+				else
+					firingSpheres = Sphere6|Sphere1|Sphere2
+				end
 			else
-				firingSpheres = Sphere6|Sphere1|Sphere2
+				if angleToPlayer < 45 then
+					firingSpheres = Sphere6|Sphere1|Sphere2
+				elseif angleToPlayer < 90 then
+					firingSpheres = Sphere1|Sphere2|Sphere3
+				elseif angleToPlayer < 135 then
+					firingSpheres = Sphere2|Sphere3|Sphere4
+				elseif angleToPlayer < 225 then
+					firingSpheres = Sphere3|Sphere4|Sphere5
+				elseif angleToPlayer < 270 then
+					firingSpheres = Sphere4|Sphere5|Sphere6
+				else
+					firingSpheres = Sphere5|Sphere6|Sphere1
+				end
 			end
-		else
-			if angleToPlayer < 45 then
-				firingSpheres = Sphere6|Sphere1|Sphere2
-			elseif angleToPlayer < 90 then
-				firingSpheres = Sphere1|Sphere2|Sphere3
-			elseif angleToPlayer < 135 then
-				firingSpheres = Sphere2|Sphere3|Sphere4
-			elseif angleToPlayer < 225 then
-				firingSpheres = Sphere3|Sphere4|Sphere5
-			elseif angleToPlayer < 270 then
-				firingSpheres = Sphere4|Sphere5|Sphere6
-			else
-				firingSpheres = Sphere5|Sphere6|Sphere1
-			end
-		end
 
-		-- Mask out the dead spheres, and the remaining spheres (if any) can fire
-		firingSpheres = self.spheresAlive & firingSpheres
-		while firingSpheres > 0 do
-			local bullet = FindFreeEnemyBigBullet()
-			if bullet then
-				SoundManager:enemyBaseShoots()
-				local sphere = self:sphereFire(firingSpheres)
-				local spherePos = self.spherePos[sphere]
-				bullet:fire(self.worldX + spherePos.x - 36 + 9, self.worldY + spherePos.y - 36 + 9, dx, dy)
-				firingSpheres = firingSpheres ~ sphere
-			else
-				-- Nothing to fire
-				break
+			-- Mask out the dead spheres, and the remaining spheres (if any) can fire
+			local shots = 0
+			firingSpheres = self.spheresAlive & firingSpheres
+			while firingSpheres > 0 and shots < self.multiShot do
+				local bullet = PoolManager:freeInPool(EnemyBigBullet)
+				if bullet then
+					SoundManager:enemyBaseShoots()
+					local sphere = self:sphereFire(firingSpheres)
+					local spherePos = self.spherePos[sphere]
+					bullet:spawn(self.worldX + spherePos.x - 36 + 9, self.worldY + spherePos.y - 36 + 9, dx, dy)
+
+					-- Spheres and firing time tracking
+					shots += 1
+					firingSpheres = firingSpheres ~ sphere
+					self.lastFiredMs = now
+
+					-- TODO: This will break the ripple fire effect. Ripple fire as many spheres up to a certain number of shots.
+				else
+					-- Nothing to fire
+					break
+				end
 			end
 		end
 	end
@@ -315,7 +332,7 @@ function EnemyBase.new()
 		end
 
 		local x, y = self:getPosition()
-		ScreenShake(0.8, 6)
+		ScreenShake(1, 2)
 		Explode(ExplosionLarge, x, y)
 
 		self:despawn()

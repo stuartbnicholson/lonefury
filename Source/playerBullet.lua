@@ -18,15 +18,22 @@ function PlayerBullet:new()
 	self:setCollidesWithGroupsMask(GROUP_ENEMY|GROUP_OBSTACLE)
 	self:setVisible(false)
 
-	function self:fire(worldX, worldY, deltaX, deltaY)
+	function self:spawn(worldX, worldY, deltaX, deltaY)
 		self.worldX = worldX
 		self.worldY = worldY
 		self.deltaX = deltaX
 		self.deltaY = deltaY
+		self.isSpawned = true
 
 		self:moveTo(WorldToViewPort(self.worldX, self.worldY))
 		self:setVisible(true)
 		self:add()
+	end
+
+	function self:despawn()
+		self:setVisible(false)
+        self.isSpawned = false
+        self:remove()
 	end
 
 	function self:update()
@@ -50,16 +57,15 @@ function PlayerBullet:new()
 			end
 		else
 			-- Bullet can be re-used
-			self:setVisible(false)
-			self:remove()
+			self:despawn()
 		end
 	end
 
 	function self:bulletHit(other, x, y)
 		other:bulletHit(self, x, y)
 
-		self:setVisible(false)
-		self:remove()
+		-- Bullet can be re-used
+		self:despawn()
 	end
 
 	return self

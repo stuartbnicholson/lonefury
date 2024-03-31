@@ -11,6 +11,7 @@ end
 
 function StateStart:start()
     print('StateStart start')
+    MemoryCheck()
 
     LevelManager:reset()
     Player:reset()

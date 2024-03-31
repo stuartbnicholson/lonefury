@@ -17,7 +17,7 @@ function Enemy.new()
     local self = gfx.sprite:new(enemyTable:getImage(1))
     self.imgTable = enemyTable  -- TODO: Enemies could have different appearance
     self:setTag(SPRITE_TAGS.enemy)
-    self:setZIndex(15)
+    self:setZIndex(30)
 	self:setCollideRect(2, 2, 11, 10)
 	self:setGroupMask(GROUP_ENEMY)
 	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_OBSTACLE)

@@ -18,6 +18,7 @@ end
 
 function StateRespawn:start()
     print('StateRespawn start')
+    MemoryCheck()
 
     -- Recenter world, make sure player isn't near anything dangerous
     Player.worldV.dx = WORLD_PLAYER_STARTX
