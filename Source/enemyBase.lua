@@ -1,8 +1,9 @@
 import 'assets'
 import 'enemyBigBullet'
 
-local gfx = playdate.graphics
-local geom = playdate.geometry
+local pd = playdate
+local gfx = pd.graphics
+local geom = pd.geometry
 
 EnemyBase = {}
 EnemyBase.__index = EnemyBase
@@ -314,6 +315,7 @@ function EnemyBase.new()
 		end
 
 		local x, y = self:getPosition()
+		ScreenShake(0.8, 6)
 		Explode(ExplosionLarge, x, y)
 
 		self:despawn()

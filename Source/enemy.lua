@@ -111,13 +111,19 @@ function Enemy.new()
     end
 
     function self:collision(other, x, y)
-        Explode(ExplosionSmall, self:getPosition())
+        if self:isVisible() then
+            Explode(ExplosionSmall, self:getPosition())
+            SoundManager:enemyDies()
+        end
 
         self:despawn()
     end
 
     function self:bulletHit(other, x, y)
-        Explode(ExplosionSmall, self:getPosition())
+        if self:isVisible() then
+            Explode(ExplosionSmall, self:getPosition())
+            SoundManager:enemyDies()
+        end
 
         if other:getTag() == SPRITE_TAGS.playerBullet then
             Player:scored(POINTS)

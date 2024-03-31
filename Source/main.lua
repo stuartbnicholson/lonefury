@@ -80,9 +80,33 @@ end
 
 -- Common WorldUpdate that most States will use
 function WorldUpdate()
+    playdate.timer.updateTimers()
+
     Starfield:update()
     gfx.sprite.update()
 
     ExplosionsUpdate()
     Dashboard:update()
+end
+
+-- From https://sdk.play.date/2.4.2/Inside%20Playdate.html
+-- This function relies on the use of timers, so the timer core library
+-- must be imported, and updateTimers() must be called in the update loop
+function ScreenShake(shakeTime, shakeMagnitude)
+    -- Creating a value timer that goes from shakeMagnitude to 0, over
+    -- the course of 'shakeTime' milliseconds
+    local shakeTimer = pd.timer.new(shakeTime, shakeMagnitude, 0)
+    -- Every frame when the timer is active, we shake the screen
+    shakeTimer.updateCallback = function(timer)
+        -- Using the timer value, so the shaking magnitude
+        -- gradually decreases over time
+        local magnitude = math.floor(timer.value)
+        local shakeX = math.random(-magnitude, magnitude)
+        local shakeY = math.random(-magnitude, magnitude)
+        pd.display.setOffset(shakeX, shakeY)
+    end
+    -- Resetting the display offset at the end of the screen shake
+    shakeTimer.timerEndedCallback = function()
+        pd.display.setOffset(0, 0)
+    end
 end

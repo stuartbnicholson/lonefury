@@ -11,8 +11,8 @@ Player.__index = Player
 
 PLAYER_WIDTH = 15
 PLAYER_HEIGHT = 15
-local SPEED <const> = 4.0
-local BULLET_SPEED <const> = 12.0
+local SPEED <const> = 3.5
+local BULLET_SPEED <const> = 10.0
 
 local imgTable = Assets.getImagetable('images/player-table-15-15.png')
 
