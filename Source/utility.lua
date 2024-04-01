@@ -94,3 +94,15 @@ function MemoryCheck()
 
 	MemoryUsed = new
 end
+
+function RoundToNearestMultiple(number, multiple)
+	local sign = number >= 0 and 1 or -1
+	number = math.abs(number)
+	local remainder = number % multiple
+	if remainder >= multiple / 2 then
+		number = number + multiple - remainder
+	else
+		number = number - remainder
+	end
+	return sign * number
+end

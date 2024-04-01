@@ -71,7 +71,7 @@ function StateGame:update()
     self:buttonUpdate()
 
     -- Update world positions based on the viewport - which is tied to the Player
-    ViewPortWorldX, ViewPortWorldY = Player:getWorldPosition()
+    ViewPortWorldX, ViewPortWorldY = Player:getWorldV():unpack()
 
     -- ...then update world entities WITH collisions etc.
     WorldUpdate()

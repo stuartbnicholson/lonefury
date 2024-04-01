@@ -1,6 +1,7 @@
 -- The one and only Player sprite, which is a special case because it's controlled by player input
 -- and it's being 'alive' or not is separated from sprite functionality so it can be animated re-spawning etc.
-import "CoreLibs/sprites"
+import 'CoreLibs/sprites'
+
 import 'assets'
 
 local pd = playdate
@@ -45,8 +46,8 @@ function Player:new()
         self.shotsFired = 0
     end
 
-    function self:getWorldPosition()
-        return self.worldV:unpack()
+    function self:getWorldV()
+        return self.worldV
     end
 
     function self:getWorldDelta()

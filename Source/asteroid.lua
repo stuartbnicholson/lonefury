@@ -1,5 +1,6 @@
-import "Assets"
-import "CoreLibs/sprites"
+import 'CoreLibs/sprites'
+
+import 'assets'
 
 local gfx = playdate.graphics
 

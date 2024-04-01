@@ -126,8 +126,8 @@ function EnemyBase.new()
 		-- Check if enough time has elapsed since base last fired
 		local now = pd.getCurrentTimeMilliseconds()
 		if now - self.lastFiredMs >= self.fireMs then
-			local playerWorldX, playerWorldY = Player:getWorldPosition()
-			local angleToPlayer = PointsAngle(self.worldX, self.worldY, playerWorldX, playerWorldY)
+			local pWx, pWy = Player:getWorldV():unpack()
+			local angleToPlayer = PointsAngle(self.worldX, self.worldY, pWx, pWy)
 			local dx, dy = AngleToDeltaXY(angleToPlayer)
 			dx = -dx
 			dy = -dy

@@ -71,7 +71,7 @@ function Dashboard:update()
     self.miniMap:draw(MINIMAP_SX, MINIMAP_SY)
 
     -- Draw the player ship roughly pointing the right way, but clipped to the mini map
-    local mx, my = self:worldToDashXY(Player:getWorldPosition())
+    local mx, my = self:worldToDashXY(Player:getWorldV():unpack())
     local pAngle = math.floor(Player.angle / 90)
     mapPlayerTable:drawImage(1 + pAngle, mx + MINIMAP_SX - 3, my + MINIMAP_SY  - 2)
 

@@ -1,17 +1,18 @@
-import "utility"
-import "Assets"
+import 'utility'
+import 'assets'
+import 'enemyAI'
 
 local gfx = playdate.graphics
 local geom = playdate.geometry
-
-Enemy = {}
-Enemy.__index = Enemy
 
 local enemyTable = Assets.getImagetable('images/enemy-table-15-15.png')
 
 local POINTS <const> = 15
 local SPEED <const> = 2.0
 local TURN_ANGLE = 5
+
+Enemy = {}
+Enemy.__index = Enemy
 
 function Enemy.new()
     local self = gfx.sprite:new(enemyTable:getImage(1))
@@ -22,6 +23,9 @@ function Enemy.new()
 	self:setGroupMask(GROUP_ENEMY)
 	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_OBSTACLE)
     self.worldV = geom.vector2D.new(0, 0)
+
+    -- AI management
+    self.tmpVector = geom.vector2D.new(0, 0)
 
     -- Pool management
     function self:spawn(worldX, worldY)
@@ -41,69 +45,21 @@ function Enemy.new()
         self:remove()
     end
 
-    function self:roundToNearestMultiple(number, multiple)
-        local sign = number >= 0 and 1 or -1
-        number = math.abs(number)
-        local remainder = number % multiple
-        if remainder >= multiple / 2 then
-            number = number + multiple - remainder
-        else
-            number = number - remainder
-        end
-        return sign * number
-    end
-
-    -- See OReilly AI for Game Developers
-    function self:Vrotate2d(angle, uV)
-        local x, y
-
-        x = uV.x * math.cos(math.rad(-angle)) + uV.y * math.sin(math.rad(-angle));
-        y = -uV.x * math.sin(math.rad(-angle)) + uV.y * math.cos(math.rad(-angle));
-
-        return geom.vector2D.new(x, y)
-    end
-
-    function self:doLOSChase()
-        local TOL = 1e-10
-        local u = self:Vrotate2d(-self.angle, (Player.worldV - self.worldV))
-        u:normalize()
-        local left = u.dx < -TOL
-        local right = u.dx > TOL
-
-        if left and not right then
-            self.angle -= TURN_ANGLE
-        elseif right and not left then
-            self.angle += TURN_ANGLE
-        end
-        self.angle = (self.angle + 360) % 360
-    end
-
-    function self:turnTowards(x, y, targetX, targetY, currentAngle)
-        local angle = PointsAngle(x, y, targetX, targetY)
-
-        -- Turn angle has to be divisble by ROTATE_SPEED so we have the appropriate image
-        angle = self:roundToNearestMultiple(math.floor(angle), ROTATE_SPEED)
-
-        -- TODO: Actually it doesn't matter really, turnRate only explodes if enemy is on top of player
-        -- local turnRate = math.abs(currentAngle - angle) / ROTATE_SPEED
-
-        return angle
-    end
-
     function self:update()
         -- As enemy bombers are always in flight, regardless if they're in the viewport or not, we always update them...
         if Player.isAlive then
             -- ...however they only ever chase live players
-            local pWX, pWY = Player:getWorldPosition()
-            -- TODO: Original hackery which has issues with turning on a dime etc.
-            -- self.angle = self:turnTowards(self.worldV.dx, self.worldV.dy, pWX, pWY, self.angle)
-            -- TODO: The turn logic derived from O'Reilly code
-            self:doLOSChase()
+            local pWV = Player:getWorldV()
+
+            -- TODO: Formation flying, evading, orbiting...more interesting options
+            self.angle = DoLOSChase(self.angle, TURN_ANGLE, self.worldV, pWV, self.tmpVector)
+
             SetTableImage(self.angle, self, self.imgTable)
         end
 
-        self.worldV.dx -= -math.sin(math.rad(self.angle)) * SPEED
-        self.worldV.dy -= math.cos(math.rad(self.angle)) * SPEED
+        local r = math.rad(self.angle)
+        self.worldV.dx -= -math.sin(r) * SPEED
+        self.worldV.dy -= math.cos(r) * SPEED
 
         -- TODO: visible only controls drawing, not being part of collisions. etc.
         if NearViewport(self.worldV.dx, self.worldV.dy, self.width, self.height) then
