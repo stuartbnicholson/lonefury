@@ -134,15 +134,15 @@ function Player:new()
         local now = pd.getCurrentTimeMilliseconds()
         if now - self.lastFiredMs >= FIRE_MS then
             -- If we can find two free player bullets, we can fire
-            local bullet1, bullet2 = PoolManager:freeInPool(PlayerBullet, 2)
-            if bullet1 and bullet2 then
+            local bullets = PoolManager:freeInPool(PlayerBullet, 2)
+            if #bullets == 2 then
                 SoundManager:playerShoots()
                 local deltaX = -math.sin(math.rad(self.angle))
                 local deltaY = math.cos(math.rad(self.angle))
                 -- Forward
-                bullet1:spawn(self.worldV.dx, self.worldV.dy, -deltaX * (BULLET_SPEED + SPEED), -deltaY * (BULLET_SPEED + SPEED))
+                bullets[1]:spawn(self.worldV.dx, self.worldV.dy, -deltaX * (BULLET_SPEED + SPEED), -deltaY * (BULLET_SPEED + SPEED))
                 -- Rear
-                bullet2:spawn(self.worldV.dx, self.worldV.dy, deltaX * (BULLET_SPEED - SPEED), deltaY * (BULLET_SPEED - SPEED))
+                bullets[2]:spawn(self.worldV.dx, self.worldV.dy, deltaX * (BULLET_SPEED - SPEED), deltaY * (BULLET_SPEED - SPEED))
                 self.lastFiredMs = now
                 self.shotsFired += 2
             end

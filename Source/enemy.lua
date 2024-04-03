@@ -8,8 +8,8 @@ local geom = playdate.geometry
 local enemyTable = Assets.getImagetable('images/enemy-table-15-15.png')
 
 local POINTS <const> = 15
-local SPEED <const> = 2.0
-local TURN_ANGLE = 5
+local SPEED <const> = 2.5
+ENEMY_TURN_ANGLE = 5
 
 Enemy = {}
 Enemy.__index = Enemy
@@ -26,6 +26,10 @@ function Enemy.new()
 
     -- AI management
     self.tmpVector = geom.vector2D.new(0, 0)
+    self.brain = EnemyBrainChasePlayer
+    self.speed = SPEED
+    self.maxSpeed = SPEED
+    self.turnAngle = ENEMY_TURN_ANGLE
 
     -- Pool management
     function self:spawn(worldX, worldY)
@@ -39,6 +43,15 @@ function Enemy.new()
     end
 
     function self:despawn()
+        -- Formation cleanup
+        if self.formationWingmen then
+            -- Leader needs to tell all surviving wingmen they're not longer in formation
+            self:formationLeaderDied()
+        elseif self.formationLeader then
+            -- Wingman needs to tell leader they're out of formation if they are dead
+            self.formationLeader:formationWingmanDead(self.formationPos)
+        end
+
         self:setVisible(false)
         self.isSpawned = false
 
@@ -47,19 +60,14 @@ function Enemy.new()
 
     function self:update()
         -- As enemy bombers are always in flight, regardless if they're in the viewport or not, we always update them...
-        if Player.isAlive then
-            -- ...however they only ever chase live players
-            local pWV = Player:getWorldV()
 
-            -- TODO: Formation flying, evading, orbiting...more interesting options
-            self.angle = DoLOSChase(self.angle, TURN_ANGLE, self.worldV, pWV, self.tmpVector)
-
-            SetTableImage(self.angle, self, self.imgTable)
-        end
+        -- Apply the enemy brain
+        assert(self.brain, 'Enemy has no brain')
+        self.brain(self, self.turnAngle)
 
         local r = math.rad(self.angle)
-        self.worldV.dx -= -math.sin(r) * SPEED
-        self.worldV.dy -= math.cos(r) * SPEED
+        self.worldV.dx -= -math.sin(r) * self.speed
+        self.worldV.dy -= math.cos(r) * self.speed
 
         -- TODO: visible only controls drawing, not being part of collisions. etc.
         if NearViewport(self.worldV.dx, self.worldV.dy, self.width, self.height) then
@@ -101,6 +109,47 @@ function Enemy.new()
         end
 
         self:despawn()
+    end
+
+    ----------------------------------------
+    -- Formation management
+    ----------------------------------------
+
+    function self:makeFormationLeader(wingmen)
+        -- leader doesn't care about the formation, the wingmen have to fly formation around leader
+        self.formationWingmen = wingmen
+    end
+
+    -- The leader of this formation is dead, tell all the wingmen
+    function self:formationLeaderDied()
+        print('Formation leader died ', #self.formationWingmen)
+        for i = 1, #self.formationWingmen do
+            self.formationWingmen[i]:formationLeaderDead()
+        end
+        self.formationWingmen = nil
+    end
+
+    -- Individual wingman handler
+    function self:formationLeaderDead()
+        print('My leader died!')
+        -- Brain will change on next update
+        self.formationLeader = nil
+        self.formationPos = nil
+        self.formation = nil
+    end
+
+    function self:makeFormationWingman(leader, formation, formationPos)
+        self.formationLeader = leader
+        self.formation = formation
+        self.formationPos = formationPos
+        self.brain = EnemyBrainFlyFormation
+        self.turnAngle *= 3
+    end
+
+    -- A wingman in this leader's formation is dead
+    function self:formationWingmanDead(formationPos)
+        print('My wingman died ', formationPos)
+        self.formationWingmen[formationPos] = nil
     end
 
     return self

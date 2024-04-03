@@ -74,7 +74,7 @@ function PoolManager:freeInPool(obj, count)
                 table.insert(objs, pool[i])
                 found += 1
                 if found == count then
-                    return table.unpack(objs)
+                    return objs
                 end
             end
         end

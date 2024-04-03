@@ -43,6 +43,8 @@ graph TD;
     - Limit their turn
     - Avoid colliding with friends
     - AI flight from the ORielly book
+        - Upon examination this seems like far too much calculation for Lua.
+        - Could it be ported to C?
 
 - Bases
     - Firing - they fire from the domes!

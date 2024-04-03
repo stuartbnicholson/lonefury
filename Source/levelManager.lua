@@ -1,14 +1,15 @@
+import 'lume'
+
 import 'constants'
 import 'asteroid'
 import 'enemy'
 import 'enemyBase'
+import 'enemyAI'
 
 -- Generates levels! Sets up the minimap, sets enemy limits, bullet speeds etc.
+-- Spawns amusing things like enemy formations.
 -- Levels are largely laid out using JSON definitions of repeatable map areas.
 -- Each area is assumed to be viewport size = 320 x 240
-LevelManager = {}
-LevelManager.__index = LevelManager
-
 local pd = playdate
 
 -- Load JSON level part definitions
@@ -23,6 +24,9 @@ local levelObj = {}
 levelObj['a'] = Asteroid
 levelObj['b'] = EnemyBase
 levelObj['e'] = Enemy
+
+LevelManager = {}
+LevelManager.__index = LevelManager
 
 -- TODO: We need a pool of each enemy type, so they can be re-used rather than constantly created.
 -- Consider the limit of around 25-40 active sprites...
@@ -91,5 +95,26 @@ function LevelManager:generateLevelAndMinimap()
         end
     else
         assert("no level " .. self.level .. "?")
+    end
+
+    -- TODO: Throw in a sample formation
+    self:spawnFormation(1000, 1000)
+end
+
+function LevelManager:spawnFormation(worldX, worldY)
+    -- Pick a formation
+    local formation = lume.randomchoice(Formations)
+
+    -- Find enough enemies to spawn into formation
+    local enemies = PoolManager:freeInPool(Enemy, 1 + #formation)
+
+    -- First enemy is the leader and is assumed to be at 0, 0 in the formation
+    local leader = table.remove(enemies)
+    leader:makeFormationLeader(enemies)
+    leader:spawn(worldX, worldY, self.level)
+
+    for i = 1, #enemies do
+        enemies[i]:makeFormationWingman(leader, formation, i)
+        enemies[i]:spawn(worldX + formation[i].x, worldY + formation[i].y, self.level)
     end
 end

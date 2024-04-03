@@ -5,20 +5,25 @@ local gfx = playdate.graphics
 -- Assumes 15 degrees angle increments, and an imageTable that contains 7 images, rotated from 0 degrees to 90 in 15 degree steps
 ROTATE_SPEED = 15
 function SetTableImage(angle, sprite, imgTable)
+	local i
+	local flip = gfx.kImageUnflipped
+
 	-- Flip image table images to save image table space
 	if angle <= 90 then
-		local i = 1 + (angle // ROTATE_SPEED)
-		sprite:setImage(imgTable:getImage(i))
+		i = 1 + (angle // ROTATE_SPEED)
 	elseif angle <= 180 then
-		local i = 7 - ((angle - 90) // ROTATE_SPEED)
-		sprite:setImage(imgTable:getImage(i), gfx.kImageFlippedY)
+		i = 7 - ((angle - 90) // ROTATE_SPEED)
+		flip = gfx.kImageFlippedY
 	elseif angle <= 270 then
-		local i = 1 + (angle - 180) // ROTATE_SPEED
-		sprite:setImage(imgTable:getImage(i), gfx.kImageFlippedXY)
+		i = 1 + (angle - 180) // ROTATE_SPEED
+		flip = gfx.kImageFlippedXY
 	else
-		local i = 7 - (angle - 270) // ROTATE_SPEED
-		sprite:setImage(imgTable:getImage(i), gfx.kImageFlippedX)
+		i = 7 - (angle - 270) // ROTATE_SPEED
+		flip = gfx.kImageFlippedX
 	end
+
+	sprite:setImage(imgTable:getImage(i), flip)
+	return i, flip
 end
 
 function PointsDistance(x1, y1, x2, y2)
