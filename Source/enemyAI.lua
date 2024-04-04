@@ -1,5 +1,6 @@
 -- Enemy AI helper functions
-local geom = playdate.geometry
+local pd = playdate
+local geom = pd.geometry
 
 local crossImg = Assets.getImage('images/cross.png')
 
@@ -16,9 +17,11 @@ FormationV = {
     geom.point.new(30, 30)
 }
 
-Formation3V = {
-    geom.point.new(-15, 15),
-    geom.point.new(15, 15)
+FormationFlatV = {
+    geom.point.new(-18, 9),
+    geom.point.new(18, 9),
+    geom.point.new(-36, 18),
+    geom.point.new(33, 19),
 }
 
 --[[ Particularly long formations don't work that well, they tend to make the cheating more visible
@@ -46,6 +49,7 @@ FormationR = {
 
 Formations = {
     FormationV,
+    FormationFlatV
 }
 
 -- See OReilly AI for Game Developers
@@ -114,30 +118,50 @@ function CalcFormation(formation, formationPos, angle, worldPosV)
 end
 
 -- Enemy brain to chase the player
-function EnemyBrainChasePlayer(self, turnAngle)
+function EnemyBrainChasePlayer(self)
     if Player.isAlive then
         -- ...however they only ever chase live players
         local pWV = Player:getWorldV()
 
-        self.angle = DoLOSChase(self.angle, turnAngle, self.worldV, pWV, self.tmpVector)
+        self.angle = DoLOSChase(self.angle, self.turnAngle, self.worldV, pWV, self.tmpVector)
         SetTableImage(self.angle, self, self.imgTable)
     end
 end
 
 -- Enemy brain to avoid the player
-function EnemyBrainAvoidPlayer(self, turnAngle)
+function EnemyBrainAvoidPlayer(self)
     if Player.isAlive then
-        -- ...however they only ever chase live players
+        -- ...however they only ever avoid live players
         local pWV = Player:getWorldV()
 
-        self.angle = DoLOSAvoid(self.angle, turnAngle, self.worldV, pWV, self.tmpVector)
+        self.angle = DoLOSAvoid(self.angle, self.turnAngle, self.worldV, pWV, self.tmpVector)
         SetTableImage(self.angle, self, self.imgTable)
     end
 end
 
+-- Brain until time has elapsed then revert to another brain
+function EnemyTimerBrain(self)
+    local now = pd.getCurrentTimeMilliseconds()
+    if now > self.brainTimer then
+        self.brain = self.brainAfter
+
+        self.brainTimer = nil
+        self.brainAfter = nil
+    else
+        self.brainBefore(self)
+    end
+end
+
+function SetEnemyTimerBrain(self, brainBefore, msTime, brainAfter)
+    self.brainBefore = brainBefore
+    self.brainTimer = pd.getCurrentTimeMilliseconds() + msTime
+    self.brainAfter = brainAfter
+    self.brain = EnemyTimerBrain
+end
+
 -- Enemy brain to follow in formation.
 -- A more organic feel, but more math per enemy update!
-function EnemyBrainFlyFormation(self, turnAngle)
+function EnemyBrainFlyFormation(self)
     if self.formationLeader then
         local chaseX, chaseY = CalcFormation(self.formation, self.formationPos, self.formationLeader.angle, self.formationLeader.worldV)
         local chaseV = geom.vector2D.new(chaseX, chaseY) -- TODO: GC!
@@ -151,13 +175,13 @@ function EnemyBrainFlyFormation(self, turnAngle)
         -- TODO: Distance seems to vary from 5 to 10 when moving
         self.speed = lume.clamp(d / self.maxSpeed, 0.1, self.maxSpeed * 2)
 
-        self.angle = DoLOSChase(self.angle, turnAngle, self.worldV, chaseV, self.tmpVector)
+        self.angle = DoLOSChase(self.angle, self.turnAngle, self.worldV, chaseV, self.tmpVector)
         SetTableImage(self.angle, self, self.imgTable)
     else
         -- Used to have a formation leader and they've gone? Flee!
         -- TODO: Can revert to non-fleeing after some time
         self.turnAngle = ENEMY_TURN_ANGLE
-        self.brain = EnemyBrainAvoidPlayer
+        SetEnemyTimerBrain(self, EnemyBrainAvoidPlayer, 1500, EnemyBrainChasePlayer)
     end
 end
 

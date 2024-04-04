@@ -51,6 +51,11 @@ function Enemy.new()
             -- Wingman needs to tell leader they're out of formation if they are dead
             self.formationLeader:formationWingmanDead(self.formationPos)
         end
+        -- Make doubly sure all formation info clear
+        self.formationWingmen = nil
+        self.formationLeader = nil
+        self.formationPos = nil
+        self.formation = nil
 
         self:setVisible(false)
         self.isSpawned = false
@@ -63,7 +68,7 @@ function Enemy.new()
 
         -- Apply the enemy brain
         assert(self.brain, 'Enemy has no brain')
-        self.brain(self, self.turnAngle)
+        self.brain(self)
 
         local r = math.rad(self.angle)
         self.worldV.dx -= -math.sin(r) * self.speed
@@ -122,16 +127,16 @@ function Enemy.new()
 
     -- The leader of this formation is dead, tell all the wingmen
     function self:formationLeaderDied()
-        print('Formation leader died ', #self.formationWingmen)
         for i = 1, #self.formationWingmen do
-            self.formationWingmen[i]:formationLeaderDead()
+            if self.formationWingmen[i] then
+                self.formationWingmen[i]:formationLeaderDead()
+            end
         end
         self.formationWingmen = nil
     end
 
     -- Individual wingman handler
     function self:formationLeaderDead()
-        print('My leader died!')
         -- Brain will change on next update
         self.formationLeader = nil
         self.formationPos = nil

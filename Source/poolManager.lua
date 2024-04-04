@@ -79,6 +79,8 @@ function PoolManager:freeInPool(obj, count)
             end
         end
     end
+
+    return nil
 end
 
 function PoolManager:reset()

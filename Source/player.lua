@@ -135,7 +135,7 @@ function Player:new()
         if now - self.lastFiredMs >= FIRE_MS then
             -- If we can find two free player bullets, we can fire
             local bullets = PoolManager:freeInPool(PlayerBullet, 2)
-            if #bullets == 2 then
+            if bullets and #bullets == 2 then
                 SoundManager:playerShoots()
                 local deltaX = -math.sin(math.rad(self.angle))
                 local deltaY = math.cos(math.rad(self.angle))
