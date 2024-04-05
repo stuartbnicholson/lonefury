@@ -1,28 +1,27 @@
--- From the Asheteroids example
+import 'assets'
+
 local gfx = playdate.graphics
+
+local imgTable = Assets.getImagetable('images/playerBullet-table-4-4.png')
 
 PlayerBullet = {}
 PlayerBullet.__index = PlayerBullet
 
 function PlayerBullet:new()
-	local img = gfx.image.new(3,3)
-	gfx.pushContext(img)
-	gfx.setColor(gfx.kColorWhite)
-	gfx.fillRect(0, 0, 3, 3)
-	gfx.popContext(img)
-	local self = gfx.sprite:new(img)
+	local self = gfx.sprite:new(imgTable:getImage(1))
 	self:setTag(SPRITE_TAGS.playerBullet)
 	self:setZIndex(0)
-	self:setCollideRect(0, 0, 3, 3)
+	self:setCollideRect(0, 0, 4, 4)
 	self:setGroupMask(GROUP_BULLET)
 	self:setCollidesWithGroupsMask(GROUP_ENEMY|GROUP_OBSTACLE)
 	self:setVisible(false)
 
-	function self:spawn(worldX, worldY, deltaX, deltaY)
+	function self:spawn(worldX, worldY, angle, deltaX, deltaY)
 		self.worldX = worldX
 		self.worldY = worldY
 		self.deltaX = deltaX
 		self.deltaY = deltaY
+		SetTableImage(angle, self, imgTable)
 		self.isSpawned = true
 
 		self:moveTo(WorldToViewPort(self.worldX, self.worldY))
