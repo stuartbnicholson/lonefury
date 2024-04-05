@@ -79,6 +79,9 @@ function StateGame:update()
     if not Player.isAlive then
         StateDead:start()
         return StateDead
+    elseif LevelManager:isLevelClear() then
+        StateNewLevel:start()
+        return StateNewLevel
     else
         return self
     end

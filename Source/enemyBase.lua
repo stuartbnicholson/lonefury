@@ -331,9 +331,9 @@ function EnemyBase.new()
 			Player:scored(BaseOneShotScore)
 		end
 
-		local x, y = self:getPosition()
 		ScreenShake(1, 2)
-		Explode(ExplosionLarge, x, y)
+		Explode(ExplosionLarge, self.worldX, self.worldY)
+		LevelManager:baseDestroyed()
 
 		self:despawn()
 	end
@@ -345,8 +345,7 @@ function EnemyBase.new()
 		local point = self.spherePos[sphere]
 
 		-- Start sphere explosion
-		local x, y = self:getPosition()
-		Explode(ExplosionMed, x + point.x - 36 + 10 - 1, y + point.y - 36 + 10 - 1) -- TODO: Annoying conversion back to World x,y
+		Explode(ExplosionMed, self.worldX + point.x - 36 + 10 - 1, self.worldY + point.y - 36 + 10 - 1) -- TODO: Annoying conversion back to World x,y
 
 		-- Select ruined sphere image
 		local ruinImg = baseRuin1

@@ -50,7 +50,7 @@ function Asteroid.new()
     end
 
     function self:bulletHit(other, x, y)
-        Explode(ExplosionSmall, self:getPosition())
+        Explode(ExplosionSmall, self.worldX, self.worldY)
 
         if other:getTag() == SPRITE_TAGS.playerBullet then
             Player:scored(POINTS)

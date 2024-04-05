@@ -96,7 +96,7 @@ function Enemy.new()
 
     function self:collision(other, x, y)
         if self:isVisible() then
-            Explode(ExplosionSmall, self:getPosition())
+            Explode(ExplosionSmall, self.worldV.dx, self.worldV.dy)
             SoundManager:enemyDies()
         end
 
@@ -105,7 +105,7 @@ function Enemy.new()
 
     function self:bulletHit(other, x, y)
         if self:isVisible() then
-            Explode(ExplosionSmall, self:getPosition())
+            Explode(ExplosionSmall, self.worldV.dx, self.worldV.dy)
             SoundManager:enemyDies()
         end
 

@@ -118,7 +118,7 @@ function Player:new()
         self.deltaX = 0
         self.deltaY = 0
 
-        Explode(ExplosionSmall, self:getPosition())
+        Explode(ExplosionSmall, self.worldV.dx, self.worldV.dy)
     end
 
     function self:thrust()

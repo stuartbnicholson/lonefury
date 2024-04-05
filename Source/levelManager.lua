@@ -43,11 +43,16 @@ function LevelManager:reset()
     PoolManager:reset()
 
     self.level = 1  -- ad astra!
+    self.basesToKill = 0
+
     self:generateLevelAndMinimap()
 end
 
 function LevelManager:nextLevel()
+    PoolManager:reset()
+
     self.level += 1
+    self.basesToKill = 0
 
     self:generateLevelAndMinimap()
 
@@ -64,6 +69,10 @@ function LevelManager:applyLevelPart(part, worldX, worldY)
         obj = levelObj[part.objs[i].obj]
         poolObj = PoolManager:freeInPool(obj)
         poolObj:spawn(enemyX, enemyY, self.level)
+
+        if obj == EnemyBase then
+            self.basesToKill += 1
+        end
     end
 end
 
@@ -117,4 +126,12 @@ function LevelManager:spawnFormation(worldX, worldY)
         enemies[i]:makeFormationWingman(leader, formation, i)
         enemies[i]:spawn(worldX + formation[i].x, worldY + formation[i].y, self.level)
     end
+end
+
+function LevelManager:baseDestroyed()
+    self.basesToKill -= 1
+end
+
+function LevelManager:isLevelClear()
+    return self.basesToKill == 0
 end

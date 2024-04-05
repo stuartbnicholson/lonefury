@@ -36,18 +36,30 @@ function Explosion.new(size)
     self.size = size
     self.width = w
     self.height = h
-    self.x = -100   -- Start offscreen
+    self.worldX = -100   -- Start offscreen
+    self.x = -100
+    self.worldY = -100
     self.y = -100
 
     function self:update()
+        -- Larger explosions adjust viewport position so they don't drift
+        if self.size > ExplosionSmall then
+            self.x, self.y = WorldToViewPort(self.worldX, self.worldY)
+        end
+
         self:draw(self.x - (self.width >> 1), self.y - (self.height >> 1))
     end
 
-    function self:explode(x, y)
-        self.x = x
-        self.y = y
+    function self:explode(worldX, worldY)
+        self.worldX = worldX
+        self.worldY = worldY
         self.frame = 1
         self.paused = false
+
+        -- Small explosions don't bother adjusting viewport position, for an simple drift effect
+        if self.size == ExplosionSmall then
+            self.x, self.y = WorldToViewPort(self.worldX, self.worldY)
+        end
     end
 
     return self
@@ -79,10 +91,10 @@ function ExplosionsUpdate()
     end
 end
 
-function Explode(size, x, y)
+function Explode(size, worldX, worldY)
     if size == ExplosionSmall then
         SoundManager.smallExplosion()
-        explosions[exploSmallIdx]:explode(x, y)
+        explosions[exploSmallIdx]:explode(worldX, worldY)
         if exploSmallIdx == exploSmallMaxIdx then
             exploSmallIdx = 1
         else
@@ -90,7 +102,7 @@ function Explode(size, x, y)
         end
     elseif size == ExplosionMed then
         SoundManager.mediumExplosion()
-        explosions[exploMedIdx]:explode(x, y)
+        explosions[exploMedIdx]:explode(worldX, worldY)
         if exploMedIdx == exploMedMaxIdx then
             exploMedIdx = exploSmallMaxIdx + 1
         else
@@ -98,7 +110,7 @@ function Explode(size, x, y)
         end
     else
         SoundManager.largeExplosion()
-        explosions[exploLargeIdx]:explode(x, y)
+        explosions[exploLargeIdx]:explode(worldX, worldY)
         if exploLargeIdx == exploLargeMaxIdx then
             exploLargeIdx = exploMedMaxIdx + 1
         else
