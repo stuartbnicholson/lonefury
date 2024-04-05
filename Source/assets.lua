@@ -3,10 +3,12 @@ Assets = {}
 
 local images = {}
 local imagetables = {}
+local fonts = {}
 local samples = {}
 
 local unloadedImages = {}
 local unloadedImagetables = {}
+local unloadedFonts = {}
 local unloadedSamples = {}
 
 local push = table.insert
@@ -28,6 +30,14 @@ function Assets.preloadImagetables(list)
 		end
 	end
 end
+function Assets.preloadFonts(list)
+	for i=1,#list do
+		local path = list[i]
+		if not fonts[path] then
+			push(unloadedFonts, path)
+		end
+	end
+end
 function Assets.preloadSamples(list)
 	for i=1,#list do
 		local path = list[i]
@@ -40,36 +50,52 @@ end
 ------------------------
 
 local ms = playdate.getCurrentTimeMilliseconds
-local pairs = pairs
-
 local gfx = playdate.graphics
 local snd = playdate.sound
+
 local function getImage(path)
 	if images[path] then
 		return images[path]
 	end
-	local image = gfx.image.new(path)
+	local image, err = gfx.image.new(path)
+	assert(image, err)
 	images[path] = image
 	return image
 end
+
 local function getImagetable(path)
 	if imagetables[path] then
 		return imagetables[path]
 	end
-	local imagetable = gfx.imagetable.new(path)
+	local imagetable, err = gfx.imagetable.new(path)
+	assert(imagetable, err)
 	imagetables[path] = imagetable
 	return imagetable
 end
+
+local function getFont(path)
+	if fonts[path] then
+		return fonts[path]
+	end
+	local font, err = gfx.font.new(path)
+	assert(font, err)
+	fonts[path] = font
+	return font
+end
+
 local function getSample(path)
 	if samples[path] then
 		return samples[path]
 	end
-	local sample = snd.sample.new(path)
+	local sample, err = snd.sample.new(path)
+	assert(sample, err)
 	samples[path] = sample
 	return sample
 end
+
 Assets.getImage = getImage
 Assets.getImagetable = getImagetable
+Assets.getFont = getFont
 Assets.getSample = getSample
 
 ------------------------
@@ -84,6 +110,14 @@ function Assets.lazyLoad(frameStart)
 	end
 
 	local count
+
+	count = #unloadedFonts
+	if count>0 then
+		for i=count,1,-1 do
+			getFont(pop(unloadedFonts))
+			if outOfTime(frameStart) then return end
+		end
+	end
 
 	count = #unloadedImages
 	if count>0 then

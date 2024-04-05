@@ -18,6 +18,45 @@ if (process.argv.length === 2) {
   process.exit(-1);
 }
 
+function levelPre(partName) {
+  console.log(`"${partName}": {
+          "objs": [`);
+}
+
+function levelObj(x, y, o) {
+  console.log(`                {
+            "x": ${x},
+            "y": ${y},
+
+            "obj": "${o}"
+        },`);
+}
+
+function levelPost() {
+  console.log(`
+            ]
+        }`);
+}
+
+function formationPre(partName) {
+  console.log(`${partName} = {`);
+}
+
+var formLeaderX = null,
+  formLeaderY;
+function formationObj(x, y, o) {
+  if (formLeaderX === null) {
+    formLeaderX = x;
+    formLeaderY = y;
+  } else {
+    console.log(`\tgeom.point.new(${x - formLeaderX}, ${y - formLeaderY}),`);
+  }
+}
+
+function formationPost() {
+  console.log(`}`);
+}
+
 fs.createReadStream(process.argv[2])
   .pipe(new PNG({ filterType: 4 }))
   .on("parsed", function () {
@@ -27,10 +66,17 @@ fs.createReadStream(process.argv[2])
       process.exit(-1);
     }
 
+    var emitPre = levelPre,
+      emitObj = levelObj,
+      emitPost = levelPost;
     var partName = path.parse(process.argv[2]).name;
-    const pre = `"${partName}": {
-            "objs": [`;
-    console.log(pre);
+    if (partName.includes("formation")) {
+      emitPre = formationPre;
+      emitObj = formationObj;
+      emitPost = formationPost;
+    }
+
+    emitPre(partName);
 
     for (var y = 0; y < this.height; y++) {
       for (var x = 0; x < this.width; x++) {
@@ -41,19 +87,11 @@ fs.createReadStream(process.argv[2])
         const b = this.data[idx + 2];
 
         if (r !== g || g !== b || r !== b) {
-          const obj = rgbToGameObj[rgbToHex(r, g, b)];
-          console.log(`                {
-                    "x": ${x},
-                    "y": ${y},
-
-                    "obj": "${obj}"
-                },`);
+          const o = rgbToGameObj[rgbToHex(r, g, b)];
+          emitObj(x, y, o);
         }
       }
     }
 
-    const post = `
-            ]
-        }`;
-    console.log(post);
+    emitPost();
   });

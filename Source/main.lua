@@ -17,6 +17,7 @@ local gfx = pd.graphics
 
 -- Asset management
 Assets.preloadImages({
+    'images/title.png',
     'images/cross.png',
     -- Obstacles
     'images/asteroid.png',
@@ -48,6 +49,10 @@ Assets.preloadImagetables({
     'images/player-table-15-15.png'
 }
 )
+Assets.preloadFonts({
+    'images/Xevious-2x-table-16-16.png',
+    'images/Nontendo-Bold-2x-table-20-26.png'
+})
 
 -- Managers
 PoolManager = PoolManager.new()
@@ -64,10 +69,6 @@ StateRespawn = StateRespawn.new()
 StateGameOver = StateGameOver.new()
 
 local currentState = StateMenu
-
--- Common assets
-Font = gfx.font.new("images/Nontendo-Bold-2x-table-20-26.png") -- From play.date SDK resources
-assert(Font, 'Failed to load font')
 
 Dashboard = Dashboard.new()
 Starfield = Starfield.new()

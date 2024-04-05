@@ -4,8 +4,7 @@ import 'CoreLibs/timer'
 local pd = playdate
 local gfx = pd.graphics
 
-local gameOverImg, err = gfx.image.new('images/gameOver.png')
-assert(gameOverImg, err)
+local font = Assets.getFont('images/Xevious-2x-table-16-16.png')
 
 StateGameOver = {}
 StateGameOver.__index = StateGameOver
@@ -39,7 +38,13 @@ function StateGameOver:update()
 
     pd.timer.updateTimers()
 
-    gameOverImg:draw((VIEWPORT_WIDTH >> 1) - 59, (HALF_VIEWPORT_HEIGHT) - 10) --118 x 20
+    gfx.pushContext()
+    gfx.setFont(font)
+    gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+    gfx.drawText('GAME OVER', (VIEWPORT_WIDTH >> 1) - 71, (VIEWPORT_HEIGHT >> 1) - 7)
+    gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+    gfx.drawText('GAME OVER', (VIEWPORT_WIDTH >> 1) - 72, (VIEWPORT_HEIGHT >> 1) - 8)
+    gfx.popContext()
 
     if self.timerComplete then
         return StateMenu

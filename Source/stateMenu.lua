@@ -4,8 +4,8 @@ import 'CoreLibs/animation'
 local pd = playdate
 local gfx = pd.graphics
 
-local titleImg, err = gfx.image.new("images/title.png") 
-assert(titleImg, err)
+local titleImg = Assets.getImage('images/title.png')
+local font = Assets.getFont('images/Xevious-2x-table-16-16.png')
 
 StateMenu = {}
 StateMenu.__index = StateMenu
@@ -33,8 +33,8 @@ function StateMenu:update()
     if self.blinker.on then
         gfx.pushContext()
         gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-        gfx.setFont(Font)
-        gfx.drawText('PRESS ANY BUTTON', 50, 144)
+        gfx.setFont(font)
+        gfx.drawText('PRESS A BUTTON', 48, 144)
         gfx.popContext()
     end
 
