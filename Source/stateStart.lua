@@ -17,9 +17,9 @@ function StateStart:start()
     Player:reset()
     Dashboard:drawPlayerScore()
     Dashboard:drawLivesMedals()
-    Player:spawn()
 end
 
 function StateStart:update()
+    StateGame:start()
     return StateGame
 end

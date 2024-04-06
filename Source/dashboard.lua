@@ -23,7 +23,7 @@ local medal5Img = Assets.getImage('images/medal5.png')
 local playerLifeImg = Assets.getImage('images/playerLife.png')
 local mapPlayerTable = Assets.getImagetable('images/mapPlayer-table-7-6.png')
 
-local nontendoFont = Assets.getFont('images/Nontendo-Bold-2x-table-20-26.png')
+local nontendoFont = Assets.getFont('images/Xevious-Score-table-8-16.png')
 
 function Dashboard.new()
     local self = setmetatable({}, Dashboard)

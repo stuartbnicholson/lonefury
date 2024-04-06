@@ -29,7 +29,7 @@ function StateRespawn:start()
     ViewPortWorldX, ViewPortWorldY = Player:getWorldV():unpack()
 
     Dashboard:drawLivesMedals()
-    self.blinker:start()
+    self.blinker:start(600, 600, false, 4)
 end
 
 function StateRespawn:update()

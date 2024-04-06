@@ -20,5 +20,6 @@ function StateNewLevel:start()
 end
 
 function StateNewLevel:update()
-    return StateSpawn
+    StateRespawn:start()
+    return StateRespawn
 end

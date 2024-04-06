@@ -52,7 +52,7 @@ Assets.preloadImagetables({
 )
 Assets.preloadFonts({
     'images/Xevious-2x-table-16-16.png',
-    'images/Nontendo-Bold-2x-table-20-26.png'
+    'images/Xevious-Score-table-8-16.png'
 })
 
 -- Managers

@@ -77,14 +77,14 @@ function EnemyBase.new()
 	self.lastFiredMs = 0
 
 	-- Pool management
-	function self:spawn(worldX, worldY, level)
+	function self:spawn(worldX, worldY, multiShot, fireMs)
 		self.worldX = worldX
 		self.worldY = worldY
 		Dashboard:addEnemyBase(self.worldX, self.worldY)
 
-		-- TODO: game level dictates the bases's rage.
-		self.multiShot = 1
-		self.fireMs = 1000
+		-- Game level dictates the bases's rage.
+		self.multiShot = multiShot
+		self.fireMs = fireMs
 
 		self:setVisible(false)
 		self.spheresAlive = SpheresAlive
