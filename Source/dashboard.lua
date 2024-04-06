@@ -74,8 +74,8 @@ function Dashboard:update()
 
     -- Draw the player ship roughly pointing the right way, but clipped to the mini map
     local mx, my = self:worldToDashXY(Player:getWorldV():unpack())
-    local pAngle = math.floor(Player.angle / 90)
-    mapPlayerTable:drawImage(1 + pAngle, mx + MINIMAP_SX - 3, my + MINIMAP_SY  - 2)
+    local frame = 1 + (((Player.angle + 45) % 360) // 90) % 4
+    mapPlayerTable:drawImage(frame, mx + MINIMAP_SX - 3, my + MINIMAP_SY  - 2)
 
     pd.drawFPS(VIEWPORT_WIDTH + 64, 3)
 end
