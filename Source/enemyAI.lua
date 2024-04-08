@@ -126,6 +126,13 @@ function EnemyBrainChasePlayer(self)
         self.angle = DoLOSChase(self.angle, self.turnAngle, self.worldV, pWV, self.tmpVector)
         SetTableImage(self.angle, self, self.imgTable)
     end
+
+    local r = math.rad(self.angle)
+
+    self.velocity.dx = math.sin(r) * self.speed
+    self.velocity.dy = -math.cos(r) * self.speed
+
+    self.worldV = self.worldV + self.velocity
 end
 
 -- Enemy brain to avoid the player
@@ -137,6 +144,10 @@ function EnemyBrainAvoidPlayer(self)
         self.angle = DoLOSAvoid(self.angle, self.turnAngle, self.worldV, pWV, self.tmpVector)
         SetTableImage(self.angle, self, self.imgTable)
     end
+
+    local r = math.rad(self.angle)
+    self.worldV.dx -= -math.sin(r) * self.speed
+    self.worldV.dy -= math.cos(r) * self.speed
 end
 
 -- Brain until time has elapsed then revert to another brain
@@ -183,15 +194,85 @@ function EnemyBrainFlyFormation(self)
         self.turnAngle = ENEMY_TURN_ANGLE
         SetEnemyTimerBrain(self, EnemyBrainAvoidPlayer, 1500, EnemyBrainChasePlayer)
     end
+
+    local r = math.rad(self.angle)
+    self.worldV.dx -= -math.sin(r) * self.speed
+    self.worldV.dy -= math.cos(r) * self.speed
 end
 
 -- Enemy brain, rigid formation based on the leader's position.
 -- A less organic feel, but also less math per enemy update!
-function EnemyBrainFlyFormation2(self, turnAngle)
+function EnemyBrainFlyFormationRigid(self, turnAngle)
     local formX, formY = CalcFormation(self.formation, self.formationPos, self.formationLeader.angle, self.formationLeader.worldV)
     self.worldV.dx = formX
     self.worldV.dy = formY
 
     self.angle = self.formationLeader.angle
     SetTableImage(self.angle, self, self.imgTable)
+end
+
+-- Enemy brain based on the Boids algorithm
+local BOID_ALIGNMENT_MULT <const> = 0.5
+local BOID_COHESION_MULT <const> = 0.2
+local BOID_SEPARATION_MULT <const> = 1
+
+local BOID_MAX_SPEED <const> = 2.6
+local BOID_SEPARATION_DISTANCE <const> = 25
+
+function EnemyBrainBoid(self)
+    self.angle = RoundToNearestMultiple(VectorAngle(self.velocity), 15)
+    SetTableImage(self.angle, self, self.imgTable)
+    self.worldV += self.velocity
+
+    local avgVelocity = self.avgVelocity
+    avgVelocity.dx = 0
+    avgVelocity.dy = 0
+
+    local avgPosition = self.avgPosition
+    avgPosition.dx = 0
+    avgPosition.dy = 0
+
+    local avgSeparation = self.avgSeparation
+    avgSeparation.dx = 0
+    avgSeparation.dy = 0
+
+    local numOthers = 0
+    local dist
+    local diff = self.diff
+
+    for _, other in pairs(self.flock) do
+        if other ~= self then
+            dist = VectorDistance(self.worldV, other.worldV)
+
+            --[[ If it's a flock member, we always include it regardless
+            if dist < BOID_PERCEPTION_RADIUS then
+            ]] --
+                avgVelocity = avgVelocity + other.velocity
+                avgPosition = avgPosition + other.worldV
+            -- end
+
+            if dist < BOID_SEPARATION_DISTANCE then
+                diff = self.worldV - other.worldV
+                diff:scale(1 / dist)
+                avgSeparation = avgSeparation + diff
+            end
+
+            numOthers += 1
+        end
+    end
+
+    if numOthers > 0 then
+        avgVelocity = avgVelocity / numOthers
+        avgPosition = avgPosition / numOthers
+        avgSeparation = avgSeparation / numOthers
+    end
+
+    self.velocity = self.velocity + (avgVelocity * BOID_ALIGNMENT_MULT)
+    self.velocity = self.velocity + ((avgPosition - self.worldV) * BOID_COHESION_MULT)
+    self.velocity = self.velocity - (avgSeparation * BOID_SEPARATION_MULT)
+
+    if self.velocity:magnitude() > BOID_MAX_SPEED then
+        self.velocity:normalize()
+        self.velocity:scale(BOID_MAX_SPEED)
+    end
 end

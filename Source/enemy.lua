@@ -23,6 +23,7 @@ function Enemy.new()
 	self:setGroupMask(GROUP_ENEMY)
 	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_OBSTACLE)
     self.worldV = geom.vector2D.new(0, 0)
+    self.velocity = geom.vector2D.new(0, 0)
 
     -- AI management
     self.tmpVector = geom.vector2D.new(0, 0)
@@ -36,6 +37,8 @@ function Enemy.new()
         self.worldV.dx = worldX
         self.worldV.dy = worldY
         self.angle = 0
+        self.velocity.dx = 0
+        self.velocity.dy = 0
         self:setImage(enemyTable:getImage(1))
         self.isSpawned = true
 
@@ -66,13 +69,9 @@ function Enemy.new()
     function self:update()
         -- As enemy bombers are always in flight, regardless if they're in the viewport or not, we always update them...
 
-        -- Apply the enemy brain
+        -- Apply the enemy brain which will update position
         assert(self.brain, 'Enemy has no brain')
         self.brain(self)
-
-        local r = math.rad(self.angle)
-        self.worldV.dx -= -math.sin(r) * self.speed
-        self.worldV.dy -= math.cos(r) * self.speed
 
         -- TODO: visible only controls drawing, not being part of collisions. etc.
         if NearViewport(self.worldV.dx, self.worldV.dy, self.width, self.height) then
@@ -127,10 +126,8 @@ function Enemy.new()
 
     -- The leader of this formation is dead, tell all the wingmen
     function self:formationLeaderDied()
-        for i = 1, #self.formationWingmen do
-            if self.formationWingmen[i] then
-                self.formationWingmen[i]:formationLeaderDead()
-            end
+        for _, wingman in pairs(self.formationWingmen) do
+            wingman:formationLeaderDead()
         end
         self.formationWingmen = nil
     end
@@ -155,6 +152,20 @@ function Enemy.new()
     function self:formationWingmanDead(formationPos)
         print('My wingman died ', formationPos)
         self.formationWingmen[formationPos] = nil
+    end
+
+    ----------------------------------------
+    -- Flock management
+    ----------------------------------------
+    function self:makeBoid(flock)
+        self.velocity = geom.vector2D.new(0, 0)
+        self.avgVelocity = geom.vector2D.new(0, 0)
+        self.avgPosition = geom.vector2D.new(0, 0)
+        self.avgSeparation = geom.vector2D.new(0, 0)
+        self.diff = geom.vector2D.new(0, 0)
+
+        self.flock = flock
+        self.brain = EnemyBrainBoid
     end
 
     return self

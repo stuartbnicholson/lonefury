@@ -159,10 +159,13 @@ function LevelManager:generateLevelAndMinimap()
     end
 
     -- TODO: Throw in a sample formation
-    self:spawnFormation(1000, 1000)
+    -- self:spawnFormation(WORLD_PLAYER_STARTX, WORLD_PLAYER_STARTY - 100, EnemyBrainFlyFormation)
+
+    -- TODO: HERE: Throw in a sample flock
+    self:spawnFlock(WORLD_PLAYER_STARTX, WORLD_PLAYER_STARTY - 100)
 end
 
-function LevelManager:spawnFormation(worldX, worldY)
+function LevelManager:spawnFormation(worldX, worldY, formationBrain)
     -- Pick a formation
     local formation = lume.randomchoice(Formations)
 
@@ -172,11 +175,30 @@ function LevelManager:spawnFormation(worldX, worldY)
     -- First enemy is the leader and is assumed to be at 0, 0 in the formation
     local leader = table.remove(enemies)
     leader:makeFormationLeader(enemies)
-    leader:spawn(worldX, worldY, self.level)
+    leader:spawn(worldX, worldY)
 
     for i = 1, #enemies do
         enemies[i]:makeFormationWingman(leader, formation, i)
-        enemies[i]:spawn(worldX + formation[i].x, worldY + formation[i].y, self.level)
+        enemies[i]:spawn(worldX + formation[i].x, worldY + formation[i].y)
+        enemies[i].brain = formationBrain
+    end
+end
+
+local BOID_FLOCK_SIZE <const> = 5
+function LevelManager:spawnFlock(worldX, worldY)
+    -- Find enough enemies to spawn into flock
+    local flock = PoolManager:freeInPool(Enemy, BOID_FLOCK_SIZE)
+
+    -- First enemy is the leader and will use the default Chase, but must remain in flock
+    local leader = flock[1]
+    leader:spawn(worldX, worldY)
+
+    -- All other enemies flock as boids, and start scattered around the leader
+    local enemy
+    for i = 2, #flock do
+        enemy = flock[i]
+        enemy:makeBoid(flock)
+        enemy:spawn(worldX + 20 * i, worldY + 20 * i)
     end
 end
 

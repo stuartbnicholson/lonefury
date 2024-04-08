@@ -27,12 +27,26 @@ function SetTableImage(angle, sprite, imgTable)
 end
 
 function PointsDistance(x1, y1, x2, y2)
-	-- Good old pythagoras
 	return math.sqrt((x2 - x1)^2 + (y2 - y1)^2)
+end
+
+function VectorDistance(v1, v2)
+	return math.sqrt((v2.dx - v1.dx)^2 + (v2.dy - v1.dy)^2)
 end
 
 function PointsAngle(x1, y1, x2, y2)
 	local angle = math.deg(math.atan(y2 - y1, x2 - x1))
+	angle += 90 -- TODO: Why is this +90 req'd? Something in the way math.atan works? Remove it if you need a circular chaser :)
+
+	if angle < 0 then
+		angle += 360
+	end
+
+	return angle
+end
+
+function VectorAngle(vector)
+	local angle = math.deg(math.atan(vector.dy, vector.dx))
 	angle += 90 -- TODO: Why is this +90 req'd? Something in the way math.atan works? Remove it if you need a circular chaser :)
 
 	if angle < 0 then
