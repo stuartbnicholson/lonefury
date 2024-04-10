@@ -17,14 +17,6 @@ FormationV = {
     geom.point.new(30, 30)
 }
 
-FormationFlatV = {
-    geom.point.new(-18, 9),
-    geom.point.new(18, 9),
-    geom.point.new(-36, 18),
-    geom.point.new(33, 19),
-}
-
---[[ Particularly long formations don't work that well, they tend to make the cheating more visible
 FormationT = {
     geom.point.new(-15, 15),
     geom.point.new(15, 15),
@@ -45,15 +37,17 @@ FormationR = {
     geom.point.new(45, 45),
     geom.point.new(60, 60)
 }
-]]--
 
 Formations = {
     FormationV,
-    FormationFlatV
+    FormationT,
+    FormationL,
+    FormationR
 }
 
 -- See OReilly AI for Game Developers
-local TOL = 1e-10
+-- local TOL = 1e-10
+local TOL = 0.4
 
 function Vrotate2d(angle, uV, tmpV)
     local r = math.rad(-angle)
@@ -177,11 +171,6 @@ function EnemyBrainFlyFormation(self)
         local chaseX, chaseY = CalcFormation(self.formation, self.formationPos, self.formationLeader.angle, self.formationLeader.worldV)
         local chaseV = geom.vector2D.new(chaseX, chaseY) -- TODO: GC!
 
-        --[[ TODO: Remove
-        local vx, vy = WorldToViewPort(chaseV.dx, chaseV.dy)
-        crossImg:draw(vx, vy)
-        ]]--
-
         local d = PointsDistance(self.worldV.dx, self.worldV.dy, chaseX, chaseY)
         -- TODO: Distance seems to vary from 5 to 10 when moving
         self.speed = lume.clamp(d / self.maxSpeed, 0.1, self.maxSpeed * 2)
@@ -209,70 +198,4 @@ function EnemyBrainFlyFormationRigid(self, turnAngle)
 
     self.angle = self.formationLeader.angle
     SetTableImage(self.angle, self, self.imgTable)
-end
-
--- Enemy brain based on the Boids algorithm
-local BOID_ALIGNMENT_MULT <const> = 0.5
-local BOID_COHESION_MULT <const> = 0.2
-local BOID_SEPARATION_MULT <const> = 1
-
-local BOID_MAX_SPEED <const> = 2.6
-local BOID_SEPARATION_DISTANCE <const> = 25
-
-function EnemyBrainBoid(self)
-    self.angle = RoundToNearestMultiple(VectorAngle(self.velocity), 15)
-    SetTableImage(self.angle, self, self.imgTable)
-    self.worldV += self.velocity
-
-    local avgVelocity = self.avgVelocity
-    avgVelocity.dx = 0
-    avgVelocity.dy = 0
-
-    local avgPosition = self.avgPosition
-    avgPosition.dx = 0
-    avgPosition.dy = 0
-
-    local avgSeparation = self.avgSeparation
-    avgSeparation.dx = 0
-    avgSeparation.dy = 0
-
-    local numOthers = 0
-    local dist
-    local diff = self.diff
-
-    for _, other in pairs(self.flock) do
-        if other ~= self then
-            dist = VectorDistance(self.worldV, other.worldV)
-
-            --[[ If it's a flock member, we always include it regardless
-            if dist < BOID_PERCEPTION_RADIUS then
-            ]] --
-                avgVelocity = avgVelocity + other.velocity
-                avgPosition = avgPosition + other.worldV
-            -- end
-
-            if dist < BOID_SEPARATION_DISTANCE then
-                diff = self.worldV - other.worldV
-                diff:scale(1 / dist)
-                avgSeparation = avgSeparation + diff
-            end
-
-            numOthers += 1
-        end
-    end
-
-    if numOthers > 0 then
-        avgVelocity = avgVelocity / numOthers
-        avgPosition = avgPosition / numOthers
-        avgSeparation = avgSeparation / numOthers
-    end
-
-    self.velocity = self.velocity + (avgVelocity * BOID_ALIGNMENT_MULT)
-    self.velocity = self.velocity + ((avgPosition - self.worldV) * BOID_COHESION_MULT)
-    self.velocity = self.velocity - (avgSeparation * BOID_SEPARATION_MULT)
-
-    if self.velocity:magnitude() > BOID_MAX_SPEED then
-        self.velocity:normalize()
-        self.velocity:scale(BOID_MAX_SPEED)
-    end
 end

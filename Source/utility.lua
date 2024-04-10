@@ -91,6 +91,10 @@ function WorldToViewPort(worldX, worldY)
 	return worldX - ViewPortWorldX + (HALF_VIEWPORT_WIDTH), worldY - ViewPortWorldY + (HALF_VIEWPORT_HEIGHT)
 end
 
+function ViewPortToWorld(x, y)
+	return x + ViewPortWorldX - (HALF_VIEWPORT_WIDTH), y + ViewPortWorldY - (HALF_VIEWPORT_HEIGHT)
+end
+
 -- Borrowed from: https://devforum.play.date/t/tracking-memory-usage-throughout-your-game/1132
 local MemoryInit = collectgarbage("count") * 1024
 local MemoryUsed = MemoryInit

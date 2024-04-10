@@ -6,17 +6,20 @@ local gfx = playdate.graphics
 local geom = playdate.geometry
 
 local enemyTable = Assets.getImagetable('images/enemy-table-15-15.png')
+local enemy2Table = Assets.getImagetable('images/enemy2-table-15-15.png')
 
 local POINTS <const> = 15
-local SPEED <const> = 2.5
+local SPEED <const> = 2.8
 ENEMY_TURN_ANGLE = 5
 
 Enemy = {}
 Enemy.__index = Enemy
 
 function Enemy.new()
-    local self = gfx.sprite:new(enemyTable:getImage(1))
-    self.imgTable = enemyTable  -- TODO: Enemies could have different appearance
+    local imgTable = enemy2Table
+
+    local self = gfx.sprite:new(imgTable:getImage(1))
+    self.imgTable = imgTable
     self:setTag(SPRITE_TAGS.enemy)
     self:setZIndex(30)
 	self:setCollideRect(2, 2, 11, 10)
@@ -82,7 +85,8 @@ function Enemy.new()
 
         -- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
 		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
-        self:moveTo(WorldToViewPort(self.worldV.dx, self.worldV.dy))
+        local toX, toY = WorldToViewPort(self.worldV.dx, self.worldV.dy)
+        self:moveTo(toX, toY)
 
         local _,_,c,n = self:checkCollisions(self.x, self.y)
         for i=1,n do
@@ -152,20 +156,6 @@ function Enemy.new()
     function self:formationWingmanDead(formationPos)
         print('My wingman died ', formationPos)
         self.formationWingmen[formationPos] = nil
-    end
-
-    ----------------------------------------
-    -- Flock management
-    ----------------------------------------
-    function self:makeBoid(flock)
-        self.velocity = geom.vector2D.new(0, 0)
-        self.avgVelocity = geom.vector2D.new(0, 0)
-        self.avgPosition = geom.vector2D.new(0, 0)
-        self.avgSeparation = geom.vector2D.new(0, 0)
-        self.diff = geom.vector2D.new(0, 0)
-
-        self.flock = flock
-        self.brain = EnemyBrainBoid
     end
 
     return self
