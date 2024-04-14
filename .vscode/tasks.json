@@ -6,7 +6,7 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "pdc Source LoneFury.pdx"
+            "command": "pdc source LoneFury.pdx"
         }
     ]
 }
