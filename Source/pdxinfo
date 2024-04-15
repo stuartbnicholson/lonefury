@@ -1,7 +1,0 @@
-name=LoneStarfighter
-author=Snic
-description=Shoot kill lone starfighter pilot
-bundleID=com.snic.lonestarfighter
-version=1.0
-buildNumber=100
-imagePath=SystemAssets

@@ -1,4 +1,4 @@
-// Lonestarfighter tool for converting a 320 x 240 PNG into a JSON level part file.
+// Tool for converting a 320 x 240 PNG into a JSON level part file.
 var fs = require("fs");
 var PNG = require("pngjs").PNG;
 var path = require("path");
