@@ -71,7 +71,7 @@ function EnemyBase.new()
 	local self = gfx.sprite.new(gfx.image.new(32 * 2 + 8, 32 * 2 + 8))
 	self:setTag(SPRITE_TAGS.enemyBase)
 	self:setZIndex(20)
-	self:setGroupMask(GROUP_ENEMY)
+	self:setGroupMask(GROUP_ENEMY_BASE)
 	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
 
 	self.lastFiredMs = 0

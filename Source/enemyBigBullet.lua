@@ -21,7 +21,7 @@ function EnemyBigBullet:new()
 	self:setZIndex(5)
 	self:setCollideRect(0, 0, 4, 4)
 	self:setGroupMask(GROUP_BULLET)
-	self:setCollidesWithGroupsMask(GROUP_PLAYER|GROUP_OBSTACLE)
+	self:setCollidesWithGroupsMask(GROUP_PLAYER|GROUP_OBSTACLE|GROUP_ENEMY)
 	self:setVisible(false)
 
 	self.loop = gfx.animation.loop.new(50, imgTable, true)
@@ -45,6 +45,10 @@ function EnemyBigBullet:new()
         self:remove()
     end
 
+	function self:collisionResponse(other)
+		return gfx.sprite.kCollisionTypeOverlap
+	end
+
 	-- Update will only be called on sprites in the list, regardless of visibility. Bullets we can add and remove from sprite list easily
 	function self:update()
 		-- Travel the bullet...
@@ -53,13 +57,12 @@ function EnemyBigBullet:new()
 
 		-- ...before all other checks
 		if NearViewport(self.worldX, self.worldY, self.width, self.height) then
-        -- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
-		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
-			self:moveTo(WorldToViewPort(self.worldX, self.worldY))
+			-- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
+			-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
+			local toX,toY,c,n = self:moveWithCollisions(WorldToViewPort(self.worldX, self.worldY))
 			self:setImage(self.loop:image())
 	        self:setVisible(true)
 
-			local _,_,c,n = self:checkCollisions(self.x, self.y)
 			for i=1,n do
 				if self:alphaCollision(c[i].other) then
 					-- The first real collision is sufficient to stop the bullet

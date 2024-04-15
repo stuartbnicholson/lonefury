@@ -19,6 +19,7 @@ local gfx = pd.graphics
 -- Asset management
 Assets.preloadImages({
     'images/title.png',
+    'images/alert.png',
     'images/cross.png',
     -- Obstacles
     'images/asteroid.png',

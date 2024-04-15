@@ -32,7 +32,7 @@ function Player:new()
     self:setZIndex(100)
     self:setCollideRect(2, 2, 11, 11)
     self:setGroupMask(GROUP_PLAYER)
-    self:setCollidesWithGroupsMask(GROUP_ENEMY|GROUP_OBSTACLE)
+    self:setCollidesWithGroupsMask(GROUP_ENEMY|GROUP_ENEMY_BASE|GROUP_OBSTACLE)
 
     self.worldV = geom.vector2D.new(WORLD_PLAYER_STARTX, WORLD_PLAYER_STARTY)
     self.deltaX = 0

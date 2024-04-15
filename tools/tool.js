@@ -19,7 +19,8 @@ if (process.argv.length === 2) {
 }
 
 function levelPre(partName) {
-  console.log(`"${partName}": {
+  console.log(`"${partName[0]}": {
+          "name": "${partName}",
           "objs": [`);
 }
 

@@ -21,9 +21,10 @@ MINIMAP_CELLH = 6
 local medal1Img = Assets.getImage('images/medal1.png')
 local medal5Img = Assets.getImage('images/medal5.png')
 local playerLifeImg = Assets.getImage('images/playerLife.png')
+local alertImg = Assets.getImage('images/alert.png')
 local mapPlayerTable = Assets.getImagetable('images/mapPlayer-table-7-6.png')
-
-local nontendoFont = Assets.getFont('images/Xevious-Score-table-8-16.png')
+local font = Assets.getFont('images/Xevious-2x-table-16-16.png')
+local scoreFont = Assets.getFont('images/Xevious-Score-table-8-16.png')
 
 function Dashboard.new()
     local self = setmetatable({}, Dashboard)
@@ -72,6 +73,9 @@ function Dashboard:update()
     self.dash:draw(VIEWPORT_WIDTH, 0)
     self.miniMap:draw(MINIMAP_SX, MINIMAP_SY)
 
+    -- Alert!
+    alertImg:draw(VIEWPORT_WIDTH + 2, 102)
+
     -- Draw the player ship roughly pointing the right way, but clipped to the mini map
     local mx, my = self:worldToDashXY(Player:getWorldV():unpack())
     local frame = 1 + (((Player.angle + 45) % 360) // 90) % 4
@@ -86,7 +90,7 @@ function Dashboard:drawPlayerScore()
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRect(0, 0, DASH_WIDTH, 26)
     gfx.setColor(gfx.kColorBlack)
-    gfx.setFont(nontendoFont)
+    gfx.setFont(scoreFont)
     gfx.drawText('' .. Player.score, 2, 3)
 
     gfx.popContext()

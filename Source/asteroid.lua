@@ -18,7 +18,7 @@ function Asteroid.new()
     self:setZIndex(10)
     self:setCollideRect(2, 2, 12, 12)
     self:setGroupMask(GROUP_OBSTACLE)
-    self:setCollidesWithGroupsMask(GROUP_PLAYER|GROUP_BULLET|GROUP_ENEMY)
+    self:setCollidesWithGroupsMask(GROUP_PLAYER|GROUP_BULLET|GROUP_ENEMY|GROUP_ENEMY_BASE)
 
     -- Pool management
     function self:spawn(worldX, worldY)

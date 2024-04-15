@@ -24,7 +24,8 @@ function Enemy.new()
     self:setZIndex(30)
 	self:setCollideRect(2, 2, 11, 10)
 	self:setGroupMask(GROUP_ENEMY)
-	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_OBSTACLE)
+	-- self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_OBSTACLE|GROUP_ENEMY)
+	self:setCollidesWithGroupsMask(GROUP_OBSTACLE|GROUP_ENEMY)
     self.worldV = geom.vector2D.new(0, 0)
     self.velocity = geom.vector2D.new(0, 0)
 
@@ -46,6 +47,10 @@ function Enemy.new()
         self.isSpawned = true
 
         self:add()
+
+        -- Set initial position without collision
+        local x, y = WorldToViewPort(worldX, worldY)
+        self:moveTo(x, y)
     end
 
     function self:despawn()
@@ -69,6 +74,16 @@ function Enemy.new()
         self:remove()
     end
 
+    -- See sprite:moveWithCollisions
+    function self:collisionResponse(other)
+        if other:getGroupMask() == GROUP_ENEMY then
+            -- Enemies bounce off each other
+            return gfx.sprite.kCollisionTypeSlide
+        else
+            return gfx.sprite.kCollisionTypeOverlap
+        end
+    end
+
     function self:update()
         -- As enemy bombers are always in flight, regardless if they're in the viewport or not, we always update them...
 
@@ -86,15 +101,16 @@ function Enemy.new()
         -- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
 		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
         local toX, toY = WorldToViewPort(self.worldV.dx, self.worldV.dy)
-        self:moveTo(toX, toY)
-
-        local _,_,c,n = self:checkCollisions(self.x, self.y)
+        local c, n
+        -- self:moveTo(toX, toY)
+        toX, toY, c, n = self:moveWithCollisions(toX, toY)
         for i=1,n do
-            if self:alphaCollision(c[i].other) then
+            if c[i].other:getGroupMask() ~= GROUP_ENEMY and self:alphaCollision(c[i].other) then
                 self:collision(c[i].other, c[i].touch.x, c[i].touch.y)
                 break
             end
         end
+        self.worldV.dx, self.worldV.dy = ViewPortToWorld(toX, toY)
     end
 
     function self:collision(other, x, y)

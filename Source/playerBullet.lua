@@ -13,7 +13,7 @@ function PlayerBullet:new()
 	self:setZIndex(0)
 	self:setCollideRect(0, 0, 4, 4)
 	self:setGroupMask(GROUP_BULLET)
-	self:setCollidesWithGroupsMask(GROUP_ENEMY|GROUP_OBSTACLE)
+	self:setCollidesWithGroupsMask(GROUP_ENEMY|GROUP_ENEMY_BASE|GROUP_OBSTACLE)
 	self:setVisible(false)
 
 	function self:spawn(worldX, worldY, angle, deltaX, deltaY)
@@ -35,6 +35,10 @@ function PlayerBullet:new()
         self:remove()
 	end
 
+	function self:collisionResponse(other)
+		return gfx.sprite.kCollisionTypeOverlap
+	end
+
 	function self:update()
 		-- Travel the bullet...
 		self.worldX += self.deltaX
@@ -44,9 +48,7 @@ function PlayerBullet:new()
 		if NearViewport(self.worldX, self.worldY, self.width, self.height) then
 			-- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
 			-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
-			self:moveTo(WorldToViewPort(self.worldX, self.worldY))
-
-			local _,_,c,n = self:checkCollisions(self.x, self.y)
+			local toX,toY,c,n = self:moveWithCollisions(WorldToViewPort(self.worldX, self.worldY))
 			for i=1,n do
 				if self:alphaCollision(c[i].other) then
 					-- The first real collision is sufficient to stop the bullet

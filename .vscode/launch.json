@@ -1,14 +1,11 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "request": "launch",
-        "type": "playdate",
-        "name": "Run app in Playdate simulator",
-        "source": "${workspaceRoot}/source",
-        "output": "${workspaceRoot}/LoneFury.pdx",
-        // Optionally set sdkPath if not PLAYDATE_SDK_PATH is configured.
-        // "sdkPath": "/path/to/PlaydateSDK"
-      }
-    ]
-  }
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "playdate",
+      "request": "launch",
+      "name": "Playdate: Debug",
+      "preLaunchTask": "${defaultBuildTask}"
+    }
+  ]
+}
