@@ -5,19 +5,23 @@ import 'enemyAI'
 local gfx = playdate.graphics
 local geom = playdate.geometry
 
-local enemyTable = Assets.getImagetable('images/enemy-table-15-15.png')
-local enemy2Table = Assets.getImagetable('images/enemy2-table-15-15.png')
-
 local POINTS <const> = 15
 local SPEED <const> = 2.8
 ENEMY_TURN_ANGLE = 5
+
+ENEMY_ART = {
+    jelly = 1,
+    boomerang = 2
+}
+local enemyArt = {}
+enemyArt[ENEMY_ART.jelly] = Assets.getImagetable('images/enemy-table-15-15.png')
+enemyArt[ENEMY_ART.boomerang] = Assets.getImagetable('images/enemy2-table-15-15.png')
 
 Enemy = {}
 Enemy.__index = Enemy
 
 function Enemy.new()
-    local imgTable = enemy2Table
-
+    local imgTable = enemyArt[ENEMY_ART.boomerang]
     local self = gfx.sprite:new(imgTable:getImage(1))
     self.imgTable = imgTable
     self:setTag(SPRITE_TAGS.enemy)
@@ -32,9 +36,15 @@ function Enemy.new()
     -- AI management
     self.tmpVector = geom.vector2D.new(0, 0)
     self.brain = EnemyBrainChasePlayer
+    self.angle = 0
     self.speed = SPEED
     self.maxSpeed = SPEED
     self.turnAngle = ENEMY_TURN_ANGLE
+
+    function self:setArt(imgTable)
+        self.imgTable = imgTable
+        SetTableImage(self.angle, self, self.imgTable)
+    end
 
     -- Pool management
     function self:spawn(worldX, worldY)
@@ -43,7 +53,7 @@ function Enemy.new()
         self.angle = 0
         self.velocity.dx = 0
         self.velocity.dy = 0
-        self:setImage(enemyTable:getImage(1))
+        self:setImage(self.imgTable:getImage(1))
         self.isSpawned = true
 
         self:add()
@@ -142,6 +152,15 @@ function Enemy.new()
     function self:makeFormationLeader(wingmen)
         -- leader doesn't care about the formation, the wingmen have to fly formation around leader
         self.formationWingmen = wingmen
+
+        -- Random art for the leader, and random art for the wingmen, so sometimes they'll be different
+        local leaderArt = lume.randomchoice(enemyArt)
+        local wingmenArt = lume.randomchoice(enemyArt)
+
+        self:setArt(leaderArt)
+        for _, wingman in ipairs(wingmen) do
+            wingman:setArt(wingmenArt)
+        end
     end
 
     -- The leader of this formation is dead, tell all the wingmen

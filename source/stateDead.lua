@@ -33,7 +33,6 @@ function StateDead:update()
     -- Player is dead, the world goes on without them. Press F for respects
     WorldUpdate()
 
-    pd.timer.updateTimers()
     if self.timerComplete then
         if Player.lives > 1 then
             Player.lives -= 1
