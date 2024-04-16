@@ -64,6 +64,7 @@ function StateGame:start()
     print('StateGame start')
 
     Player:spawn()
+    LevelManager:levelStart()
 end
 
 function StateGame:update()

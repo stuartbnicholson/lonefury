@@ -31,7 +31,7 @@ local ALL_OBSTACLES_LEVEL = 6
 local ENEMYBASE_SHOTS_LEVEL_RATIO <const> = 2
 local ENEMYBASE_SHOTS_MIN <const> = 1
 local ENEMYBASE_SHOTS_MAX <const> = 6
-local ENEMYBASE_FIREMS_MAX <const> = 1000
+local ENEMYBASE_FIREMS_MAX <const> = 1500
 local ENEMYBASE_FIREMS_MIN <const> = 200
 local ENEMYBASE_FIREMS_LEVEL_REDUCTION <const> = 100
 
@@ -181,12 +181,20 @@ function LevelManager:spawnFormation(worldX, worldY, formationBrain)
     end
 end
 
+function LevelManager:levelStart()
+    self.levelStartMS = pd.getCurrentTimeMilliseconds()
+    self.lastBaseKillMS = self.levelStartMS
+end
+
 function LevelManager:baseDestroyed()
     self.basesToKill -= 1
     assert(self.basesToKill >= 0)
 
+    local now = pd.getCurrentTimeMilliseconds()
+    print('MS since last base destroyed: ', now - self.lastBaseKillMS)
+    self.lastBaseKillMS = now
+
     if self.basesToKill == 0 then
-        print('Start the clock!')
         self.levelClearedMs = pd.getCurrentTimeMilliseconds()
     end
 end
