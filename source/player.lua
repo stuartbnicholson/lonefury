@@ -12,7 +12,7 @@ PLAYER_WIDTH = 15
 PLAYER_HEIGHT = 15
 local SPEED <const> = 3.5
 local FWD_BULLET_SPEED <const> = 10.0
-local REAR_BULLET_SPEED <const> = 7
+local REAR_BULLET_SPEED <const> = FWD_BULLET_SPEED - SPEED
 local FIRE_MS = 330
 
 local imgTable = Assets.getImagetable('images/player-table-15-15.png')
@@ -95,7 +95,7 @@ function Player:new()
             local _,_,c,n = self:checkCollisions(self.x, self.y)
             if n > 0 then
                 for i = 1, #c do
-                    if self:alphaCollision(c[i].other) then
+                    if self:alphaCollision(c[i].other) == true then
                         -- The first real collision is sufficient to kill the player
                         self:collide(c[i].other)
                         break
@@ -127,6 +127,7 @@ function Player:new()
     end
 
     function self:bulletHit(other, x, y)
+        print("Player:bulletHit")
         self:collide(other)
     end
 

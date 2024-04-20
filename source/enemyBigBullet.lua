@@ -62,25 +62,24 @@ function EnemyBigBullet:new()
 			local toX,toY,c,n = self:moveWithCollisions(WorldToViewPort(self.worldX, self.worldY))
 			self:setImage(self.loop:image())
 	        self:setVisible(true)
-
+			local hit = false
 			for i=1,n do
-				if self:alphaCollision(c[i].other) then
+				if self:alphaCollision(c[i].other) == true then
 					-- The first real collision is sufficient to stop the bullet
-					self:bulletHit(c[i].other, c[i].touch.x, c[i].touch.y)
+					c[i].other:bulletHit(self, c[i].touch.x, c[i].touch.y)
+					hit = true
 					break
 				end
+			end
+
+			if hit then
+				-- Bullet can be re-used
+				self:despawn()
 			end
         else
 			-- Bullet can be re-used
 			self:despawn()
         end
-	end
-
-	function self:bulletHit(other, x, y)
-		other:bulletHit(self, x, y)
-
-		-- Bullet can be re-used
-		self:despawn()
 	end
 
 	return self

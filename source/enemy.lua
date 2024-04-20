@@ -122,7 +122,7 @@ function Enemy.new()
         -- self:moveTo(toX, toY)
         toX, toY, c, n = self:moveWithCollisions(toX, toY)
         for i=1,n do
-            if c[i].other:getGroupMask() ~= GROUP_ENEMY and self:alphaCollision(c[i].other) then
+            if c[i].other:getGroupMask() ~= GROUP_ENEMY and self:alphaCollision(c[i].other) == true then
                 self:collision(c[i].other, c[i].touch.x, c[i].touch.y)
                 break
             end
@@ -140,6 +140,8 @@ function Enemy.new()
     end
 
     function self:bulletHit(other, x, y)
+        print("enemy:bulletHit")
+
         if self:isVisible() then
             Explode(ExplosionSmall, self.worldV.dx, self.worldV.dy)
             SoundManager:enemyDies()

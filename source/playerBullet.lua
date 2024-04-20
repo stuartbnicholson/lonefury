@@ -51,15 +51,15 @@ function PlayerBullet:new()
 			local toX,toY,c,n = self:moveWithCollisions(WorldToViewPort(self.worldX, self.worldY))
 			local hit = false
 			for i=1,n do
-				if self:alphaCollision(c[i].other or c[i].overlaps == false) then
+				if self:alphaCollision(c[i].other) == true then
 					-- The first real collision is sufficient to stop the bullet
-					c[i].other:bulletHit(self, toX, toY)
+					c[i].other:bulletHit(self, c[i].touch.x, c[i].touch.y)
 					hit = true
 					break
 				end
 			end
 
-			if (hit) then
+			if hit then
 				self:despawn()
 			end
 		else

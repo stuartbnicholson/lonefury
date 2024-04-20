@@ -230,7 +230,7 @@ function EnemyBase.new()
 			baseQuarterVert:draw(32+8,4+32,gfx.kImageFlippedXY)
 			baseGunVert:draw(32,4+32-8)
 
-			self:setCollideRect(0, 4, 32 * 2 + 8, 32 * 2)
+			self:setCollideRect(2, 6, (32 * 2) + 4, (32 * 2) - 4)
 		else
 			-- For drawing ruined spheres
 			self.sphereRuin1 = sphereHorizRuin1
@@ -243,13 +243,14 @@ function EnemyBase.new()
 			baseQuarterHoriz:draw(4+32,32+8,gfx.kImageFlippedXY)
 			baseGunHoriz:draw(4+32-8,32)
 
-			self:setCollideRect(4, 0, 32 * 2, 32 * 2 + 8)
+			self:setCollideRect(6, 2, (32 * 2) - 4, (32 * 2) + 4)
 		end
 
 		gfx.popContext()
 	end
 
 	function self:bulletHit(bullet, cx, cy)
+		print("enemyBase:bulletHit")
 		-- We know the bullet has hit a base pixel.
 		-- We're trying to find out which sphere is most likely to have been hit
 
@@ -260,7 +261,7 @@ function EnemyBase.new()
 		print("d:"..hitDist.." a:"..hitAngle)
 
 		-- Convert angle and distance into a hit
-		if hitDist < 15 then
+		if hitDist < 32.5 then
 			self:centreHit()
 		else
 			self:sphereHit(hitAngle, cx, cy)

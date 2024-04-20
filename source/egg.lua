@@ -50,6 +50,8 @@ function Egg.new()
     end
 
     function self:bulletHit(other, x, y)
+        print("egg:bulletHit")
+
         Explode(ExplosionSmall, self.worldX, self.worldY)
 
         if other:getTag() == SPRITE_TAGS.playerBullet then

@@ -50,6 +50,8 @@ function Asteroid.new()
     end
 
     function self:bulletHit(other, x, y)
+        print("asteroid:bulletHit")
+
         Explode(ExplosionSmall, self.worldX, self.worldY)
 
         if other:getTag() == SPRITE_TAGS.playerBullet then
