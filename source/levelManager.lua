@@ -2,6 +2,7 @@ import 'lume'
 
 import 'constants'
 import 'asteroid'
+import 'egg'
 import 'enemy'
 import 'enemyBase'
 import 'enemyAI'
@@ -22,6 +23,7 @@ levelFile:close()
 -- Maps levelParts to game objects
 local levelObj = {}
 levelObj['a'] = Asteroid
+levelObj['g'] = Egg
 levelObj['b'] = EnemyBase
 levelObj['e'] = Enemy
 
@@ -34,6 +36,9 @@ local ENEMYBASE_SHOTS_MAX <const> = 6
 local ENEMYBASE_FIREMS_MAX <const> = 1500
 local ENEMYBASE_FIREMS_MIN <const> = 200
 local ENEMYBASE_FIREMS_LEVEL_REDUCTION <const> = 100
+local ENEMYBASEKILL_SECS_MIN = 8
+local ENEMYBASEKILL_SECS_MAX = 60
+local ENEMYBASEKILL_SECOND_LEVEL_DEC <const> = 5
 
 -- Time that has to elapse after the last base is killed, before the level ends.
 local LEVEL_CLEARED_AFTER_MS = 2000
@@ -51,6 +56,7 @@ function LevelManager.new()
 
     self.spawn = {}
     self.spawn[Asteroid] = self.asteroidSpawn
+    self.spawn[Egg] = self.eggSpawn
     self.spawn[Enemy] = self.simpleSpawn
     self.spawn[EnemyBase] = self.enemyBaseSpawn
 
@@ -62,6 +68,17 @@ function LevelManager:simpleSpawn(worldX, worldY, obj)
 end
 
 function LevelManager:asteroidSpawn(worldX, worldY, obj)
+    if self.obstacleChance < 1 then
+        if math.random() < self.obstacleChance then
+            obj:spawn(worldX, worldY, self.level)
+        end
+    else
+        -- Spawn regardless, level is too high - player is just too good!
+        obj:spawn(worldX, worldY, self.level)
+    end
+end
+
+function LevelManager:eggSpawn(worldX, worldY, obj)
     if self.obstacleChance < 1 then
         if math.random() < self.obstacleChance then
             obj:spawn(worldX, worldY, self.level)
@@ -107,18 +124,22 @@ function LevelManager:applyLevelPart(part, worldX, worldY, obstacleChance)
         -- Find a pool object and (possibly) spawn it into the world
         obj = levelObj[part.objs[i].obj]
         poolObj = PoolManager:freeInPool(obj)
-        self.spawn[obj](self, enemyX, enemyY, poolObj)
+        if (poolObj) then
+            self.spawn[obj](self, enemyX, enemyY, poolObj)
+        end
     end
 end
 
 function LevelManager:setAggressionValues()
+    -- How much time between base kills for an alert
+    self.baseKillSecs = lume.clamp(ENEMYBASEKILL_SECS_MAX - (ENEMYBASEKILL_SECOND_LEVEL_DEC * (self.level - 1)), ENEMYBASEKILL_SECS_MIN, ENEMYBASEKILL_SECS_MAX)
+
     -- For lower levels, less obstacles will appear. After the Xth level, all asteroid and mine obstacles are present
     self.obstacleChance = self.level / ALL_OBSTACLES_LEVEL
+
     -- Enemy bases get more and more aggressive per level
     self.enemyBaseMultiShot = lume.clamp(self.level // ENEMYBASE_SHOTS_LEVEL_RATIO, ENEMYBASE_SHOTS_MIN, ENEMYBASE_SHOTS_MAX)
     self.enemyBaseFireMs = lume.clamp(ENEMYBASE_FIREMS_MAX - ((self.level - 1) * ENEMYBASE_FIREMS_LEVEL_REDUCTION), ENEMYBASE_FIREMS_MIN, ENEMYBASE_FIREMS_MAX)
-
-    print('Enemy Base Aggression: ', self.enemyBaseMultiShot, self.enemyBaseFireMs)
 end
 
 function LevelManager:generateLevelAndMinimap()
@@ -208,4 +229,13 @@ function LevelManager:isLevelClear()
     end
 
     return false
+end
+
+function LevelManager:percentAlertTimeLeft()
+    if Player.isAlive and self.lastBaseKillMS then
+        local lastKillSecs = (pd.getCurrentTimeMilliseconds() - self.lastBaseKillMS) / 1000
+        return 1.0 - (lastKillSecs / self.baseKillSecs)
+    else
+        return 1.0
+    end
 end

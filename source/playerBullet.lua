@@ -49,24 +49,23 @@ function PlayerBullet:new()
 			-- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
 			-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
 			local toX,toY,c,n = self:moveWithCollisions(WorldToViewPort(self.worldX, self.worldY))
+			local hit = false
 			for i=1,n do
 				if self:alphaCollision(c[i].other or c[i].overlaps == false) then
 					-- The first real collision is sufficient to stop the bullet
-					self:bulletHit(c[i].other, toX, toY)
+					c[i].other:bulletHit(self, toX, toY)
+					hit = true
 					break
 				end
+			end
+
+			if (hit) then
+				self:despawn()
 			end
 		else
 			-- Bullet can be re-used
 			self:despawn()
 		end
-	end
-
-	function self:bulletHit(other, x, y)
-		other:bulletHit(self, x, y)
-
-		-- Bullet can be re-used
-		self:despawn()
 	end
 
 	return self

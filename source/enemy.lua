@@ -83,6 +83,7 @@ function Enemy.new()
 
         -- return to default player chase
         self.brain = EnemyBrainChasePlayer
+        self.turnAngle = ENEMY_TURN_ANGLE
 
         self:setVisible(false)
         self.isSpawned = false

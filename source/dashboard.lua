@@ -8,22 +8,24 @@ local pd = playdate
 Dashboard = {}
 Dashboard.__index = Dashboard
 
-DASH_WIDTH = 80
-DASH_HEIGHT = 240
+local DASH_WIDTH = 80
+local DASH_HEIGHT = 240
 
-MINIMAP_SX = 325
-MINIMAP_SY = 122
-MINIMAP_WIDTH = 72
-MINIMAP_HEIGHT = 72
-MINIMAP_CELLW = 8
-MINIMAP_CELLH = 6
+local MINIMAP_SX = 325
+local MINIMAP_SY = 122
+local MINIMAP_WIDTH = 72
+local MINIMAP_HEIGHT = 72
+local MINIMAP_CELLW = 8
+local MINIMAP_CELLH = 6
+local ALERT_SX = VIEWPORT_WIDTH + 2
+local ALERT_SY = 102
 
 local medal1Img = Assets.getImage('images/medal1.png')
 local medal5Img = Assets.getImage('images/medal5.png')
 local playerLifeImg = Assets.getImage('images/playerLife.png')
 local alertImg = Assets.getImage('images/alert.png')
 local mapPlayerTable = Assets.getImagetable('images/mapPlayer-table-7-6.png')
-local font = Assets.getFont('images/Xevious-2x-table-16-16.png')
+local formationImg = Assets.getImage('images/cross.png')
 local scoreFont = Assets.getFont('images/Xevious-Score-table-8-16.png')
 
 function Dashboard.new()
@@ -69,19 +71,36 @@ function Dashboard:removeEnemyBase(worldX, worldY)
     gfx.popContext()
 end
 
+function Dashboard:formationLeaderAt(leader, worldV)
+    local mx, my = self:worldToDashXY(worldV.dx, worldV.dy)
+    formationImg:draw(mx + MINIMAP_SX, my + MINIMAP_SY)
+end
+
 function Dashboard:update()
     self.dash:draw(VIEWPORT_WIDTH, 0)
     self.miniMap:draw(MINIMAP_SX, MINIMAP_SY)
-
-    -- Alert!
-    alertImg:draw(VIEWPORT_WIDTH + 2, 102)
+    self:drawAlertTimer()
 
     -- Draw the player ship roughly pointing the right way, but clipped to the mini map
     local mx, my = self:worldToDashXY(Player:getWorldV():unpack())
-    local frame = 1 + (((Player.angle + 45) % 360) // 90) % 4
+    local frame = 1 + (Player.angle // 45) % 8
     mapPlayerTable:drawImage(frame, mx + MINIMAP_SX - 3, my + MINIMAP_SY  - 2)
 
     pd.drawFPS(VIEWPORT_WIDTH + 64, 3)
+end
+
+function Dashboard:drawAlertTimer()
+    -- LevelManager tells us percentage time left to next alert
+    local percent = LevelManager:percentAlertTimeLeft()
+    if percent > 0 then
+        gfx.pushContext()
+        gfx.setColor(gfx.kColorWhite)
+        gfx.fillRect(ALERT_SX, ALERT_SY, percent * 77, 14)
+        gfx.popContext()
+    else
+        -- TODO: Blinking Alert!
+        alertImg:draw(ALERT_SX, ALERT_SY)
+    end
 end
 
 function Dashboard:drawPlayerScore()

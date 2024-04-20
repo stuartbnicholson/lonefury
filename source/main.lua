@@ -1,4 +1,5 @@
 import 'assets'
+import 'constants'
 import 'dashboard'
 import 'starfield'
 import 'poolManager'
@@ -23,6 +24,7 @@ Assets.preloadImages({
     'images/cross.png',
     -- Obstacles
     'images/asteroid.png',
+    'images/egg.png',
     -- Bases
     'images/baseQuarterVert.png',
     'images/baseGunVert.png',
@@ -89,10 +91,8 @@ end
 -- Common WorldUpdate that most States will use
 function WorldUpdate()
     playdate.timer.updateTimers()
-
     Starfield:update()
     gfx.sprite.update()
-
     ExplosionsUpdate()
     Dashboard:update()
 end

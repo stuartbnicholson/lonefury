@@ -12,6 +12,7 @@ SPRITE_TAGS = {
     enemy = 4,
     enemyBullet = 5,
     enemyBase = 6,
+    egg = 7,
 }
 
 -- World gameplay occurs in (minus the dashboard)

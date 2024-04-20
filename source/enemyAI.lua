@@ -11,6 +11,12 @@ local crossImg = Assets.getImage('images/cross.png')
 -- Enemies in formation can be killed. If the lead enemy is killed, the formation breaks into individual enemies, at least in original Bosconian.
 -- This implies that LeadEnemy is in control of the formation.
 -- A formation also assumes the lead exists at geom.point.new(0, 0) and so isn't included in each formation list.
+FormationB = {
+    geom.point.new(-8, 15),
+    geom.point.new(8, 15),
+    geom.point.new(-8, 31),
+    geom.point.new(8, 31),
+}
 FormationV = {
     geom.point.new(-15, 15),
     geom.point.new(15, 15),
@@ -25,25 +31,10 @@ FormationT = {
     geom.point.new(0, 45)
 }
 
-FormationL = {
-    geom.point.new(-15, 15),
-    geom.point.new(-30, 30),
-    geom.point.new(-45, 45),
-    geom.point.new(-60, 60)
-}
-
-FormationR = {
-    geom.point.new(15, 15),
-    geom.point.new(30, 30),
-    geom.point.new(45, 45),
-    geom.point.new(60, 60)
-}
-
 Formations = {
-    FormationV,
+    FormationB,
     FormationT,
-    FormationL,
-    FormationR
+    FormationV,
 }
 
 -- See OReilly AI for Game Developers, although it doesn't explain TOL
@@ -123,6 +114,10 @@ function EnemyBrainChasePlayer(self)
     self.velocity.dy = -math.cos(r) * self.speed
 
     self.worldV = self.worldV + self.velocity
+
+    if self.formationWingmen then
+        Dashboard:formationLeaderAt(self, self.worldV)
+    end
 end
 
 -- Enemy brain to avoid the player
