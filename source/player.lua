@@ -11,7 +11,8 @@ local geom = pd.geometry
 PLAYER_WIDTH = 15
 PLAYER_HEIGHT = 15
 local SPEED <const> = 3.5
-local BULLET_SPEED <const> = 10.0
+local FWD_BULLET_SPEED <const> = 10.0
+local REAR_BULLET_SPEED <const> = 7
 local FIRE_MS = 330
 
 local imgTable = Assets.getImagetable('images/player-table-15-15.png')
@@ -140,9 +141,9 @@ function Player:new()
                 local deltaX = -math.sin(math.rad(self.angle))
                 local deltaY = math.cos(math.rad(self.angle))
                 -- Forward
-                bullets[1]:spawn(self.worldV.dx, self.worldV.dy, self.angle, -deltaX * (BULLET_SPEED + SPEED), -deltaY * (BULLET_SPEED + SPEED))
+                bullets[1]:spawn(self.worldV.dx, self.worldV.dy, self.angle, -deltaX * FWD_BULLET_SPEED, -deltaY * FWD_BULLET_SPEED)
                 -- Rear
-                bullets[2]:spawn(self.worldV.dx, self.worldV.dy, self.angle, deltaX * (BULLET_SPEED - SPEED), deltaY * (BULLET_SPEED - SPEED))
+                bullets[2]:spawn(self.worldV.dx, self.worldV.dy, self.angle, deltaX * REAR_BULLET_SPEED, deltaY * REAR_BULLET_SPEED)
                 self.lastFiredMs = now
                 self.shotsFired += 2
             end

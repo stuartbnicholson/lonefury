@@ -50,9 +50,9 @@ function PlayerBullet:new()
 			-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
 			local toX,toY,c,n = self:moveWithCollisions(WorldToViewPort(self.worldX, self.worldY))
 			for i=1,n do
-				if self:alphaCollision(c[i].other) then
+				if self:alphaCollision(c[i].other or c[i].overlaps == false) then
 					-- The first real collision is sufficient to stop the bullet
-					self:bulletHit(c[i].other, c[i].touch.x, c[i].touch.y)
+					self:bulletHit(c[i].other, toX, toY)
 					break
 				end
 			end

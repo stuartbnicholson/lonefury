@@ -260,7 +260,7 @@ function EnemyBase.new()
 		print("d:"..hitDist.." a:"..hitAngle)
 
 		-- Convert angle and distance into a hit
-		if hitDist < 33.6 then
+		if hitDist < 15 then
 			self:centreHit()
 		else
 			self:sphereHit(hitAngle, cx, cy)
@@ -287,7 +287,7 @@ function EnemyBase.new()
 				sphere = Sphere3
 			elseif angle > 147 and angle < 170 then
 				sphere = Sphere4
-			elseif angle > 187 and angle < 210 then
+			elseif angle > 187 and angle < 215 then
 				sphere = Sphere5
 			elseif angle > 257 and angle < 280 then
 				sphere = Sphere6
