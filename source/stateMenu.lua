@@ -27,14 +27,16 @@ function StateMenu:update()
     Starfield:update()
     Dashboard:update()
 
-    titleImg:draw(50, 50)
+    -- Centered in the play area
+    local w, h = titleImg:getSize()
+    titleImg:draw((VIEWPORT_WIDTH- w) >> 1, ((VIEWPORT_HEIGHT - h) >> 1) - 32)
 
     gfx.animation.blinker.updateAll()
     if self.blinker.on then
         gfx.pushContext()
         gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
         gfx.setFont(font)
-        gfx.drawText('PRESS A BUTTON', 48, 144)
+        gfx.drawText('PRESS A BUTTON', 48, 186)
         gfx.popContext()
     end
 

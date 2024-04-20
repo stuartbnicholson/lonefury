@@ -2,6 +2,7 @@
 local pd = playdate
 local geom = pd.geometry
 
+-- TODO: Handy reference image used for on-screeen targeting debugging
 local crossImg = Assets.getImage('images/cross.png')
 
 -- A formation is one or more enemies, attempting to fly in a pattern. There is a lead enemy that is performing the loiter, chase or avoid
@@ -45,8 +46,8 @@ Formations = {
     FormationR
 }
 
--- See OReilly AI for Game Developers
--- local TOL = 1e-10
+-- See OReilly AI for Game Developers, although it doesn't explain TOL
+-- local TOL = 1e-10 - original value which leads to horrible jittering.
 local TOL = 0.4
 
 function Vrotate2d(angle, uV, tmpV)
@@ -87,11 +88,6 @@ function DoLOSAvoid(angle, turnAngle, enemyV, targetV, tmpV)
     end
 
     return (angle + 360) % 360
-end
-
--- Avoid targetV until targetDistance, and then orbit targetV
-function DoOrbit(angle, turnAngle, enemyV, targetDistance, targetV, tmpV)
-    -- TODO:
 end
 
 -- Translate a formation position around 0,0 and 0 degrees to the angle and world position
@@ -198,4 +194,26 @@ function EnemyBrainFlyFormationRigid(self, turnAngle)
 
     self.angle = self.formationLeader.angle
     SetTableImage(self.angle, self, self.imgTable)
+end
+
+function EnemyBrainOrbit(self, turnAngle)
+    -- Avoid targetV until targetDistance, and then orbit targetV
+    local dist = VectorDistance(self.worldV, self.orbitV)
+    if dist > self.orbitDist then
+        self.angle = DoLOSChase(self.angle, self.turnAngle, self.worldV, self.orbitV, self.tmpVector)
+    else
+        local angle = (VectorAngle(self.orbitV - self.worldV) + 360 + 15) % 360
+        self.tmpVector2.dx = (self.orbitV.dx + self.targetDist) * math.cos(math.rad(angle))
+        self.tmpVector2.dy = (self.orbitV.dy + self.targetDist) * math.sin(math.rad(angle))
+
+        self.angle = DoLOSChase(self.angle, self.turnAngle, self.worldV, self.tmpVector2, self.tmpVector)
+    end
+
+    SetTableImage(self.angle, self, self.imgTable)
+    local r = math.rad(self.angle)
+
+    self.velocity.dx = math.sin(r) * self.speed
+    self.velocity.dy = -math.cos(r) * self.speed
+
+    self.worldV = self.worldV + self.velocity
 end

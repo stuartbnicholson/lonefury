@@ -35,11 +35,14 @@ function Enemy.new()
 
     -- AI management
     self.tmpVector = geom.vector2D.new(0, 0)
+    self.tmpVector2 = geom.vector2D.new(0, 0)
     self.brain = EnemyBrainChasePlayer
     self.angle = 0
     self.speed = SPEED
     self.maxSpeed = SPEED
     self.turnAngle = ENEMY_TURN_ANGLE
+    self.orbitDist = 0
+    self.orbitV = nil
 
     function self:setArt(imgTable)
         self.imgTable = imgTable
@@ -77,6 +80,9 @@ function Enemy.new()
         self.formationLeader = nil
         self.formationPos = nil
         self.formation = nil
+
+        -- return to default player chase
+        self.brain = EnemyBrainChasePlayer
 
         self:setVisible(false)
         self.isSpawned = false
@@ -148,7 +154,6 @@ function Enemy.new()
     ----------------------------------------
     -- Formation management
     ----------------------------------------
-
     function self:makeFormationLeader(wingmen)
         -- leader doesn't care about the formation, the wingmen have to fly formation around leader
         self.formationWingmen = wingmen
@@ -191,6 +196,14 @@ function Enemy.new()
     function self:formationWingmanDead(formationPos)
         print('My wingman died ', formationPos)
         self.formationWingmen[formationPos] = nil
+    end
+
+    ----------------------------------------
+    -- Orbit management
+    ----------------------------------------
+    function self:orbit(orbitV, orbitDist)
+        self.orbitV = orbitV
+        self.orbitDist = orbitDist
     end
 
     return self
