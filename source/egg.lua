@@ -10,8 +10,6 @@ Egg.__index = Egg
 local eggImg = Assets.getImage('images/egg.png')
 
 function Egg.new()
-    local POINTS <const> = 5
-
     local self = gfx.sprite.new(eggImg)
     self:setTag(SPRITE_TAGS.egg)
     self:setVisible(false)
@@ -50,12 +48,10 @@ function Egg.new()
     end
 
     function self:bulletHit(other, x, y)
-        print("egg:bulletHit")
-
         Explode(ExplosionSmall, self.worldX, self.worldY)
 
         if other:getTag() == SPRITE_TAGS.playerBullet then
-            Player:scored(POINTS)
+            Player:scored(SCORE_EGG)
         end
 
         self:hatch()

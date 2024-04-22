@@ -10,8 +10,6 @@ Asteroid.__index = Asteroid
 local asteroidImg = Assets.getImage('images/asteroid.png')
 
 function Asteroid.new()
-    local POINTS <const> = 5
-
     local self = gfx.sprite.new(asteroidImg)
     self:setTag(SPRITE_TAGS.asteroid)
     self:setVisible(false)
@@ -50,12 +48,10 @@ function Asteroid.new()
     end
 
     function self:bulletHit(other, x, y)
-        print("asteroid:bulletHit")
-
         Explode(ExplosionSmall, self.worldX, self.worldY)
 
         if other:getTag() == SPRITE_TAGS.playerBullet then
-            Player:scored(POINTS)
+            Player:scored(SCORE_ASTEROID)
         end
 
         self:despawn()

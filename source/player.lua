@@ -127,7 +127,6 @@ function Player:new()
     end
 
     function self:bulletHit(other, x, y)
-        print("Player:bulletHit")
         self:collide(other)
     end
 

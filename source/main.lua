@@ -13,6 +13,7 @@ import 'stateNewLevel'
 import 'stateDead'
 import 'stateRespawn'
 import 'stateGameOver'
+import 'stateTest'
 
 local pd = playdate
 local gfx = pd.graphics
@@ -33,6 +34,11 @@ Assets.preloadImages({
     'images/baseRuin1.png',
     'images/baseRuin2.png',
     'images/baseSphereMask.png',
+    -- New bases
+    'images/baseHalfVert.png',
+    'images/baseHalfHoriz.png',
+    'images/baseGunShieldVert.png',
+    'images/baseGunShieldHoriz.png',
     -- Dashboard
     'images/dashboard.png',
     'images/playerLife.png',
@@ -72,14 +78,17 @@ StateGame = StateGame.new()
 StateDead = StateDead.new()
 StateRespawn = StateRespawn.new()
 StateGameOver = StateGameOver.new()
+StateTest = StateTest.new()
 
 local currentState = StateMenu
+-- StateTest:start()
+-- local currentState = StateTest
 
 Dashboard = Dashboard.new()
 Starfield = Starfield.new()
 
 local ms = pd.getCurrentTimeMilliseconds
-function playdate.update()
+function pd.update()
     local frameStart = ms()
 
     currentState = currentState:update()
@@ -90,7 +99,7 @@ end
 
 -- Common WorldUpdate that most States will use
 function WorldUpdate()
-    playdate.timer.updateTimers()
+    pd.timer.updateTimers()
     Starfield:update()
     gfx.sprite.update()
     ExplosionsUpdate()

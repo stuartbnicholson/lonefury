@@ -53,7 +53,8 @@ function PlayerBullet:new()
 			for i=1,n do
 				if self:alphaCollision(c[i].other) == true then
 					-- The first real collision is sufficient to stop the bullet
-					c[i].other:bulletHit(self, c[i].touch.x, c[i].touch.y)
+					-- c[i].other:bulletHit(self, c[i].touch.x, c[i].touch.y)
+					c[i].other:bulletHit(self, toX, toY)
 					hit = true
 					break
 				end

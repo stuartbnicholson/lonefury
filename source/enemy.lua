@@ -5,7 +5,6 @@ import 'enemyAI'
 local gfx = playdate.graphics
 local geom = playdate.geometry
 
-local POINTS <const> = 15
 local SPEED <const> = 2.8
 ENEMY_TURN_ANGLE = 5
 
@@ -140,15 +139,13 @@ function Enemy.new()
     end
 
     function self:bulletHit(other, x, y)
-        print("enemy:bulletHit")
-
         if self:isVisible() then
             Explode(ExplosionSmall, self.worldV.dx, self.worldV.dy)
             SoundManager:enemyDies()
         end
 
         if other:getTag() == SPRITE_TAGS.playerBullet then
-            Player:scored(POINTS)
+            Player:scored(SCORE_ENEMY)
         end
 
         self:despawn()
