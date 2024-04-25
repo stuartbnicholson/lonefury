@@ -58,6 +58,8 @@ sphereVertRuinFlip[Sphere4] = gfx.kImageFlippedX
 sphereVertRuinFlip[Sphere5] = gfx.kImageFlippedXY
 sphereVertRuinFlip[Sphere6] = gfx.kImageFlippedXY
 
+local fireSpheres = { Sphere1, Sphere5, Sphere3, Sphere4, Sphere6, Sphere2 }
+
 EnemyBase = {}
 EnemyBase.__index = EnemyBase
 
@@ -135,13 +137,108 @@ function EnemyBase.new(isVertical)
         self.halves[2]:despawn()
     end
 
+	function self:sphereFire(firingSpheres)
+		assert(firingSpheres > 0, 'No spheres to fire')
+
+		-- Alternate which sphere fires next
+		local i = self.lastFiredIdx
+		repeat
+			i = IncWrap(i, 6)
+
+			if firingSpheres & fireSpheres[i] > 0 then
+				self.lastFiredIdx = i
+				return fireSpheres[i]
+			end
+		until i == self.lastFiredIdx
+		assert(true, 'No firing sphere?')
+	end
+
+	function self:fire()
+		-- Check if enough time has elapsed since base last fired
+		local now = pd.getCurrentTimeMilliseconds()
+		if now - self.lastFiredMs >= self.fireMs then
+			local pWx, pWy = Player:getWorldV():unpack()
+			local angleToPlayer = PointsAngle(self.worldX, self.worldY, pWx, pWy)
+			local dx, dy = AngleToDeltaXY(angleToPlayer)
+			dx = -dx
+			dy = -dy
+			local firingSpheres = 0
+
+			if self.isVertical then
+				if angleToPlayer < 60 then
+					firingSpheres = Sphere1|Sphere4|Sphere5
+				elseif angleToPlayer < 120 then
+					firingSpheres = Sphere4|Sphere5|Sphere6
+				elseif angleToPlayer < 180 then
+					firingSpheres = Sphere3|Sphere6|Sphere5
+				elseif angleToPlayer < 240 then
+					firingSpheres = Sphere2|Sphere3|Sphere6
+				elseif angleToPlayer < 300 then
+					firingSpheres = Sphere1|Sphere2|Sphere3
+				else
+					firingSpheres = Sphere4|Sphere1|Sphere2
+				end
+			else
+				if angleToPlayer < 45 then
+					firingSpheres = Sphere1|Sphere2|Sphere3
+				elseif angleToPlayer < 90 then
+					firingSpheres = Sphere2|Sphere3|Sphere6
+				elseif angleToPlayer < 135 then
+					firingSpheres = Sphere5|Sphere6|Sphere3
+				elseif angleToPlayer < 225 then
+					firingSpheres = Sphere4|Sphere5|Sphere6
+				elseif angleToPlayer < 270 then
+					firingSpheres = Sphere1|Sphere4|Sphere5
+				else
+					firingSpheres = Sphere2|Sphere1|Sphere4
+				end
+			end
+
+			-- Mask out the dead spheres, and the remaining spheres (if any) can fire
+			local shots = 0
+			firingSpheres = self.spheresAlive & firingSpheres
+			while firingSpheres > 0 and shots < self.multiShot do
+				local bullet = PoolManager:freeInPool(EnemyBigBullet)
+				if bullet then
+					SoundManager:enemyBaseShoots()
+
+					-- Determine where bullet fires from
+					-- TODO: This could be pre-calculated per base!
+					local sphere = self:sphereFire(firingSpheres)
+					local bulletX, bulletY = self.spherePos[sphere]:unpack()
+					bulletX += self.worldX - 36 + 9
+					bulletY += self.worldY - 36 + 9
+					if self.isVertical then
+						if sphere > Sphere3 then
+							bulletX += 39
+						end
+					else
+						if sphere > Sphere3 then
+							bulletY += 39
+						end
+					end
+					bullet:spawn(bulletX, bulletY, dx, dy)
+
+					-- Spheres and firing time tracking
+					shots += 1
+					firingSpheres = firingSpheres ~ sphere
+					self.lastFiredMs = now
+
+					-- TODO: This will break the ripple fire effect. Ripple fire as many spheres up to a certain number of shots.
+				else
+					-- Nothing to fire
+					break
+				end
+			end
+		end
+	end
+
     function self:update()
         -- TODO: visible only controls drawing, not being part of collisions. etc.
         local visible = NearViewport(self.worldX, self.worldY, 72, 72) or false
         self:setVisible(visible)
         self.halves[1]:setVisible(visible)
         self.halves[2]:setVisible(visible)
-
 
 		-- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
 		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
@@ -159,14 +256,6 @@ function EnemyBase.new(isVertical)
 			-- TODO:
 			-- self:spawnEnemy()
 		end
-    end
-
-	function self:fire()
-		-- Check if enough time has elapsed since base last fired
-		local now = pd.getCurrentTimeMilliseconds()
-		if now - self.lastFiredMs >= self.fireMs then
-            -- TODO:
-        end
     end
 
     function self:bulletHit(bullet, cx, cy)
@@ -191,10 +280,8 @@ function EnemyBase.new(isVertical)
 	function self:sphereExplodes(sphere)
 		Player:scored(SCORE_ENEMYBASE_SPHERE)
 
-		-- Redraw correct sphere ruined
 		local point = self.spherePos[sphere]
-
-		-- TODO: Start sphere explosion
+		-- Explode sphere
         if self.isVertical then
             if sphere < Sphere4 then
     		    Explode(ExplosionMed, self.worldX + point.x - 36 + 10, self.worldY + point.y - 36 + 10)
