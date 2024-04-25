@@ -33,6 +33,7 @@ function Dashboard.new()
 
     self.dash = Assets.getImage('images/dashboard.png')
     self.miniMap = gfx.image.new(MINIMAP_WIDTH * MINIMAP_CELLW, MINIMAP_HEIGHT * MINIMAP_CELLH)
+    self.formationLeaders = {}
 
     -- Initial dashboard draw
     self:drawPlayerScore()
@@ -72,14 +73,24 @@ function Dashboard:removeEnemyBase(worldX, worldY)
 end
 
 function Dashboard:formationLeaderAt(leader, worldV)
-    local mx, my = self:worldToDashXY(worldV.dx, worldV.dy)
-    formationImg:draw(mx + MINIMAP_SX, my + MINIMAP_SY)
+    self.formationLeaders[leader] = worldV
+    print(leader, worldV.dx, worldV.dy)
+end
+
+function Dashboard:formationLeaderDied(leader)
+    self.formationLeaders[leader] = nil
 end
 
 function Dashboard:update()
     self.dash:draw(VIEWPORT_WIDTH, 0)
     self.miniMap:draw(MINIMAP_SX, MINIMAP_SY)
     self:drawAlertTimer()
+
+    -- Draw formation leaders
+    for _, worldV in pairs(self.formationLeaders) do
+        mx, my = self:worldToDashXY(worldV.dx, worldV.dy)
+        formationImg:draw(mx + MINIMAP_SX, my + MINIMAP_SY)
+    end
 
     -- Draw the player ship roughly pointing the right way, but clipped to the mini map
     local mx, my = self:worldToDashXY(Player:getWorldV():unpack())

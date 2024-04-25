@@ -14,7 +14,6 @@ import 'enemyAI'
 local pd = playdate
 
 -- Load JSON level part definitions
--- TODO: Asset manager...!?
 local levelFile, err = pd.file.open('assets/levelParts.json')
 assert(levelFile, error)
 local levelDef = json.decodeFile(levelFile)

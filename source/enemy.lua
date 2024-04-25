@@ -174,6 +174,9 @@ function Enemy.new()
             wingman:formationLeaderDead()
         end
         self.formationWingmen = nil
+
+        -- Remove formation from dashboard
+        Dashboard:formationLeaderDied(self)
     end
 
     -- Individual wingman handler
