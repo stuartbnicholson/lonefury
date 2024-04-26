@@ -39,7 +39,7 @@ Formations = {
 
 -- See OReilly AI for Game Developers, although it doesn't explain TOL
 -- local TOL = 1e-10 - original value which leads to horrible jittering.
-local TOL = 0.4
+local TOL = 0.25
 
 function Vrotate2d(angle, uV, tmpV)
     local r = math.rad(-angle)
@@ -101,7 +101,7 @@ end
 -- Enemy brain to chase the player
 function EnemyBrainChasePlayer(self)
     if Player.isAlive then
-        -- ...however they only ever chase live players
+        -- They only ever chase live players...
         local pWV = Player:getWorldV()
 
         self.angle = DoLOSChase(self.angle, self.turnAngle, self.worldV, pWV, self.tmpVector)
@@ -116,7 +116,7 @@ function EnemyBrainChasePlayer(self)
     self.worldV = self.worldV + self.velocity
 
     if self.formationWingmen then
-        Dashboard:formationLeaderAt(self, self.worldV)
+        LevelManager:formationLeaderAt(self, self.worldV)
     end
 end
 
@@ -164,6 +164,7 @@ function EnemyBrainFlyFormation(self)
 
         local d = PointsDistance(self.worldV.dx, self.worldV.dy, chaseX, chaseY)
         -- TODO: Distance seems to vary from 5 to 10 when moving
+        -- Notice we give formation followers the potential to tavel up to 2x normal speed, in order to stay in formation
         self.speed = lume.clamp(d / self.maxSpeed, 0.1, self.maxSpeed * 2)
 
         self.angle = DoLOSChase(self.angle, self.turnAngle, self.worldV, chaseV, self.tmpVector)
@@ -191,7 +192,7 @@ function EnemyBrainFlyFormationRigid(self, turnAngle)
     SetTableImage(self.angle, self, self.imgTable)
 end
 
-function EnemyBrainOrbit(self, turnAngle)
+function EnemyBrainOrbit(self)
     -- Avoid targetV until targetDistance, and then orbit targetV
     local dist = VectorDistance(self.worldV, self.orbitV)
     if dist > self.orbitDist then

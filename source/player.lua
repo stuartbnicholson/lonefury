@@ -60,6 +60,10 @@ function Player:new()
         self:setImage(self.imgTable:getImage(1))
     end
 
+    function self:getAngle()
+        return self.angle
+    end
+
     function self:spawn()
         assert(self.lives > 0)
         self.angle = 0

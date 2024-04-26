@@ -33,11 +33,14 @@ function Dashboard.new()
 
     self.dash = Assets.getImage('images/dashboard.png')
     self.miniMap = gfx.image.new(MINIMAP_WIDTH * MINIMAP_CELLW, MINIMAP_HEIGHT * MINIMAP_CELLH)
-    self.formationLeaders = {}
 
     -- Initial dashboard draw
     self:drawPlayerScore()
     self:drawLivesMedals()
+
+    -- Alert blinker
+    self.alertBlinker = gfx.animation.blinker.new(800, 400, true)
+    self.alertBlinker:start()
 
     return self
 end
@@ -72,29 +75,20 @@ function Dashboard:removeEnemyBase(worldX, worldY)
     gfx.popContext()
 end
 
-function Dashboard:formationLeaderAt(leader, worldV)
-    self.formationLeaders[leader] = worldV
-    print(leader, worldV.dx, worldV.dy)
-end
-
-function Dashboard:formationLeaderDied(leader)
-    self.formationLeaders[leader] = nil
-end
-
 function Dashboard:update()
     self.dash:draw(VIEWPORT_WIDTH, 0)
     self.miniMap:draw(MINIMAP_SX, MINIMAP_SY)
     self:drawAlertTimer()
 
     -- Draw formation leaders
-    for _, worldV in pairs(self.formationLeaders) do
+    for _, worldV in pairs(LevelManager:getFormationLeaders()) do
         mx, my = self:worldToDashXY(worldV.dx, worldV.dy)
         formationImg:draw(mx + MINIMAP_SX, my + MINIMAP_SY)
     end
 
     -- Draw the player ship roughly pointing the right way, but clipped to the mini map
     local mx, my = self:worldToDashXY(Player:getWorldV():unpack())
-    local frame = 1 + (Player.angle // 45) % 8
+    local frame = 1 + (Player:getAngle() // 45) % 8
     mapPlayerTable:drawImage(frame, mx + MINIMAP_SX - 3, my + MINIMAP_SY  - 2)
 
     pd.drawFPS(VIEWPORT_WIDTH + 64, 3)
@@ -102,16 +96,19 @@ end
 
 function Dashboard:drawAlertTimer()
     -- LevelManager tells us percentage time left to next alert
+    gfx.pushContext()
     local percent = LevelManager:percentAlertTimeLeft()
     if percent > 0 then
-        gfx.pushContext()
         gfx.setColor(gfx.kColorWhite)
         gfx.fillRect(ALERT_SX, ALERT_SY, percent * 77, 14)
-        gfx.popContext()
     else
-        -- TODO: Blinking Alert!
-        alertImg:draw(ALERT_SX, ALERT_SY)
+        if self.alertBlinker.on then
+            alertImg:draw(ALERT_SX, ALERT_SY)
+        else
+            print('alert off')
+        end
     end
+    gfx.popContext()
 end
 
 function Dashboard:drawPlayerScore()

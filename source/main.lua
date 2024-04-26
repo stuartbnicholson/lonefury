@@ -100,9 +100,11 @@ end
 -- Common WorldUpdate that most States will use
 function WorldUpdate()
     pd.timer.updateTimers()
+    gfx.animation.blinker.updateAll()
     Starfield:update()
     gfx.sprite.update()
     ExplosionsUpdate()
+    LevelManager:update()
     Dashboard:update()
 end
 

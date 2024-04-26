@@ -11,6 +11,7 @@ import 'enemyAI'
 -- Spawns amusing things like enemy formations.
 -- Levels are largely laid out using JSON definitions of repeatable map areas.
 -- Each area is assumed to be viewport size = 320 x 240
+-- Also tracks things like level alerts, increasing difficulty etc.
 local pd = playdate
 
 -- Load JSON level part definitions
@@ -28,6 +29,7 @@ levelObj['e'] = Enemy
 
 -- On this level, ALL obstacles automatically appear, instead of randomly being left out.
 local ALL_OBSTACLES_LEVEL = 6
+
 -- Every two levels, enemy bases have an extra shot
 local ENEMYBASE_SHOTS_LEVEL_RATIO <const> = 2
 local ENEMYBASE_SHOTS_MIN <const> = 1
@@ -35,9 +37,13 @@ local ENEMYBASE_SHOTS_MAX <const> = 6
 local ENEMYBASE_FIREMS_MAX <const> = 1500
 local ENEMYBASE_FIREMS_MIN <const> = 200
 local ENEMYBASE_FIREMS_LEVEL_REDUCTION <const> = 100
-local ENEMYBASEKILL_SECS_MIN = 8
-local ENEMYBASEKILL_SECS_MAX = 60
+local ENEMYBASEKILL_SECS_MIN = 5
+local ENEMYBASEKILL_SECS_MAX = 30
 local ENEMYBASEKILL_SECOND_LEVEL_DEC <const> = 5
+
+-- Maximum number of active formations
+local FORMATION_SPAWN_MAX = 3
+local FORMATION_SPAWN_DIST = 600
 
 -- Time that has to elapse after the last base is killed, before the level ends.
 local LEVEL_CLEARED_AFTER_MS = 2000
@@ -52,6 +58,7 @@ function LevelManager.new()
 
     self.level = 1
     self.basesToKill = 0
+    self.formationLeaders = {}
 
     self.spawn = {}
     self.spawn[Asteroid] = self.asteroidSpawn
@@ -110,8 +117,6 @@ function LevelManager:nextLevel()
     self.basesToKill = 0
 
     self:generateLevelAndMinimap()
-
-    -- TODO: Set enemy counts and speeds
 end
 
 function LevelManager:applyLevelPart(part, worldX, worldY, obstacleChance)
@@ -139,6 +144,9 @@ function LevelManager:setAggressionValues()
     -- Enemy bases get more and more aggressive per level
     self.enemyBaseMultiShot = lume.clamp(self.level // ENEMYBASE_SHOTS_LEVEL_RATIO, ENEMYBASE_SHOTS_MIN, ENEMYBASE_SHOTS_MAX)
     self.enemyBaseFireMs = lume.clamp(ENEMYBASE_FIREMS_MAX - ((self.level - 1) * ENEMYBASE_FIREMS_LEVEL_REDUCTION), ENEMYBASE_FIREMS_MIN, ENEMYBASE_FIREMS_MAX)
+
+    -- TODO: Maximum formations
+    self.formationsMax = 1
 end
 
 function LevelManager:generateLevelAndMinimap()
@@ -177,12 +185,35 @@ function LevelManager:generateLevelAndMinimap()
     else
         assert("no level " .. self.level .. "?")
     end
-
-    -- TODO: Throw in a sample formation
-    self:spawnFormation(WORLD_PLAYER_STARTX, WORLD_PLAYER_STARTY - 100, EnemyBrainFlyFormation)
 end
 
-function LevelManager:spawnFormation(worldX, worldY, formationBrain)
+----------------------------------------
+-- Formation management
+----------------------------------------
+function LevelManager:getFormationLeaders()
+    return self.formationLeaders
+end
+
+function LevelManager:formationLeaderAt(leader, worldV)
+    self.formationLeaders[leader] = worldV
+end
+
+function LevelManager:formationLeaderDied(leader)
+    self.formationLeaders[leader] = nil
+end
+
+function LevelManager:spawnFormation()
+    -- Spawn far enough away from the player, point pointing towards them.
+    local playerV = Player:getWorldV()
+    local x, y = AngleToDeltaXY(math.random(360))
+    x = playerV.dx + (x * FORMATION_SPAWN_DIST)
+    y = playerV.dy + (y * FORMATION_SPAWN_DIST)
+
+    -- TODO: We also don't want to spawn, overlapping anything
+    self:spawnFormationAt(x, y, (Player:getAngle() + 180) % 360, EnemyBrainFlyFormation)
+end
+
+function LevelManager:spawnFormationAt(worldX, worldY, angle, formationBrain)
     -- Pick a formation
     local formation = lume.randomchoice(Formations)
 
@@ -193,6 +224,7 @@ function LevelManager:spawnFormation(worldX, worldY, formationBrain)
     local leader = table.remove(enemies)
     leader:makeFormationLeader(enemies)
     leader:spawn(worldX, worldY)
+    leader:setAngle(angle)
 
     for i = 1, #enemies do
         enemies[i]:makeFormationWingman(leader, formation, i)
@@ -236,5 +268,14 @@ function LevelManager:percentAlertTimeLeft()
         return 1.0 - (lastKillSecs / self.baseKillSecs)
     else
         return 1.0
+    end
+end
+
+function LevelManager:update()
+    -- Check if we need to challenge the player with time pressure by spawning individual enemies and formations.
+    if self:percentAlertTimeLeft() < 0.005 then
+        if lume.count(self.formationLeaders) < self.formationsMax then
+            self:spawnFormation()
+        end
     end
 end

@@ -5,7 +5,7 @@ import 'enemyAI'
 local gfx = playdate.graphics
 local geom = playdate.geometry
 
-local SPEED <const> = 2.8
+ENEMY_SPEED = 2.8
 ENEMY_TURN_ANGLE = 5
 
 ENEMY_ART = {
@@ -37,14 +37,19 @@ function Enemy.new()
     self.tmpVector2 = geom.vector2D.new(0, 0)
     self.brain = EnemyBrainChasePlayer
     self.angle = 0
-    self.speed = SPEED
-    self.maxSpeed = SPEED
+    self.speed = ENEMY_SPEED
+    self.maxSpeed = ENEMY_SPEED
     self.turnAngle = ENEMY_TURN_ANGLE
     self.orbitDist = 0
     self.orbitV = nil
 
     function self:setArt(imgTable)
         self.imgTable = imgTable
+        SetTableImage(self.angle, self, self.imgTable)
+    end
+
+    function self:setAngle(angle)
+        self.angle = angle
         SetTableImage(self.angle, self, self.imgTable)
     end
 
@@ -130,12 +135,13 @@ function Enemy.new()
     end
 
     function self:collision(other, x, y)
+        -- We cheat here. Enemies IGNORE off-screen collisions, otherwise they'd never make it to the Player area.
         if self:isVisible() then
             Explode(ExplosionSmall, self.worldV.dx, self.worldV.dy)
             SoundManager:enemyDies()
-        end
 
-        self:despawn()
+            self:despawn()
+        end
     end
 
     function self:bulletHit(other, x, y)
@@ -175,8 +181,8 @@ function Enemy.new()
         end
         self.formationWingmen = nil
 
-        -- Remove formation from dashboard
-        Dashboard:formationLeaderDied(self)
+        -- Inform LevelManager formation has ended
+        LevelManager:formationLeaderDied(self)
     end
 
     -- Individual wingman handler
