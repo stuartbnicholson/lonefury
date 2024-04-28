@@ -45,6 +45,7 @@ function Player:new()
         self.lives = 3
         self.score = 0
         self.shotsFired = 0
+        self.shotsHit = 0
     end
 
     function self:getWorldV()
@@ -111,6 +112,9 @@ function Player:new()
 
     function self:scored(points)
         self.score += points
+
+        -- Player has scored, ergo they've hit something
+        self.shotsHit += 1
 
         -- TODO: Extra lives? Other bonuses? Difficulty increase?
 

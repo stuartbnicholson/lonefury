@@ -87,6 +87,8 @@ function Enemy.new()
 
         -- return to default player chase
         self.brain = EnemyBrainChasePlayer
+        self.speed = ENEMY_SPEED
+        self.maxSpeed = ENEMY_SPEED
         self.turnAngle = ENEMY_TURN_ANGLE
 
         self:setVisible(false)
@@ -107,6 +109,10 @@ function Enemy.new()
 
     function self:update()
         -- As enemy bombers are always in flight, regardless if they're in the viewport or not, we always update them...
+        ACTIVE_ENEMY += 1
+        if self.formationWingmen then
+            ACTIVE_ENEMY_FORMATIONS += 1
+        end
 
         -- Apply the enemy brain which will update position
         assert(self.brain, 'Enemy has no brain')
@@ -114,6 +120,7 @@ function Enemy.new()
 
         -- TODO: visible only controls drawing, not being part of collisions. etc.
         if NearViewport(self.worldV.dx, self.worldV.dy, self.width, self.height) then
+            ACTIVE_VISIBLE_ENEMY += 1
             self:setVisible(true)
         else
             self:setVisible(false)
@@ -191,6 +198,11 @@ function Enemy.new()
         self.formationLeader = nil
         self.formationPos = nil
         self.formation = nil
+
+        -- Return to normal speeds now we're out of formation
+        self.speed = ENEMY_SPEED
+        self.maxSpeed = ENEMY_SPEED
+        self.turnAngle = ENEMY_TURN_ANGLE
     end
 
     function self:makeFormationWingman(leader, formation, formationPos)

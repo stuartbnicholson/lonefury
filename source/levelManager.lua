@@ -44,6 +44,7 @@ local ENEMYBASEKILL_SECOND_LEVEL_DEC <const> = 5
 -- Maximum number of active formations
 local FORMATION_SPAWN_MAX = 3
 local FORMATION_SPAWN_DIST = 600
+local FORMATION_SPAWN_MIN_MS = 5500
 
 -- Time that has to elapse after the last base is killed, before the level ends.
 local LEVEL_CLEARED_AFTER_MS = 2000
@@ -209,8 +210,10 @@ function LevelManager:spawnFormation()
     x = playerV.dx + (x * FORMATION_SPAWN_DIST)
     y = playerV.dy + (y * FORMATION_SPAWN_DIST)
 
-    -- TODO: We also don't want to spawn, overlapping anything
+    -- Formations don't collide outside viewport, so we don't care if we spawn overlapping stuff
     self:spawnFormationAt(x, y, (Player:getAngle() + 180) % 360, EnemyBrainFlyFormation)
+
+    self.lastFormationSpawnMS = pd.getCurrentTimeMilliseconds()
 end
 
 function LevelManager:spawnFormationAt(worldX, worldY, angle, formationBrain)
@@ -236,6 +239,7 @@ end
 function LevelManager:levelStart()
     self.levelStartMS = pd.getCurrentTimeMilliseconds()
     self.lastBaseKillMS = self.levelStartMS
+    self.lastFormationSpawnMS = self.levelStartMS
 end
 
 function LevelManager:baseDestroyed()
@@ -274,7 +278,9 @@ end
 function LevelManager:update()
     -- Check if we need to challenge the player with time pressure by spawning individual enemies and formations.
     if self:percentAlertTimeLeft() < 0.005 then
-        if lume.count(self.formationLeaders) < self.formationsMax then
+        local formationSpawnMS = pd.getCurrentTimeMilliseconds() - self.lastFormationSpawnMS
+        print('formationSpawnMS: ', formationSpawnMS)
+        if ACTIVE_ENEMY_FORMATIONS < self.formationsMax and formationSpawnMS > FORMATION_SPAWN_MIN_MS then
             self:spawnFormation()
         end
     end

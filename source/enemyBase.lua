@@ -234,11 +234,15 @@ function EnemyBase.new(isVertical)
 	end
 
     function self:update()
-        -- TODO: visible only controls drawing, not being part of collisions. etc.
         local visible = NearViewport(self.worldX, self.worldY, 72, 72) or false
         self:setVisible(visible)
         self.halves[1]:setVisible(visible)
         self.halves[2]:setVisible(visible)
+
+		ACTIVE_ENEMY_BASES += 1
+		if visible then
+			ACTIVE_VISIBLE_ENEMY_BASES += 1
+		end
 
 		-- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
 		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called

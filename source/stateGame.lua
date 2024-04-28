@@ -14,7 +14,7 @@ local pd = playdate
 local gfx = pd.graphics
 
 -- Thrust the player ship constantly, or require button input
-local PlayerConstantThrust <const> = not pd.isSimulator
+local PlayerConstantThrust <const> = true -- not pd.isSimulator
 local CrankTicksPerRev <const> = 24 -- 360/15
 
 Player = Player.new()

@@ -104,8 +104,6 @@ function Dashboard:drawAlertTimer()
     else
         if self.alertBlinker.on then
             alertImg:draw(ALERT_SX, ALERT_SY)
-        else
-            print('alert off')
         end
     end
     gfx.popContext()
