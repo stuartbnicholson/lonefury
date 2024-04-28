@@ -41,6 +41,9 @@ local ENEMYBASEKILL_SECS_MIN = 5
 local ENEMYBASEKILL_SECS_MAX = 30
 local ENEMYBASEKILL_SECOND_LEVEL_DEC <const> = 5
 
+-- Max enemy that we want visible on screen
+local ENEMY_VISIBLE_MAX = 8
+
 -- Maximum number of active formations
 local FORMATION_SPAWN_MAX = 3
 local FORMATION_SPAWN_DIST = 600
