@@ -239,9 +239,9 @@ function EnemyBase.new(isVertical)
         self.halves[1]:setVisible(visible)
         self.halves[2]:setVisible(visible)
 
-		ACTIVE_ENEMY_BASES += 1
+		ActiveEnemyBases += 1
 		if visible then
-			ACTIVE_VISIBLE_ENEMY_BASES += 1
+			ActiveVisibleEnemyBases += 1
 		end
 
 		-- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly

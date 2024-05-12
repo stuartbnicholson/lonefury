@@ -110,6 +110,7 @@ function LevelManager:reset()
 
     self.level = 1  -- ad astra!
     self.basesToKill = 0
+    self.lastFormationActiveMS = pd.getCurrentTimeMilliseconds()
 
     self:generateLevelAndMinimap()
 end
@@ -200,6 +201,7 @@ end
 
 function LevelManager:formationLeaderAt(leader, worldV)
     self.formationLeaders[leader] = worldV
+    self.lastFormationActiveMS = pd.getCurrentTimeMilliseconds()
 end
 
 function LevelManager:formationLeaderDied(leader)
@@ -217,6 +219,7 @@ function LevelManager:spawnFormation()
     self:spawnFormationAt(x, y, (Player:getAngle() + 180) % 360, EnemyBrainFlyFormation)
 
     self.lastFormationSpawnMS = pd.getCurrentTimeMilliseconds()
+    self.lastFormationActiveMS = pd.getCurrentTimeMilliseconds()
 end
 
 function LevelManager:spawnFormationAt(worldX, worldY, angle, formationBrain)
@@ -281,9 +284,8 @@ end
 function LevelManager:update()
     -- Check if we need to challenge the player with time pressure by spawning individual enemies and formations.
     if self:percentAlertTimeLeft() < 0.005 then
-        local formationSpawnMS = pd.getCurrentTimeMilliseconds() - self.lastFormationSpawnMS
-        print('formationSpawnMS: ', formationSpawnMS)
-        if ACTIVE_ENEMY_FORMATIONS < self.formationsMax and formationSpawnMS > FORMATION_SPAWN_MIN_MS then
+        local formationActiveMS = pd.getCurrentTimeMilliseconds() - self.lastFormationActiveMS
+        if ActiveEnemyFormations < self.formationsMax and formationActiveMS > FORMATION_SPAWN_MIN_MS then
             self:spawnFormation()
         end
     end

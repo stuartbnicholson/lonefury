@@ -16,6 +16,8 @@ local REAR_BULLET_SPEED <const> = FWD_BULLET_SPEED - SPEED
 local FIRE_MS = 330
 
 local imgTable = Assets.getImagetable('images/player-table-15-15.png')
+
+local SHOW_EXHAUST <const> = false
 local exhaustTable = Assets.getImagetable('images/exhaust-table-16-16.png')
 
 local frameCount = 0
@@ -114,7 +116,9 @@ function Player:new()
             end
 
             -- TODO: Draw some exhaust
-            exhaustTable:drawImage(1 + frameCount % 12, self.x - 8, self.y + 7)
+            if SHOW_EXHAUST then
+                exhaustTable:drawImage(1 + frameCount % 12, self.x - 8, self.y + 7)
+            end
         end
     end
 

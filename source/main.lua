@@ -102,11 +102,11 @@ end
 -- Common WorldUpdate that most States will use
 function WorldUpdate()
     -- Reset activity counts
-    ACTIVE_ENEMY = 0
-    ACTIVE_VISIBLE_ENEMY = 0
-    ACTIVE_ENEMY_FORMATIONS = 0
-    ACTIVE_ENEMY_BASES = 0
-    ACTIVE_VISIBLE_ENEMY_BASES = 0
+    ActiveEnemy = 0
+    ActiveVisibleEnemy = 0
+    ActiveEnemyFormations = 0
+    ActiveEnemyBases = 0
+    ActiveVisibleEnemyBases = 0
 
     -- Update all the things
     pd.timer.updateTimers()
@@ -118,7 +118,7 @@ function WorldUpdate()
     Dashboard:update()
 
     if pd.getCurrentTimeMilliseconds() % 1000 < 10 then
-        print('Active ', ACTIVE_ENEMY, ACTIVE_ENEMY_FORMATIONS, ACTIVE_ENEMY_BASES, ACTIVE_VISIBLE_ENEMY_BASES)
+        print('Active ', ActiveEnemy, ActiveEnemyFormations, ActiveEnemyBases, ActiveVisibleEnemyBases)
     end
 end
 

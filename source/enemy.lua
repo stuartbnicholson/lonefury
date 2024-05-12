@@ -109,9 +109,9 @@ function Enemy.new()
 
     function self:update()
         -- As enemy bombers are always in flight, regardless if they're in the viewport or not, we always update them...
-        ACTIVE_ENEMY += 1
+        ActiveEnemy += 1
         if self.formationWingmen then
-            ACTIVE_ENEMY_FORMATIONS += 1
+            ActiveEnemyFormations += 1
         end
 
         -- Apply the enemy brain which will update position
@@ -120,7 +120,7 @@ function Enemy.new()
 
         -- TODO: visible only controls drawing, not being part of collisions. etc.
         if NearViewport(self.worldV.dx, self.worldV.dy, self.width, self.height) then
-            ACTIVE_VISIBLE_ENEMY += 1
+            ActiveVisibleEnemy += 1
             self:setVisible(true)
         else
             self:setVisible(false)
