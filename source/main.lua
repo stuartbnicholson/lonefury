@@ -49,6 +49,7 @@ Assets.preloadImages({
 Assets.preloadImagetables({
     'images/enemy-table-15-15.png',
     'images/enemy2-table-15-15.png',
+    'images/exhaust-table-16-16.png',
     -- Bases
     'images/bigBullet-table-4-4.png',
     -- Dashboard
