@@ -256,9 +256,6 @@ function EnemyBase.new(isVertical)
 				-- Fire some new bullets
 				self:fire()
 			end
-
-			-- TODO:
-			-- self:spawnEnemy()
 		end
     end
 

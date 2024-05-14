@@ -42,9 +42,16 @@ local ENEMYBASEKILL_SECS_MAX = 25
 local ENEMYBASEKILL_SECOND_LEVEL_DEC <const> = 5
 
 -- Max enemy that we want visible on screen
+local ENEMY_VISIBLE_MIN = 1
+local ENEMY_VISIBLE_PER_LEVEL = 1
 local ENEMY_VISIBLE_MAX = 8
 
+local ENEMY_SPAWN_MIN_MS = 5500
+local ENEMY_PLAYER_SPAWN_DISTANCE = 200
+
 -- Maximum number of active formations
+local FORMATION_SPAWN_MIN = 1
+local FORMATION_SPAWN_PER_LEVEL = 0.25
 local FORMATION_SPAWN_MAX = 3
 local FORMATION_SPAWN_DIST = 600
 local FORMATION_SPAWN_MIN_MS = 5500
@@ -110,7 +117,11 @@ function LevelManager:reset()
 
     self.level = 1  -- ad astra!
     self.basesToKill = 0
-    self.lastFormationActiveMS = pd.getCurrentTimeMilliseconds()
+
+    -- Reset the clock!
+    local now = pd.getCurrentTimeMilliseconds()
+    self.lastFormationActiveMS = now
+    self.lastEnemySpawnMS = now
 
     self:generateLevelAndMinimap()
 end
@@ -150,8 +161,11 @@ function LevelManager:setAggressionValues()
     self.enemyBaseMultiShot = lume.clamp(self.level // ENEMYBASE_SHOTS_LEVEL_RATIO, ENEMYBASE_SHOTS_MIN, ENEMYBASE_SHOTS_MAX)
     self.enemyBaseFireMs = lume.clamp(ENEMYBASE_FIREMS_MAX - ((self.level - 1) * ENEMYBASE_FIREMS_LEVEL_REDUCTION), ENEMYBASE_FIREMS_MIN, ENEMYBASE_FIREMS_MAX)
 
-    -- TODO: Maximum formations
-    self.formationsMax = 1
+    -- Maximum formations
+    self.formationsMax =lume.clamp(math.floor(FORMATION_SPAWN_MIN + (self.level * FORMATION_SPAWN_PER_LEVEL)), FORMATION_SPAWN_MIN, FORMATION_SPAWN_MAX)
+
+    -- Maximum on-screen enemies
+    self.enemiesVisibleMax = lume.clamp(math.floor(ENEMY_VISIBLE_MIN + (self.level * ENEMY_VISIBLE_PER_LEVEL)), ENEMY_VISIBLE_MIN, ENEMY_VISIBLE_MAX)
 end
 
 function LevelManager:generateLevelAndMinimap()
@@ -189,6 +203,26 @@ function LevelManager:generateLevelAndMinimap()
         end
     else
         assert("no level " .. self.level .. "?")
+    end
+end
+
+----------------------------------------
+-- Single enemy spawn management
+----------------------------------------
+function LevelManager:spawnSingleEnemy()
+    -- Find an enemy to spawn
+    local enemy = PoolManager:freeInPool(Enemy, 1)
+    if enemy then
+        -- Spawn behind player, and offscreen
+        local angle = Player:getAngle()
+        local rearAngle = (angle + 180) % 360
+        local dx, dy = AngleToDeltaXY(rearAngle)
+        local px, py = Player:getWorldV():unpack()
+
+        enemy:spawn(px - (dx * ENEMY_PLAYER_SPAWN_DISTANCE), py - (dy * ENEMY_PLAYER_SPAWN_DISTANCE))
+        enemy:setAngle(angle)
+
+        self.lastEnemySpawnMS = pd.getCurrentTimeMilliseconds()
     end
 end
 
@@ -282,9 +316,18 @@ function LevelManager:percentAlertTimeLeft()
 end
 
 function LevelManager:update()
-    -- Check if we need to challenge the player with time pressure by spawning individual enemies and formations.
+    local now = pd.getCurrentTimeMilliseconds()
+
+    -- Check if we need to challenge the player with pressure by spawning individual enemies.
+    if now - self.lastEnemySpawnMS > ENEMY_SPAWN_MIN_MS then
+        if ActiveVisibleEnemy < self.enemiesVisibleMax and ActiveEnemyFormations < self.formationsMax then
+            self:spawnSingleEnemy()
+        end
+    end
+
+    -- Check if we need to challenge the player with time pressure by spawning formations.
     if self:percentAlertTimeLeft() < 0.005 then
-        local formationActiveMS = pd.getCurrentTimeMilliseconds() - self.lastFormationActiveMS
+        local formationActiveMS = now - self.lastFormationActiveMS
         if ActiveEnemyFormations < self.formationsMax and formationActiveMS > FORMATION_SPAWN_MIN_MS then
             self:spawnFormation()
         end
