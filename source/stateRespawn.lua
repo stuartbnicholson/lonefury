@@ -20,7 +20,10 @@ function StateRespawn:start()
     print('StateRespawn start')
     MemoryCheck()
 
-    -- Recenter world, make sure player isn't near anything dangerous
+    -- Despawn every enemy
+    PoolManager:refillPool(Enemy)
+
+    -- Recenter world, to make sure player isn't near anything dangerous
     Player.worldV.dx = WORLD_PLAYER_STARTX
     Player.worldV.dy = WORLD_PLAYER_STARTY
     Player:resetAngle()
