@@ -112,17 +112,21 @@ function LevelManager:enemyBaseSpawn(worldX, worldY, obj)
     self.basesToKill += 1
 end
 
+function LevelManager:clockReset()
+  -- Reset the clock!
+  local now = pd.getCurrentTimeMilliseconds()
+  self.lastBaseKillMS = now
+  self.lastFormationActiveMS = now
+  self.lastEnemySpawnMS = now
+end
+
 function LevelManager:reset()
     PoolManager:reset()
 
     self.level = 1  -- ad astra!
     self.basesToKill = 0
 
-    -- Reset the clock!
-    local now = pd.getCurrentTimeMilliseconds()
-    self.lastFormationActiveMS = now
-    self.lastEnemySpawnMS = now
-
+    self:clockReset()
     self:generateLevelAndMinimap()
 end
 
@@ -132,6 +136,7 @@ function LevelManager:nextLevel()
     self.level += 1
     self.basesToKill = 0
 
+    self:clockReset()
     self:generateLevelAndMinimap()
 end
 
@@ -277,9 +282,8 @@ function LevelManager:spawnFormationAt(worldX, worldY, angle, formationBrain)
 end
 
 function LevelManager:levelStart()
+    self:clockReset()
     self.levelStartMS = pd.getCurrentTimeMilliseconds()
-    self.lastBaseKillMS = self.levelStartMS
-    self.lastFormationSpawnMS = self.levelStartMS
 end
 
 function LevelManager:baseDestroyed()

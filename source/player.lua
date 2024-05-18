@@ -139,7 +139,8 @@ function Player:new()
         self.deltaX = 0
         self.deltaY = 0
 
-        Explode(ExplosionSmall, self.worldV.dx, self.worldV.dy)
+        SoundManager:playerDies()
+        Explode(ExplosionSmall, self.worldV.dx, self.worldV.dy, true)
     end
 
     function self:thrust()
@@ -165,7 +166,7 @@ function Player:new()
                 -- Rear
                 bullets[2]:spawn(self.worldV.dx, self.worldV.dy, self.angle, deltaX * REAR_BULLET_SPEED, deltaY * REAR_BULLET_SPEED)
                 self.lastFiredMs = now
-                self.shotsFired += 2
+                self.shotsFired += 1
             end
         end
     end

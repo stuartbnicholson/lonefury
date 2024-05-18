@@ -1,9 +1,19 @@
--- Plays retro 80's chip sounds
+import 'assets'
+
+-- Plays retro 80's chip sounds and samples
 -- See https://www.youtube.com/watch?v=BMENZloYz6Q&list=LL&index=1
+-- WAV assets from https://www.oryxdesignlab.com/
 local snd = playdate.sound
 
 SoundManager = {}
 SoundManager.__index = SoundManager
+
+local bazooka = Assets.getSample('assets/oryx/bazooka.wav')
+local computer_b = Assets.getSample('assets/oryx/computer_b.wav')
+local explode_a = Assets.getSample('assets/oryx/explode_a.wav')
+local explode_b = Assets.getSample('assets/oryx/explode_b.wav')
+local explode_c = Assets.getSample('assets/oryx/explode_c.wav')
+local collect_b = Assets.getSample('assets/oryx/collect_b.wav')
 
 function SoundManager.new()
     local self = setmetatable({}, SoundManager)
@@ -24,8 +34,13 @@ function SoundManager:playerShoots()
     self.playerSynth:playNote(220, 0.25, 0.05)
 end
 
+function SoundManager:playerDies()
+    bazooka:play(1)
+end
+
 function SoundManager:enemyDies()
-    self.enemySynth:playNote(1200, 0.10, 0.10)
+    computer_b:play(1)
+    -- self.enemySynth:playNote(1200, 0.10, 0.10)
 end
 
 function SoundManager:enemyBaseShoots()
@@ -33,16 +48,18 @@ function SoundManager:enemyBaseShoots()
 end
 
 function SoundManager:smallExplosion()
-    -- TODO:
-    print('small explosion')
+    explode_a:play(1)
+    -- bazooka:play(1)
 end
 
 function SoundManager:mediumExplosion()
-    -- TODO:
-    print('medium explosion')
+    explode_c:play(1)
 end
 
 function SoundManager:largeExplosion()
-    -- TODO:
-    print('large explosion')
+    explode_b:play(1)
+end
+
+function SoundManager:alert()
+    collect_b:play(1)
 end

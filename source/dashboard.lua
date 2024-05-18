@@ -41,6 +41,7 @@ function Dashboard.new()
     -- Alert blinker
     self.alertBlinker = gfx.animation.blinker.new(800, 400, true)
     self.alertBlinker:start()
+    self.blinkerTurnedOn = false
 
     return self
 end
@@ -99,11 +100,19 @@ function Dashboard:drawAlertTimer()
     gfx.pushContext()
     local percent = LevelManager:percentAlertTimeLeft()
     if percent > 0 then
+        self.blinkerTurnedOn = false
         gfx.setColor(gfx.kColorWhite)
         gfx.fillRect(ALERT_SX, ALERT_SY, percent * 77, 14)
     else
         if self.alertBlinker.on then
             alertImg:draw(ALERT_SX, ALERT_SY)
+
+            if  not self.blinkerTurnedOn then
+                self.blinkerTurnedOn = true
+                SoundManager:alert()
+            end
+        else
+            self.blinkerTurnedOn = false
         end
     end
     gfx.popContext()

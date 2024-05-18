@@ -91,9 +91,11 @@ function ExplosionsUpdate()
     end
 end
 
-function Explode(size, worldX, worldY)
+function Explode(size, worldX, worldY, withoutSound)
     if size == ExplosionSmall then
-        SoundManager.smallExplosion()
+        if not withoutSound then
+            SoundManager.smallExplosion()
+        end
         explosions[exploSmallIdx]:explode(worldX, worldY)
         if exploSmallIdx == exploSmallMaxIdx then
             exploSmallIdx = 1
@@ -101,7 +103,9 @@ function Explode(size, worldX, worldY)
             exploSmallIdx += 1
         end
     elseif size == ExplosionMed then
-        SoundManager.mediumExplosion()
+        if not withoutSound then
+            SoundManager.mediumExplosion()
+        end
         explosions[exploMedIdx]:explode(worldX, worldY)
         if exploMedIdx == exploMedMaxIdx then
             exploMedIdx = exploSmallMaxIdx + 1
@@ -109,7 +113,9 @@ function Explode(size, worldX, worldY)
             exploMedIdx += 1
         end
     else
-        SoundManager.largeExplosion()
+        if not withoutSound then
+            SoundManager.largeExplosion()
+        end
         explosions[exploLargeIdx]:explode(worldX, worldY)
         if exploLargeIdx == exploLargeMaxIdx then
             exploLargeIdx = exploMedMaxIdx + 1
