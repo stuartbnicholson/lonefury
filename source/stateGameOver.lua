@@ -56,6 +56,12 @@ function StateGameOver:update()
     gfx.drawText('HITS:' .. hits, (VIEWPORT_WIDTH >> 1) + 13, (VIEWPORT_HEIGHT >> 1) + 18)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
     gfx.drawText('HITS:' .. hits, (VIEWPORT_WIDTH >> 1) + 14, (VIEWPORT_HEIGHT >> 1) + 20)
+
+    local percent = string.format("%.2f", (hits / shots) * 100.0)
+    gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+    gfx.drawText('PERCENT:' .. percent, (VIEWPORT_WIDTH >> 1) -70, (VIEWPORT_HEIGHT >> 1) + 36)
+    gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+    gfx.drawText('PERCENT:' .. percent, (VIEWPORT_WIDTH >> 1) -71, (VIEWPORT_HEIGHT >> 1) + 40)
     gfx.popContext()
 
     if self.timerComplete then
