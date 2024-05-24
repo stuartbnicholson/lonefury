@@ -118,8 +118,10 @@ function Enemy.new()
         assert(self.brain, 'Enemy has no brain')
         self.brain(self)
 
+        local viewX, viewY = WorldToViewPort(self.worldV.dx, self.worldV.dy)
+
         -- TODO: visible only controls drawing, not being part of collisions. etc.
-        if NearViewport(self.worldV.dx, self.worldV.dy, self.width, self.height) then
+        if NearViewport(viewX, viewY, self.width, self.height) then
             ActiveVisibleEnemy += 1
             self:setVisible(true)
         else
@@ -128,17 +130,16 @@ function Enemy.new()
 
         -- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
 		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
-        local toX, toY = WorldToViewPort(self.worldV.dx, self.worldV.dy)
         local c, n
-        -- self:moveTo(toX, toY)
-        toX, toY, c, n = self:moveWithCollisions(toX, toY)
+        viewX, viewY, c, n = self:moveWithCollisions(viewX, viewY)
         for i=1,n do
             if c[i].other:getGroupMask() ~= GROUP_ENEMY and self:alphaCollision(c[i].other) == true then
                 self:collision(c[i].other, c[i].touch.x, c[i].touch.y)
                 break
             end
         end
-        self.worldV.dx, self.worldV.dy = ViewPortToWorld(toX, toY)
+
+        self.worldV.dx, self.worldV.dy = ViewPortToWorld(viewX, viewY)
     end
 
     function self:collision(other, x, y)

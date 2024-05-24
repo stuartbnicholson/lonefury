@@ -73,8 +73,7 @@ end
 
 -- Returns true if the rectangle in world coordinates is near enough to the Viewport to be an active sprite
 -- Assumed worldX, worldY is centred on the entities bounding box
-function NearViewport(worldX, worldY, width, height)
-	local viewX, viewY = WorldToViewPort(worldX, worldY)
+function NearViewport(viewX, viewY, width, height)
 	local halfWidth = width >> 1
 	local halfHeight = height >> 1
 

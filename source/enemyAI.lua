@@ -24,6 +24,13 @@ FormationV = {
     geom.point.new(30, 30)
 }
 
+FormationS = {
+    geom.point.new(-18, 14),
+    geom.point.new(3, 27),
+    geom.point.new(21, 37),
+    geom.point.new(-1, 53),
+}
+
 FormationT = {
     geom.point.new(-15, 15),
     geom.point.new(15, 15),
@@ -33,6 +40,7 @@ FormationT = {
 
 Formations = {
     FormationB,
+    FormationS,
     FormationT,
     FormationV,
 }

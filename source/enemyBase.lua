@@ -234,7 +234,9 @@ function EnemyBase.new(isVertical)
 	end
 
     function self:update()
-        local visible = NearViewport(self.worldX, self.worldY, 72, 72) or false
+		local viewX, viewY = WorldToViewPort(self.worldX, self.worldY)
+
+        local visible = NearViewport(viewX, viewY, 72, 72) or false
         self:setVisible(visible)
         self.halves[1]:setVisible(visible)
         self.halves[2]:setVisible(visible)
@@ -246,10 +248,9 @@ function EnemyBase.new(isVertical)
 
 		-- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
 		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
-        local wx, wy = WorldToViewPort(self.worldX, self.worldY)
-		self:moveTo(wx, wy)
-        self.halves[1]:moveTo(self.xHalf + wx, self.yHalf + wy)
-        self.halves[2]:moveTo(-self.xHalf + wx, -self.yHalf + wy)
+		self:moveTo(viewX, viewY)
+        self.halves[1]:moveTo(self.xHalf + viewX, self.yHalf + viewY)
+        self.halves[2]:moveTo(-self.xHalf + viewX, -self.yHalf + viewY)
 
         if visible then
 			if Player.isAlive then

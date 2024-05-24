@@ -35,8 +35,9 @@ function Egg.new()
     end
 
     function self:update()
+        local viewX, viewY = WorldToViewPort(self.worldX, self.worldY)
         -- TODO: visible only controls drawing, not being part of collisions. etc.
-        if NearViewport(self.worldX, self.worldY, self.width, self.height) then
+        if NearViewport(viewX, viewY, self.width, self.height) then
             self:setVisible(true)
         else
             self:setVisible(false)
@@ -44,7 +45,7 @@ function Egg.new()
 
         -- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
 		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
-		self:moveTo(WorldToViewPort(self.worldX, self.worldY))
+		self:moveTo(viewX, viewY)
     end
 
     function self:bulletHit(other, x, y)
