@@ -52,6 +52,7 @@ Assets.preloadImagetables({
     'images/exhaust-table-16-16.png',
     -- Bases
     'images/bigBullet-table-4-4.png',
+    'images/baseZap-table-11-11.png',
     -- Dashboard
     'images/mapPlayer-table-7-6.png',
     -- Explosions

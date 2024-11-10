@@ -3,6 +3,7 @@ import 'egg'
 import 'enemy'
 import 'enemyBase'
 import 'enemyBigBullet'
+import 'enemyBaseZap'
 import 'playerBullet'
 
 -- Manages pools of game objects, in an attempt to avoid Lua GC issues.
@@ -16,6 +17,7 @@ EGG_POOL_SIZE = 8
 ENEMY_POOL_SIZE = 20
 ENEMYBASE_POOL_SIZE = 16
 ENEMYBIGBULLET_POOL_SIZE = 15
+ENEMYBASEZAP_POOL_SIZE = 4
 PLAYERBULLET_POOL_SIZE = 4
 
 local levelObjPoolSize = {}
@@ -24,6 +26,7 @@ levelObjPoolSize[Egg] = EGG_POOL_SIZE
 levelObjPoolSize[Enemy] = ENEMY_POOL_SIZE
 levelObjPoolSize[EnemyBase] = ENEMYBASE_POOL_SIZE
 levelObjPoolSize[EnemyBigBullet] = ENEMYBIGBULLET_POOL_SIZE
+levelObjPoolSize[EnemyBaseZap] = ENEMYBASEZAP_POOL_SIZE
 levelObjPoolSize[PlayerBullet] = PLAYERBULLET_POOL_SIZE
 
 function PoolManager.new()
@@ -37,12 +40,12 @@ end
 
 -- Fill an object pool with new objects if req'd
 function PoolManager:fillPool(obj, size)
-        local pool = {}
-        for i = 1, size do
-            pool[i] = obj.new()
-        end
+    local pool = {}
+    for i = 1, size do
+        pool[i] = obj.new()
+    end
 
-        self.objPools[obj] = pool
+    self.objPools[obj] = pool
 end
 
 -- Take all pooled objects OUT of the world, placing them back into the pool

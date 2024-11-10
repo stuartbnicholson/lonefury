@@ -15,31 +15,34 @@ local push = table.insert
 local pop = table.remove
 
 function Assets.preloadImages(list)
-	for i=1,#list do
+	for i = 1, #list do
 		local path = list[i]
 		if not images[path] then
 			push(unloadedImages, path)
 		end
 	end
 end
+
 function Assets.preloadImagetables(list)
-	for i=1,#list do
+	for i = 1, #list do
 		local path = list[i]
 		if not imagetables[path] then
 			push(unloadedImagetables, path)
 		end
 	end
 end
+
 function Assets.preloadFonts(list)
-	for i=1,#list do
+	for i = 1, #list do
 		local path = list[i]
 		if not fonts[path] then
 			push(unloadedFonts, path)
 		end
 	end
 end
+
 function Assets.preloadSamples(list)
-	for i=1,#list do
+	for i = 1, #list do
 		local path = list[i]
 		if not samples[path] then
 			push(unloadedSamples, path)
@@ -102,7 +105,7 @@ Assets.getSample = getSample
 
 local frameDuration
 local function outOfTime(frameStart)
-	return (ms() - frameStart)>=frameDuration
+	return (ms() - frameStart) >= frameDuration
 end
 function Assets.lazyLoad(frameStart)
 	if not frameDuration then
@@ -112,32 +115,32 @@ function Assets.lazyLoad(frameStart)
 	local count
 
 	count = #unloadedFonts
-	if count>0 then
-		for i=count,1,-1 do
+	if count > 0 then
+		for i = count, 1, -1 do
 			getFont(pop(unloadedFonts))
 			if outOfTime(frameStart) then return end
 		end
 	end
 
 	count = #unloadedImages
-	if count>0 then
-		for i=count,1,-1 do
+	if count > 0 then
+		for i = count, 1, -1 do
 			getImage(pop(unloadedImages))
 			if outOfTime(frameStart) then return end
 		end
 	end
 
 	count = #unloadedImagetables
-	if count>0 then
-		for i=count,1,-1 do
+	if count > 0 then
+		for i = count, 1, -1 do
 			getImagetable(pop(unloadedImagetables))
 			if outOfTime(frameStart) then return end
 		end
 	end
 
 	count = #unloadedSamples
-	if count>0 then
-		for i=count,1,-1 do
+	if count > 0 then
+		for i = count, 1, -1 do
 			getSample(pop(unloadedSamples))
 			if outOfTime(frameStart) then return end
 		end
