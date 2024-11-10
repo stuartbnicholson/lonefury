@@ -7,6 +7,8 @@ local gfx = pd.graphics
 local titleImg = Assets.getImage('images/title.png')
 local font = Assets.getFont('images/Xevious-2x-table-16-16.png')
 
+local TIMEOUT_MS = 1200 * 5
+
 StateMenu = {}
 StateMenu.__index = StateMenu
 
@@ -21,6 +23,8 @@ end
 
 function StateMenu:start()
     print('StateMenu start')
+
+    self.started = pd.getCurrentTimeMilliseconds()
 end
 
 function StateMenu:update()
@@ -29,7 +33,7 @@ function StateMenu:update()
 
     -- Centered in the play area
     local w, h = titleImg:getSize()
-    titleImg:draw((VIEWPORT_WIDTH- w) >> 1, ((VIEWPORT_HEIGHT - h) >> 1) - 32)
+    titleImg:draw((VIEWPORT_WIDTH - w) >> 1, ((VIEWPORT_HEIGHT - h) >> 1) - 32)
 
     gfx.animation.blinker.updateAll()
     if self.blinker.on then
@@ -43,6 +47,9 @@ function StateMenu:update()
     if pd.buttonIsPressed(pd.kButtonA|pd.kButtonB|pd.kButtonUp|pd.kButtonDown|pd.kButtonLeft|pd.kButtonRight) then
         StateStart:start()
         return StateStart
+    elseif pd.getCurrentTimeMilliseconds() - self.started > TIMEOUT_MS then
+        StateHighscore:start()
+        return StateHighscore
     else
         return self
     end

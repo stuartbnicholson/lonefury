@@ -7,7 +7,7 @@ import 'poolManager'
 import 'levelManager'
 import 'soundManager'
 import 'stateMenu'
-import 'stateCredits'
+import 'stateHighscore'
 import 'stateStart'
 import 'stateGame'
 import 'stateNewLevel'
@@ -75,7 +75,7 @@ SoundManager = SoundManager.new()
 
 -- TODO: The game state machine
 StateMenu = StateMenu.new()
-StateCredits = StateCredits.new()
+StateHighscore = StateHighscore.new()
 StartStart = StateStart.new()
 StateGame = StateGame.new()
 StateDead = StateDead.new()
@@ -84,6 +84,7 @@ StateGameOver = StateGameOver.new()
 StateTest = StateTest.new()
 
 local currentState = StateMenu
+currentState:start()
 -- StateTest:start()
 -- local currentState = StateTest
 
