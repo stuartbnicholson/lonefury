@@ -113,17 +113,17 @@ function LevelManager:enemyBaseSpawn(worldX, worldY, obj)
 end
 
 function LevelManager:clockReset()
-  -- Reset the clock!
-  local now = pd.getCurrentTimeMilliseconds()
-  self.lastBaseKillMS = now
-  self.lastFormationActiveMS = now
-  self.lastEnemySpawnMS = now
+    -- Reset the clock!
+    local now = pd.getCurrentTimeMilliseconds()
+    self.lastBaseKillMS = now
+    self.lastFormationActiveMS = now
+    self.lastEnemySpawnMS = now
 end
 
 function LevelManager:reset()
     PoolManager:reset()
 
-    self.level = 1  -- ad astra!
+    self.level = 1 -- ad astra!
     self.basesToKill = 0
 
     self:clockReset()
@@ -157,20 +157,25 @@ end
 
 function LevelManager:setAggressionValues()
     -- How much time between base kills for an alert
-    self.baseKillSecs = lume.clamp(ENEMYBASEKILL_SECS_MAX - (ENEMYBASEKILL_SECOND_LEVEL_DEC * (self.level - 1)), ENEMYBASEKILL_SECS_MIN, ENEMYBASEKILL_SECS_MAX)
+    self.baseKillSecs = lume.clamp(ENEMYBASEKILL_SECS_MAX - (ENEMYBASEKILL_SECOND_LEVEL_DEC * (self.level - 1)),
+        ENEMYBASEKILL_SECS_MIN, ENEMYBASEKILL_SECS_MAX)
 
     -- For lower levels, less obstacles will appear. After the Xth level, all asteroid and mine obstacles are present
     self.obstacleChance = self.level / ALL_OBSTACLES_LEVEL
 
     -- Enemy bases get more and more aggressive per level
-    self.enemyBaseMultiShot = lume.clamp(self.level // ENEMYBASE_SHOTS_LEVEL_RATIO, ENEMYBASE_SHOTS_MIN, ENEMYBASE_SHOTS_MAX)
-    self.enemyBaseFireMs = lume.clamp(ENEMYBASE_FIREMS_MAX - ((self.level - 1) * ENEMYBASE_FIREMS_LEVEL_REDUCTION), ENEMYBASE_FIREMS_MIN, ENEMYBASE_FIREMS_MAX)
+    self.enemyBaseMultiShot = lume.clamp(self.level // ENEMYBASE_SHOTS_LEVEL_RATIO, ENEMYBASE_SHOTS_MIN,
+        ENEMYBASE_SHOTS_MAX)
+    self.enemyBaseFireMs = lume.clamp(ENEMYBASE_FIREMS_MAX - ((self.level - 1) * ENEMYBASE_FIREMS_LEVEL_REDUCTION),
+        ENEMYBASE_FIREMS_MIN, ENEMYBASE_FIREMS_MAX)
 
     -- Maximum formations
-    self.formationsMax =lume.clamp(math.floor(FORMATION_SPAWN_MIN + (self.level * FORMATION_SPAWN_PER_LEVEL)), FORMATION_SPAWN_MIN, FORMATION_SPAWN_MAX)
+    self.formationsMax = lume.clamp(math.floor(FORMATION_SPAWN_MIN + (self.level * FORMATION_SPAWN_PER_LEVEL)),
+        FORMATION_SPAWN_MIN, FORMATION_SPAWN_MAX)
 
     -- Maximum on-screen enemies
-    self.enemiesVisibleMax = lume.clamp(math.floor(ENEMY_VISIBLE_MIN + (self.level * ENEMY_VISIBLE_PER_LEVEL)), ENEMY_VISIBLE_MIN, ENEMY_VISIBLE_MAX)
+    self.enemiesVisibleMax = lume.clamp(math.floor(ENEMY_VISIBLE_MIN + (self.level * ENEMY_VISIBLE_PER_LEVEL)),
+        ENEMY_VISIBLE_MIN, ENEMY_VISIBLE_MAX)
 end
 
 function LevelManager:generateLevelAndMinimap()
@@ -194,7 +199,7 @@ function LevelManager:generateLevelAndMinimap()
             row = lvl.map[y]
             for x = 1, 9 do
                 -- TODO: Wonder how inefficient this is?
-                cell = string.sub(row,x,x)
+                cell = string.sub(row, x, x)
                 if cell ~= "-" then
                     part = levelDef.parts[cell]
                     assert(part, "Unknown part: " .. cell)
@@ -281,6 +286,21 @@ function LevelManager:spawnFormationAt(worldX, worldY, angle, formationBrain)
     end
 end
 
+function LevelManager:spawnMonster()
+    -- Spawn far enough away from the player, point pointing towards them.
+    local playerV = Player:getWorldV()
+    local x, y = AngleToDeltaXY(math.random(360))
+    worldX = playerV.dx + (x * FORMATION_SPAWN_DIST)
+    worldY = playerV.dy + (y * FORMATION_SPAWN_DIST)
+    local angle = (Player:getAngle() + 180) % 360
+
+    local monster = PoolManager:freeInPool(EnemyMonster)
+    if monster ~= nil then
+        monster:spawn(worldX, worldY)
+        monster:setAngle(angle)
+    end
+end
+
 function LevelManager:levelStart()
     self:clockReset()
     self.levelStartMS = pd.getCurrentTimeMilliseconds()
@@ -335,5 +355,12 @@ function LevelManager:update()
         if ActiveEnemyFormations < self.formationsMax and formationActiveMS > FORMATION_SPAWN_MIN_MS then
             self:spawnFormation()
         end
+    end
+
+    -- Check if we need to unleash a monster if the player is beyond board edges
+    local playerWorldX, playerWorldY = Player:getWorldV():unpack()
+    if (playerWorldX < 0 or playerWorldX > WORLD_WIDTH or playerWorldY < 0 or playerWorldY > WORLD_HEIGHT)
+        and PoolManager:freeInPool(EnemyMonster) ~= nil then
+        self:spawnMonster()
     end
 end

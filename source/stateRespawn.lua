@@ -22,6 +22,7 @@ function StateRespawn:start()
 
     -- Despawn every enemy
     PoolManager:refillPool(Enemy)
+    PoolManager:refillPool(EnemyMonster)
 
     -- Recenter world, to make sure player isn't near anything dangerous
     Player.worldV.dx = WORLD_PLAYER_STARTX

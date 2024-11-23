@@ -59,13 +59,19 @@ function StateGameOver:update()
 
     local percent = string.format("%.2f", (hits / shots) * 100.0)
     gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
-    gfx.drawText('PERCENT:' .. percent, (VIEWPORT_WIDTH >> 1) -70, (VIEWPORT_HEIGHT >> 1) + 36)
+    gfx.drawText('PERCENT:' .. percent, (VIEWPORT_WIDTH >> 1) - 70, (VIEWPORT_HEIGHT >> 1) + 36)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-    gfx.drawText('PERCENT:' .. percent, (VIEWPORT_WIDTH >> 1) -71, (VIEWPORT_HEIGHT >> 1) + 40)
+    gfx.drawText('PERCENT:' .. percent, (VIEWPORT_WIDTH >> 1) - 71, (VIEWPORT_HEIGHT >> 1) + 40)
     gfx.popContext()
 
     if self.timerComplete then
-        return StateMenu
+        if HighScoreManager:isHighScore(Player.score) then
+            StateHighscoreEntry:start()
+            return StateHighscoreEntry
+        else
+            StateHighscore:start()
+            return StateHighscore
+        end
     else
         return self
     end

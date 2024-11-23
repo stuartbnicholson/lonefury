@@ -50,10 +50,12 @@ function Dashboard:worldToDashXY(worldX, worldY)
     local mx, my
 
     mx = worldX / VIEWPORT_WIDTH
-    mx = (lume.clamp(mx, 0, MINIMAP_WIDTH)) * MINIMAP_CELLW
+    mx = lume.clamp(mx, 0, MINIMAP_WIDTH)
+    mx = mx * MINIMAP_CELLW
 
     my = worldY / VIEWPORT_HEIGHT
-    my = (lume.clamp(my, 0, MINIMAP_HEIGHT)) * MINIMAP_CELLH
+    my = lume.clamp(my, 0, MINIMAP_HEIGHT)
+    my = my * MINIMAP_CELLH
 
     return mx, my
 end
@@ -90,7 +92,7 @@ function Dashboard:update()
     -- Draw the player ship roughly pointing the right way, but clipped to the mini map
     local mx, my = self:worldToDashXY(Player:getWorldV():unpack())
     local frame = 1 + (Player:getAngle() // 45) % 8
-    mapPlayerTable:drawImage(frame, mx + MINIMAP_SX - 3, my + MINIMAP_SY  - 2)
+    mapPlayerTable:drawImage(frame, mx + MINIMAP_SX - 3, my + MINIMAP_SY - 2)
 
     pd.drawFPS(VIEWPORT_WIDTH + 64, 3)
 end
@@ -107,7 +109,7 @@ function Dashboard:drawAlertTimer()
         if self.alertBlinker.on then
             alertImg:draw(ALERT_SX, ALERT_SY)
 
-            if  not self.blinkerTurnedOn then
+            if not self.blinkerTurnedOn then
                 self.blinkerTurnedOn = true
                 SoundManager:alert()
             end

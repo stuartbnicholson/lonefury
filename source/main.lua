@@ -6,8 +6,10 @@ import 'starfield'
 import 'poolManager'
 import 'levelManager'
 import 'soundManager'
+import 'highScoreManager'
 import 'stateMenu'
 import 'stateHighscore'
+import 'stateHighscoreEntry'
 import 'stateStart'
 import 'stateGame'
 import 'stateNewLevel'
@@ -50,6 +52,7 @@ Assets.preloadImagetables({
     'images/enemy-table-15-15.png',
     'images/enemy2-table-15-15.png',
     'images/exhaust-table-16-16.png',
+    'images/enemyMonster-table-45-45.png',
     -- Bases
     'images/bigBullet-table-4-4.png',
     'images/baseZap-table-11-11.png',
@@ -72,10 +75,12 @@ Assets.preloadFonts({
 PoolManager = PoolManager.new()
 LevelManager = LevelManager.new()
 SoundManager = SoundManager.new()
+HighScoreManager = HighScoreManager.new()
 
 -- TODO: The game state machine
 StateMenu = StateMenu.new()
 StateHighscore = StateHighscore.new()
+StateHighscoreEntry = StateHighscoreEntry.new()
 StartStart = StateStart.new()
 StateGame = StateGame.new()
 StateDead = StateDead.new()

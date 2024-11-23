@@ -4,6 +4,7 @@ import 'enemy'
 import 'enemyBase'
 import 'enemyBigBullet'
 import 'enemyBaseZap'
+import 'enemyMonster'
 import 'playerBullet'
 
 -- Manages pools of game objects, in an attempt to avoid Lua GC issues.
@@ -18,6 +19,7 @@ ENEMY_POOL_SIZE = 20
 ENEMYBASE_POOL_SIZE = 16
 ENEMYBIGBULLET_POOL_SIZE = 15
 ENEMYBASEZAP_POOL_SIZE = 4
+ENEMYMONSTER_POOL_SIZE = 1
 PLAYERBULLET_POOL_SIZE = 4
 
 local levelObjPoolSize = {}
@@ -27,6 +29,7 @@ levelObjPoolSize[Enemy] = ENEMY_POOL_SIZE
 levelObjPoolSize[EnemyBase] = ENEMYBASE_POOL_SIZE
 levelObjPoolSize[EnemyBigBullet] = ENEMYBIGBULLET_POOL_SIZE
 levelObjPoolSize[EnemyBaseZap] = ENEMYBASEZAP_POOL_SIZE
+levelObjPoolSize[EnemyMonster] = ENEMYMONSTER_POOL_SIZE
 levelObjPoolSize[PlayerBullet] = PLAYERBULLET_POOL_SIZE
 
 function PoolManager.new()
