@@ -74,3 +74,7 @@ end
 function HighScoreManager:update(i, name)
     self.highScores[i].name = name
 end
+
+function HighScoreManager:save()
+    pd.datastore.write(self.highScores, HIGHSCORE_TABLEFILE)
+end

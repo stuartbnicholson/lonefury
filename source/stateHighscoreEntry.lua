@@ -40,7 +40,6 @@ function StateHighscoreEntry:update()
     gfx.pushContext()
     gfx.setFont(font)
 
-    -- TODO: Draw scores, with space for new name...
     HighScoreManager:draw(60, 40)
 
     -- Cursor is currently selected character position blinking
@@ -75,7 +74,9 @@ function StateHighscoreEntry:update()
             local w, _ = gfx.getTextSize(self.name)
             self.rowX = 60 + w + self.currentPos - 1
         else
-            -- TODO: Save highscores
+            -- Save new highscore
+            HighScoreManager:save()
+
             return StateHighscore
         end
     end
