@@ -38,6 +38,7 @@ end
 
 function StateRespawn:update()
     WorldUpdate()
+    LevelManager:clockReset() -- Keep level manager timers reset until gameplay starts
 
     gfx.animation.blinker.updateAll()
     if self.blinker.running then
