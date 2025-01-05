@@ -77,6 +77,7 @@ function StateHighscoreEntry:update()
             -- Save new highscore
             HighScoreManager:save()
 
+            StateHighscore:start(false)
             return StateHighscore
         end
     end

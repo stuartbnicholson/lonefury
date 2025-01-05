@@ -10,13 +10,15 @@ StateHighscore.__index = StateHighscore
 
 function StateHighscore.new()
     local self = setmetatable({}, StateHighscore)
+    self.acceptButtons = true
 
     return self
 end
 
-function StateHighscore:start()
+function StateHighscore:start(acceptButtons)
     print('StateHighscore start')
 
+    self.acceptButtons = acceptButtons
     self.started = pd.getCurrentTimeMilliseconds()
 end
 
@@ -26,7 +28,7 @@ function StateHighscore:update()
 
     HighScoreManager:draw(60, 40)
 
-    if pd.buttonIsPressed(pd.kButtonA|pd.kButtonB|pd.kButtonUp|pd.kButtonDown|pd.kButtonLeft|pd.kButtonRight) then
+    if self.acceptButtons and pd.buttonIsPressed(pd.kButtonA|pd.kButtonB|pd.kButtonUp|pd.kButtonDown|pd.kButtonLeft|pd.kButtonRight) then
         StateStart:start()
         return StateStart
     elseif pd.getCurrentTimeMilliseconds() - self.started > TIMEOUT_MS then

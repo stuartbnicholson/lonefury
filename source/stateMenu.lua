@@ -48,7 +48,7 @@ function StateMenu:update()
         StateStart:start()
         return StateStart
     elseif pd.getCurrentTimeMilliseconds() - self.started > TIMEOUT_MS then
-        StateHighscore:start()
+        StateHighscore:start(true)
         return StateHighscore
     else
         return self

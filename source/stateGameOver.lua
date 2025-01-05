@@ -72,7 +72,7 @@ function StateGameOver:update()
             StateHighscoreEntry:start()
             return StateHighscoreEntry
         else
-            StateHighscore:start()
+            StateHighscore:start(false)
             return StateHighscore
         end
     else
