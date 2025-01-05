@@ -24,7 +24,7 @@ function StateHighscore:update()
     Starfield:update()
     Dashboard:update()
 
-    HighScoreManager:draw(50, 50)
+    HighScoreManager:draw(60, 40)
 
     if pd.buttonIsPressed(pd.kButtonA|pd.kButtonB|pd.kButtonUp|pd.kButtonDown|pd.kButtonLeft|pd.kButtonRight) then
         StateStart:start()

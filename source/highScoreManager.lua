@@ -16,12 +16,12 @@ function HighScoreManager.new()
     if self.highScores == nil then
         -- Create an initial high score table
         self.highScores = {
-            { name = "AAA", score = 1600, level = 6 },
-            { name = "BBB", score = 1400, level = 5 },
-            { name = "CCC", score = 1200, level = 4 },
-            { name = "DDD", score = 1000, level = 3 },
-            { name = "STU", score = 800,  level = 2 },
-            { name = "NIC", score = 600,  level = 1 } }
+            { name = "AAA", score = 1000, level = 6 },
+            { name = "BBB", score = 800,  level = 5 },
+            { name = "CCC", score = 600,  level = 4 },
+            { name = "DDD", score = 500,  level = 3 },
+            { name = "STU", score = 300,  level = 2 },
+            { name = "NIC", score = 150,  level = 1 } }
 
         pd.datastore.write(self.highScores, HIGHSCORE_TABLEFILE)
     end
@@ -56,4 +56,21 @@ function HighScoreManager:isHighScore(score)
     local lowest = self.highScores[#self.highScores]
 
     return score > lowest.score
+end
+
+function HighScoreManager:insert(score, level)
+    for i = 1, #self.highScores do
+        if self.highScores[i].score < score then
+            table.insert(self.highScores, i, { name = '', score = score, level = level })
+            table.remove(self.highScores)
+
+            return i
+        end
+    end
+
+    return nil
+end
+
+function HighScoreManager:update(i, name)
+    self.highScores[i].name = name
 end

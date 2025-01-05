@@ -104,7 +104,7 @@ function Player:new()
         end
 
         if self.isAlive then
-            local _,_,c,n = self:checkCollisions(self.x, self.y)
+            local _, _, c, n = self:checkCollisions(self.x, self.y)
             if n > 0 then
                 for i = 1, #c do
                     if self:alphaCollision(c[i].other) == true then
@@ -120,6 +120,10 @@ function Player:new()
                 exhaustTable:drawImage(1 + frameCount % 12, self.x - 8, self.y + 7)
             end
         end
+    end
+
+    function self:getScore()
+        return self.score
     end
 
     function self:scored(points)
@@ -162,9 +166,11 @@ function Player:new()
                 local deltaX = -math.sin(math.rad(self.angle))
                 local deltaY = math.cos(math.rad(self.angle))
                 -- Forward
-                bullets[1]:spawn(self.worldV.dx, self.worldV.dy, self.angle, -deltaX * FWD_BULLET_SPEED, -deltaY * FWD_BULLET_SPEED)
+                bullets[1]:spawn(self.worldV.dx, self.worldV.dy, self.angle, -deltaX * FWD_BULLET_SPEED,
+                    -deltaY * FWD_BULLET_SPEED)
                 -- Rear
-                bullets[2]:spawn(self.worldV.dx, self.worldV.dy, self.angle, deltaX * REAR_BULLET_SPEED, deltaY * REAR_BULLET_SPEED)
+                bullets[2]:spawn(self.worldV.dx, self.worldV.dy, self.angle, deltaX * REAR_BULLET_SPEED,
+                    deltaY * REAR_BULLET_SPEED)
                 self.lastFiredMs = now
                 self.shotsFired += 1
             end

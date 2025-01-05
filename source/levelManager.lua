@@ -130,6 +130,10 @@ function LevelManager:reset()
     self:generateLevelAndMinimap()
 end
 
+function LevelManager:getLevel()
+    return self.level
+end
+
 function LevelManager:nextLevel()
     PoolManager:reset()
 

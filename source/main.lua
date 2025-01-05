@@ -90,8 +90,6 @@ StateTest = StateTest.new()
 
 local currentState = StateMenu
 currentState:start()
--- StateTest:start()
--- local currentState = StateTest
 
 Dashboard = Dashboard.new()
 Starfield = Starfield.new()
