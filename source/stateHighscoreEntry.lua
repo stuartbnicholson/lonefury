@@ -5,7 +5,9 @@ local pd = playdate
 local gfx = pd.graphics
 
 local font = Assets.getFont('images/Xevious-2x-table-16-16.png')
-local alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+local alpha <const> = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+
+local CrankTicksPerRev <const> = 12 -- 360/30
 
 StateHighscoreEntry = {}
 StateHighscoreEntry.__index = StateHighscoreEntry
@@ -32,6 +34,41 @@ function StateHighscoreEntry:start()
     self.rowY = 50 + (self.row * 20)
 end
 
+function StateHighscoreEntry:nextLetter()
+    if self.currentAlpha == alpha:len() then
+        self.currentAlpha = 1
+    else
+        self.currentAlpha += 1
+    end
+end
+
+function StateHighscoreEntry:prevLetter()
+    if self.currentAlpha == 1 then
+        self.currentAlpha = alpha:len()
+    else
+        self.currentAlpha -= 1
+    end
+end
+
+function StateHighscoreEntry:saveLetter(alph)
+    self.name = self.name .. alph
+    HighScoreManager:update(self.row, self.name)
+    if self.currentPos < 3 then
+        self.currentPos += 1
+
+        local w, _ = gfx.getTextSize(self.name)
+        self.rowX = 60 + w + self.currentPos - 1
+    else
+        -- Save new highscore
+        HighScoreManager:save()
+
+        StateHighscore:start(false)
+        return StateHighscore
+    end
+
+    return self
+end
+
 function StateHighscoreEntry:update()
     Starfield:update()
     Dashboard:update()
@@ -52,36 +89,24 @@ function StateHighscoreEntry:update()
         gfx.fillRect(self.rowX, self.rowY, 16, 16)
     end
 
+    if not pd.isCrankDocked() then
+        local crankTicks = pd.getCrankTicks(CrankTicksPerRev)
+        if crankTicks > 0 then
+            self:nextLetter()
+        elseif crankTicks < 0 then
+            self:prevLetter()
+        end
+    end
+
+    local state = self
     if pd.buttonJustPressed(pd.kButtonUp) then
-        if self.currentAlpha == 1 then
-            self.currentAlpha = alpha:len()
-        else
-            self.currentAlpha -= 1
-        end
+        self:prevLetter()
     elseif pd.buttonJustPressed(pd.kButtonDown) then
-        if self.currentAlpha == alpha:len() then
-            self.currentAlpha = 1
-        else
-            self.currentAlpha += 1
-        end
-    elseif pd.buttonJustPressed(pd.kButtonRight) then
-        -- Next alpha
-        self.name = self.name .. alph
-        HighScoreManager:update(self.row, self.name)
-        if self.currentPos < 3 then
-            self.currentPos += 1
-
-            local w, _ = gfx.getTextSize(self.name)
-            self.rowX = 60 + w + self.currentPos - 1
-        else
-            -- Save new highscore
-            HighScoreManager:save()
-
-            StateHighscore:start(false)
-            return StateHighscore
-        end
+        self:nextLetter()
+    elseif pd.buttonJustPressed(pd.kButtonRight | pd.kButtonA | pd.kButtonB) then
+        state = self:saveLetter(alph)
     end
     gfx.popContext()
 
-    return self
+    return state
 end
