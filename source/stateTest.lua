@@ -1,6 +1,9 @@
-import 'enemyBase'
+import 'CoreLibs/graphics'
 
--- State: Special test state used for dev
+import 'levelRandomGenerator'
+import 'levelManager'
+
+-- State: State used for dev scratchpad. Ignore any code included.
 local pd = playdate
 local gfx = pd.graphics
 
@@ -16,16 +19,17 @@ end
 function StateTest:start()
     print('StateTest start')
 
-    self.newBase = EnemyBase.new(false)
-    self.newBase:spawn(0, 0, 1, 1500)
-    self.newBase:setVisible(true)
+    self.levelManager = LevelManager.new()
+    self.levelGenerator = LevelRandomGenerator.new()
+
+    self.levelGenerator:generate(self.levelManager)
 end
 
 function StateTest:update()
     pd.timer.updateTimers()
 
     gfx.clear(gfx.kColorBlack)
-    gfx.sprite.update()
+    self.levelGenerator.occupiedMap:draw(2, 2)
 
     return self
 end
