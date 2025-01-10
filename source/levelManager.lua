@@ -14,19 +14,6 @@ import 'enemyAI'
 -- Also tracks things like level alerts, increasing difficulty etc.
 local pd = playdate
 
--- Load JSON level part definitions
-local levelFile, err = pd.file.open('assets/levelParts.json')
-assert(levelFile, error)
-local levelDef = json.decodeFile(levelFile)
-levelFile:close()
-
--- Maps levelParts to game objects
-local levelObj = {}
-levelObj['a'] = Asteroid
-levelObj['g'] = Egg
-levelObj['b'] = EnemyBase
-levelObj['e'] = Enemy
-
 -- On this level, ALL obstacles automatically appear, instead of randomly being left out.
 local ALL_OBSTACLES_LEVEL = 6
 
@@ -62,10 +49,10 @@ local LEVEL_CLEARED_AFTER_MS = 2000
 LevelManager = {}
 LevelManager.__index = LevelManager
 
--- TODO: We need a pool of each enemy type, so they can be re-used rather than constantly created.
--- Consider the limit of around 25-40 active sprites...
-function LevelManager.new()
+function LevelManager.new(levelGenerator)
     local self = setmetatable({}, LevelManager)
+
+    self.levelGenerator = levelGenerator
 
     self.level = 1
     self.basesToKill = 0
@@ -78,6 +65,12 @@ function LevelManager.new()
     self.spawn[EnemyBase] = self.enemyBaseSpawn
 
     return self
+end
+
+function LevelManager:addToLevel(x, y, obj, poolObj)
+    local spawner = self.spawn[obj]
+    assert(spawner, 'Level spawner is nil?')
+    spawner(self, x, y, poolObj)
 end
 
 function LevelManager:simpleSpawn(worldX, worldY, obj)
@@ -144,21 +137,6 @@ function LevelManager:nextLevel()
     self:generateLevelAndMinimap()
 end
 
-function LevelManager:applyLevelPart(part, worldX, worldY, obstacleChance)
-    local enemyX, enemyY, obj, poolObj
-    for i = 1, #part.objs do
-        enemyX = worldX + part.objs[i].x
-        enemyY = worldY + part.objs[i].y
-
-        -- Find a pool object and (possibly) spawn it into the world
-        obj = levelObj[part.objs[i].obj]
-        poolObj = PoolManager:freeInPool(obj)
-        if (poolObj) then
-            self.spawn[obj](self, enemyX, enemyY, poolObj)
-        end
-    end
-end
-
 function LevelManager:setAggressionValues()
     -- How much time between base kills for an alert
     self.baseKillSecs = lume.clamp(ENEMYBASEKILL_SECS_MAX - (ENEMYBASEKILL_SECOND_LEVEL_DEC * (self.level - 1)),
@@ -183,41 +161,10 @@ function LevelManager:setAggressionValues()
 end
 
 function LevelManager:generateLevelAndMinimap()
-    local row
-    local cell
-    local part
-    local wX = 0
-    local wY = 0
-
     -- Set how aggressive various settings are based on level
     self:setAggressionValues()
 
-    -- Pick one of several level definitions for this level
-    -- TODO: What happens when we run out of levels?
-    local lvls = levelDef.levels[tostring(self.level)]
-    local lvl = lume.randomchoice(lvls)
-
-    if lvl then
-        for y = 1, #lvl.map do
-            wX = 0
-            row = lvl.map[y]
-            for x = 1, 9 do
-                -- TODO: Wonder how inefficient this is?
-                cell = string.sub(row, x, x)
-                if cell ~= "-" then
-                    part = levelDef.parts[cell]
-                    assert(part, "Unknown part: " .. cell)
-                    self:applyLevelPart(part, wX, wY, obstacleChance)
-                end
-
-                wX += VIEWPORT_WIDTH
-            end
-
-            wY += VIEWPORT_HEIGHT
-        end
-    else
-        assert("no level " .. self.level .. "?")
-    end
+    self.levelGenerator:generate(self)
 end
 
 ----------------------------------------

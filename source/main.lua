@@ -5,6 +5,7 @@ import 'dashboard'
 import 'starfield'
 import 'poolManager'
 import 'levelManager'
+import 'levelDefGenerator'
 import 'soundManager'
 import 'highScoreManager'
 import 'stateMenu'
@@ -73,7 +74,8 @@ Assets.preloadFonts({
 
 -- Managers
 PoolManager = PoolManager.new()
-LevelManager = LevelManager.new()
+LevelGenerator = LevelDefGenerator.new()
+LevelManager = LevelManager.new(LevelGenerator)
 SoundManager = SoundManager.new()
 HighScoreManager = HighScoreManager.new()
 
@@ -89,6 +91,7 @@ StateGameOver = StateGameOver.new()
 StateTest = StateTest.new()
 
 local currentState = StateMenu
+-- local currentState = StateTest
 currentState:start()
 
 Dashboard = Dashboard.new()
