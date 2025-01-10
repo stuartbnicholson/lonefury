@@ -19,7 +19,7 @@ local MINIMAP_HEIGHT = 72
 local MINIMAP_CELLW = 8
 local MINIMAP_CELLH = 6
 local ALERT_SX = VIEWPORT_WIDTH + 2
-local ALERT_SY = 102
+local ALERT_SY = 103
 
 local medal1Img = Assets.getImage('images/medal1.png')
 local medal5Img = Assets.getImage('images/medal5.png')
@@ -27,6 +27,7 @@ local playerLifeImg = Assets.getImage('images/playerLife.png')
 local alertImg = Assets.getImage('images/alert.png')
 local mapPlayerTable = Assets.getImagetable('images/mapPlayer-table-7-6.png')
 local formationImg = Assets.getImage('images/cross.png')
+local dangerBar = Assets.getImage('images/dangerBar.png')
 local scoreFont = Assets.getFont('images/Xevious-Score-table-8-16.png')
 
 function Dashboard.new()
@@ -102,10 +103,15 @@ function Dashboard:drawAlertTimer()
     -- LevelManager tells us percentage time left to next alert
     gfx.pushContext()
     local percent = LevelManager:percentAlertTimeLeft()
-    if percent > 0 then
+
+    if percent == 1 then
+        -- Don't draw anything, dashboard contains danger bar
+    elseif percent > 0 then
         self.blinkerTurnedOn = false
-        gfx.setColor(gfx.kColorWhite)
-        gfx.fillRect(ALERT_SX, ALERT_SY, percent * 77, 14)
+        gfx.setColor(gfx.kColorBlack)
+
+        local fill = percent * 77
+        gfx.fillRect(ALERT_SX + fill, ALERT_SY, 77 - fill, 13)
     else
         if self.alertBlinker.on then
             alertImg:draw(ALERT_SX, ALERT_SY)
@@ -116,6 +122,8 @@ function Dashboard:drawAlertTimer()
             end
         else
             self.blinkerTurnedOn = false
+            gfx.setColor(gfx.kColorBlack)
+            gfx.fillRect(ALERT_SX, ALERT_SY, 77, 13)
         end
     end
     gfx.popContext()
