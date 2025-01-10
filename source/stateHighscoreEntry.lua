@@ -35,6 +35,8 @@ function StateHighscoreEntry:start()
 end
 
 function StateHighscoreEntry:nextLetter()
+    SoundManager:interfaceClick()
+
     if self.currentAlpha == alpha:len() then
         self.currentAlpha = 1
     else
@@ -43,6 +45,7 @@ function StateHighscoreEntry:nextLetter()
 end
 
 function StateHighscoreEntry:prevLetter()
+    SoundManager:interfaceClick()
     if self.currentAlpha == 1 then
         self.currentAlpha = alpha:len()
     else
@@ -51,6 +54,8 @@ function StateHighscoreEntry:prevLetter()
 end
 
 function StateHighscoreEntry:saveLetter(alph)
+    SoundManager:interfaceClick()
+
     self.name = self.name .. alph
     HighScoreManager:update(self.row, self.name)
     if self.currentPos < 3 then

@@ -14,6 +14,7 @@ local explode_a = Assets.getSample('assets/oryx/explode_a.wav')
 local explode_b = Assets.getSample('assets/oryx/explode_b.wav')
 local explode_c = Assets.getSample('assets/oryx/explode_c.wav')
 local collect_b = Assets.getSample('assets/oryx/collect_b.wav')
+local score = Assets.getSample('assets/oryx/score.wav')
 
 function SoundManager.new()
     local self = setmetatable({}, SoundManager)
@@ -62,4 +63,8 @@ end
 
 function SoundManager:alert()
     collect_b:play(1)
+end
+
+function SoundManager:interfaceClick()
+    score:play(1)
 end
