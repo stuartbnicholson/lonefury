@@ -3,6 +3,8 @@ import 'assets'
 local pd = playdate
 local gfx = pd.graphics
 
+local medal1Img = Assets.getImage('images/medal1.png')
+local medal5Img = Assets.getImage('images/medal5.png')
 local font = Assets.getFont('images/Xevious-2x-table-16-16.png')
 
 -- Manage persistent high scores
@@ -31,8 +33,8 @@ end
 
 function HighScoreManager:draw(startX, startY)
     gfx.pushContext()
-    gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
     gfx.setFont(font)
+    gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
 
     gfx.drawText("HIGH SCORES", startX, startY)
 
@@ -40,13 +42,32 @@ function HighScoreManager:draw(startX, startY)
     local y = startY + 30
 
     for i, high in ipairs(self.highScores) do
+        gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
         gfx.drawText(high.name, x, y)
-        x += 80
+
+        -- Medals
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
+        local medal1 = high.level % 5
+        local medal5 = math.floor(high.level / 5)
+        x = startX + 70
+        -- TODO: Higher values
+        -- Medals 5
+        for i = 1, medal5 do
+            medal5Img:draw(x, y)
+            x += 8
+        end
+        -- Medals 1
+        for i = 1, medal1 do
+            medal1Img:draw(x, y)
+            x += 8
+        end
+
+        x = startX + 115
+        gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
         gfx.drawText(high.score, x, y)
+
+        -- Next line
         y += 20
-
-        -- TODO: Draw level medals
-
         x = startX
     end
     gfx.popContext()

@@ -27,7 +27,6 @@ local playerLifeImg = Assets.getImage('images/playerLife.png')
 local alertImg = Assets.getImage('images/alert.png')
 local mapPlayerTable = Assets.getImagetable('images/mapPlayer-table-7-6.png')
 local formationImg = Assets.getImage('images/cross.png')
-local dangerBar = Assets.getImage('images/dangerBar.png')
 local scoreFont = Assets.getFont('images/Xevious-Score-table-8-16.png')
 
 function Dashboard.new()
@@ -151,17 +150,17 @@ function Dashboard:drawLivesMedals()
     local y = 205
     gfx.setColor(gfx.kColorBlack)
     gfx.fillRect(x, y, 64, 14)
-    -- Medals 1
-    for i = 1, medal1 do
-        medal1Img:draw(x, y)
-        x += 8
-    end
+    -- TODO: Higher values
     -- Medals 5
     for i = 1, medal5 do
         medal5Img:draw(x, y)
         x += 8
     end
-    -- TODO: Higher values
+    -- Medals 1
+    for i = 1, medal1 do
+        medal1Img:draw(x, y)
+        x += 8
+    end
 
     -- Lives
     x = 4
