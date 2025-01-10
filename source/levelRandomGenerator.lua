@@ -1,5 +1,3 @@
-import 'lume'
-
 import 'constants'
 import 'enemyBase'
 import 'asteroid'
@@ -9,6 +7,32 @@ local pd = playdate
 local gfx = pd.graphics
 
 local MAP_CELL_SIZE <const> = 16
+
+-- The number of enemy bases goes up per level with variation, and they get more radius to occupy
+local basesPerLevel = {
+    { min = 1,  max = 2,  radius = 40 },
+    { min = 2,  max = 3,  radius = 40 },
+    { min = 3,  max = 5,  radius = 50 },
+    { min = 4,  max = 6,  radius = 50 },
+    { min = 5,  max = 7,  radius = 60 },
+    { min = 7,  max = 9,  radius = 60 },
+    { min = 8,  max = 10, radius = 70 },
+    { min = 10, max = 10, radius = 70 }
+    -- After this we just keep repeating the highest
+}
+
+-- The number of asteroids, eggs and mines goes per level
+local obstaclesPerLevel = {
+    { asteroids = 20, mines = 0,  eggs = 5,  radius = 50 },
+    { asteroids = 30, mines = 5,  eggs = 5,  radius = 60 },
+    { asteroids = 40, mines = 10, eggs = 5,  radius = 60 },
+    { asteroids = 50, mines = 10, eggs = 10, radius = 60 },
+    { asteroids = 40, mines = 30, eggs = 10, radius = 60 },
+    { asteroids = 30, mines = 40, eggs = 10, radius = 60 },
+    { asteroids = 30, mines = 40, eggs = 10, radius = 60 },
+    { asteroids = 20, mines = 50, eggs = 10, radius = 60 }
+    -- After this we just keep repeating the highest
+}
 
 -- EnemyBase occcupied map images
 local baseVert = Assets.getImage('images/baseOccupiedVert.png')
@@ -42,24 +66,57 @@ function LevelRandomGenerator:spawn(levelManager, obj, cellX, cellY)
     end
 end
 
+function LevelRandomGenerator:spawnLevels(level)
+    -- How good is this player that they're hitting the cap :)
+    if level > #basesPerLevel then
+        level = #basesPerLevel
+    end
+
+    -- Determine the number of bases in range
+    local bases = basesPerLevel[level]
+    local numBases = math.random(bases.min, bases.max)
+    print('Num bases: ' .. numBases)
+
+    -- Determine the number of asteroids, mines and eggs
+    local obstacles = obstaclesPerLevel[level]
+
+    return numBases, bases.radius, obstacles.asteroids, obstacles.mines, obstacles.eggs, obstacles.radius
+end
+
+function LevelRandomGenerator:scatterObstacles(levelManager, obj, numObstacles, radius)
+    for i = 1, numObstacles, 1 do
+        local cellX, cellY = LevelRandomGenerator.randomPointInCircle(radius, 90, 90)
+
+        if (self.occupiedMap:sample(cellX, cellY) == gfx.kColorClear) then
+            gfx.drawPixel(cellX, cellY)
+
+            self:spawn(levelManager, obj, cellX, cellY)
+        else
+            -- We don't really care if we lose a few asteroids
+            print('Level generator obstacle collision!')
+        end
+    end
+end
+
 function LevelRandomGenerator:generate(levelManager)
     -- We're drawing on the occupiedMap as we spawn level objects
     gfx.pushContext(self.occupiedMap)
     gfx.setColor(gfx.kColorWhite)
 
-    -- TODO; Expand
+    -- Determine the number of bases, asteroids, mines and eggs to spawn
+    local numBases, baseRadius, numAsteroids, numMines, numEggs, obstacleRadius = self:spawnLevels(levelManager:getLevel())
 
-    -- TODO: Fill the centre of the map with a player spawn circle
+    -- Fill the centre of the map with a player spawn circle
     local cellsWidthHalf = self.cellsWidth / 2
     local cellsHeightHalf = self.cellsHeight / 2
     gfx.fillCircleInRect(cellsWidthHalf - 4, cellsHeightHalf - 4, 8, 8)
 
-    -- TODO: Spawn required bases first
+    -- Scatter bases around first
     local poolObj
     local enemyX, enemyY
-    for i = 1, 5, 1 do
+    for i = 1, numBases, 1 do
         for j = 1, 3, 1 do
-            local cellX, cellY = LevelRandomGenerator.randomPointInCircle(60, 90, 90)
+            local cellX, cellY = LevelRandomGenerator.randomPointInCircle(baseRadius, 90, 90)
             if not gfx.checkAlphaCollision(self.occupiedMap, 0, 0, gfx.kImageUnflipped, baseVert, cellX, cellY, gfx.kImageUnflipped) then
                 baseVert:draw(cellX, cellY)
                 self:spawn(levelManager, EnemyBase, cellX, cellY)
@@ -71,19 +128,14 @@ function LevelRandomGenerator:generate(levelManager)
         end
     end
 
-    -- Scatter some asteroids around, that don't overlap
-    for i = 1, 60, 1 do
-        local cellX, cellY = LevelRandomGenerator.randomPointInCircle(70, 90, 90)
+    -- Scatter some asteroids around
+    self:scatterObstacles(levelManager, Asteroid, numAsteroids, obstacleRadius)
 
-        if (self.occupiedMap:sample(cellX, cellY) == gfx.kColorClear) then
-            gfx.drawPixel(cellX, cellY)
+    -- TODO: Scatter some mines around
+    -- self:scatterObstacles(levelManager, Mine, numMines, obstacleRadius)
 
-            self:spawn(levelManager, Asteroid, cellX, cellY)
-        else
-            -- We don't really care if we lose a few asteroids
-            print('Level generator asteroid collision!')
-        end
-    end
+    -- Scatter some eggs around
+    self:scatterObstacles(levelManager, Egg, numEggs, obstacleRadius)
 
     gfx.popContext()
 end
