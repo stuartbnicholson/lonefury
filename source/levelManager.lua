@@ -24,9 +24,9 @@ local ENEMYBASE_SHOTS_MAX <const> = 6
 local ENEMYBASE_FIREMS_MAX <const> = 1500
 local ENEMYBASE_FIREMS_MIN <const> = 200
 local ENEMYBASE_FIREMS_LEVEL_REDUCTION <const> = 100
-local ENEMYBASEKILL_SECS_MIN = 5
+local ENEMYBASEKILL_SECS_MIN = 8
 local ENEMYBASEKILL_SECS_MAX = 25
-local ENEMYBASEKILL_SECOND_LEVEL_DEC <const> = 5
+local ENEMYBASEKILL_SECOND_LEVEL_DEC <const> = 3
 
 -- Max enemy that we want visible on screen
 local ENEMY_VISIBLE_MIN = 1
