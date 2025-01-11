@@ -10,18 +10,18 @@ local MAP_CELL_SIZE <const> = 16
 
 -- The number of enemy bases goes up per level with variation, and they get more radius to occupy
 local basesPerLevel = {
-    { min = 1,  max = 2,  radius = 40 },
-    { min = 2,  max = 3,  radius = 40 },
-    { min = 3,  max = 5,  radius = 50 },
-    { min = 4,  max = 6,  radius = 50 },
-    { min = 5,  max = 7,  radius = 60 },
-    { min = 7,  max = 9,  radius = 60 },
-    { min = 8,  max = 10, radius = 70 },
-    { min = 10, max = 10, radius = 70 }
+    { min = 1, max = 2,  radius = 40 },
+    { min = 2, max = 3,  radius = 40 },
+    { min = 3, max = 4,  radius = 50 },
+    { min = 4, max = 5,  radius = 50 },
+    { min = 5, max = 6,  radius = 60 },
+    { min = 6, max = 7,  radius = 60 },
+    { min = 7, max = 8,  radius = 70 },
+    { min = 8, max = 10, radius = 70 }
     -- After this we just keep repeating the highest
 }
 
--- The number of asteroids, eggs and mines goes per level
+-- The number of asteroids, eggs and mines per level
 local obstaclesPerLevel = {
     { asteroids = 20, mines = 0,  eggs = 5,  radius = 50 },
     { asteroids = 30, mines = 5,  eggs = 5,  radius = 60 },
@@ -99,6 +99,7 @@ end
 
 function LevelRandomGenerator:generate(levelManager)
     -- We're drawing on the occupiedMap as we spawn level objects
+    self.occupiedMap:clear(gfx.kColorClear)
     gfx.pushContext(self.occupiedMap)
     gfx.setColor(gfx.kColorWhite)
 
