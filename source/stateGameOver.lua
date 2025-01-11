@@ -40,31 +40,35 @@ function StateGameOver:update()
     gfx.pushContext()
     gfx.setFont(font)
     gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
-    gfx.drawText('GAME OVER', (VIEWPORT_WIDTH >> 1) - 71, (VIEWPORT_HEIGHT >> 1) - 7)
+    gfx.fillRect((VIEWPORT_WIDTH >> 1) - 73, (VIEWPORT_HEIGHT >> 1) - 9, 67, 16)
+    gfx.fillRect((VIEWPORT_WIDTH >> 1) - 73 + 87, (VIEWPORT_HEIGHT >> 1) - 9, 67, 16)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
     gfx.drawText('GAME OVER', (VIEWPORT_WIDTH >> 1) - 72, (VIEWPORT_HEIGHT >> 1) - 8)
 
     local shots = (Player.shotsFired > 999 and 999) or Player.shotsFired
+    local text = 'SHOTS:' .. shots
     gfx.setFont(smallFont)
     gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
-    gfx.drawText('SHOTS:' .. shots, (VIEWPORT_WIDTH >> 1) - 70, (VIEWPORT_HEIGHT >> 1) + 18)
+    gfx.fillRect((VIEWPORT_WIDTH >> 1) - 72, (VIEWPORT_HEIGHT >> 1) + 19, gfx.getTextSize(text) + 2, 9)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-    gfx.drawText('SHOTS:' .. shots, (VIEWPORT_WIDTH >> 1) - 71, (VIEWPORT_HEIGHT >> 1) + 20)
+    gfx.drawText(text, (VIEWPORT_WIDTH >> 1) - 71, (VIEWPORT_HEIGHT >> 1) + 20)
 
     local hits = (Player.shotsHit > 999 and 999) or Player.shotsHit
+    text = 'HITS:' .. hits
     gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
-    gfx.drawText('HITS:' .. hits, (VIEWPORT_WIDTH >> 1) + 13, (VIEWPORT_HEIGHT >> 1) + 18)
+    gfx.fillRect((VIEWPORT_WIDTH >> 1) + 13, (VIEWPORT_HEIGHT >> 1) + 19, gfx.getTextSize(text) + 2, 9)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-    gfx.drawText('HITS:' .. hits, (VIEWPORT_WIDTH >> 1) + 14, (VIEWPORT_HEIGHT >> 1) + 20)
+    gfx.drawText(text, (VIEWPORT_WIDTH >> 1) + 14, (VIEWPORT_HEIGHT >> 1) + 20)
 
     local percent = "0.00"
     if shots > 0 then
         percent = string.format("%.2f", (hits / shots) * 100.0)
     end
+    text = 'PERCENT:' .. percent
     gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
-    gfx.drawText('PERCENT:' .. percent, (VIEWPORT_WIDTH >> 1) - 70, (VIEWPORT_HEIGHT >> 1) + 36)
+    gfx.fillRect((VIEWPORT_WIDTH >> 1) - 72, (VIEWPORT_HEIGHT >> 1) + 39, gfx.getTextSize(text) + 2, 9)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-    gfx.drawText('PERCENT:' .. percent, (VIEWPORT_WIDTH >> 1) - 71, (VIEWPORT_HEIGHT >> 1) + 40)
+    gfx.drawText(text, (VIEWPORT_WIDTH >> 1) - 71, (VIEWPORT_HEIGHT >> 1) + 40)
     gfx.popContext()
 
     if self.timerComplete then
