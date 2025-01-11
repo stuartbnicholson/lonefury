@@ -37,6 +37,7 @@ function StateRespawn:start()
 end
 
 function StateRespawn:update()
+    LevelManager:clockReset() -- While the Player spawns, keep resetting the level clock
     WorldUpdate()
 
     gfx.animation.blinker.updateAll()

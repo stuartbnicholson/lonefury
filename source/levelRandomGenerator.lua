@@ -35,8 +35,7 @@ local obstaclesPerLevel = {
 }
 
 -- EnemyBase occcupied map images
-local baseVert = Assets.getImage('images/baseOccupiedVert.png')
-local baseHoriz = Assets.getImage('images/baseOccupiedHoriz.png')
+local baseOccupied = Assets.getImage('images/baseOccupied.png')
 
 LevelRandomGenerator = {}
 LevelRandomGenerator.__index = LevelRandomGenerator
@@ -117,8 +116,8 @@ function LevelRandomGenerator:generate(levelManager)
     for i = 1, numBases, 1 do
         for j = 1, 3, 1 do
             local cellX, cellY = LevelRandomGenerator.randomPointInCircle(baseRadius, 90, 90)
-            if not gfx.checkAlphaCollision(self.occupiedMap, 0, 0, gfx.kImageUnflipped, baseVert, cellX, cellY, gfx.kImageUnflipped) then
-                baseVert:draw(cellX, cellY)
+            if not gfx.checkAlphaCollision(self.occupiedMap, 0, 0, gfx.kImageUnflipped, baseOccupied, cellX, cellY, gfx.kImageUnflipped) then
+                baseOccupied:draw(cellX, cellY)
                 self:spawn(levelManager, EnemyBase, cellX, cellY)
                 break
             else
