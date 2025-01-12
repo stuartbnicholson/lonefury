@@ -64,6 +64,7 @@ function Mine.new()
         -- Find and spawn a MineExplosion
         local poolObj = PoolManager:freeInPool(MineExplosion)
         if poolObj then
+            SoundManager:largeExplosion()
             poolObj:spawn(self.worldX, self.worldY)
         end
     end
