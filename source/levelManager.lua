@@ -14,9 +14,6 @@ import 'enemyAI'
 -- Also tracks things like level alerts, increasing difficulty etc.
 local pd = playdate
 
--- On this level, ALL obstacles automatically appear, instead of randomly being left out.
-local ALL_OBSTACLES_LEVEL = 6
-
 -- Every two levels, enemy bases have an extra shot
 local ENEMYBASE_SHOTS_LEVEL_RATIO <const> = 2
 local ENEMYBASE_SHOTS_MIN <const> = 1
@@ -59,8 +56,8 @@ function LevelManager.new(levelGenerator)
     self.formationLeaders = {}
 
     self.spawn = {}
-    self.spawn[Asteroid] = self.asteroidSpawn
-    self.spawn[Egg] = self.eggSpawn
+    self.spawn[Asteroid] = self.simpleSpawn
+    self.spawn[Egg] = self.simpleSpawn
     self.spawn[Enemy] = self.simpleSpawn
     self.spawn[EnemyBase] = self.enemyBaseSpawn
 
@@ -77,28 +74,6 @@ function LevelManager:simpleSpawn(worldX, worldY, obj)
     obj:spawn(worldX, worldY, self.level)
 end
 
-function LevelManager:asteroidSpawn(worldX, worldY, obj)
-    if self.obstacleChance < 1 then
-        if math.random() < self.obstacleChance then
-            obj:spawn(worldX, worldY, self.level)
-        end
-    else
-        -- Spawn regardless, level is too high - player is just too good!
-        obj:spawn(worldX, worldY, self.level)
-    end
-end
-
-function LevelManager:eggSpawn(worldX, worldY, obj)
-    if self.obstacleChance < 1 then
-        if math.random() < self.obstacleChance then
-            obj:spawn(worldX, worldY, self.level)
-        end
-    else
-        -- Spawn regardless, level is too high - player is just too good!
-        obj:spawn(worldX, worldY, self.level)
-    end
-end
-
 function LevelManager:enemyBaseSpawn(worldX, worldY, obj)
     obj:spawn(worldX, worldY, self.enemyBaseMultiShot, self.enemyBaseFireMs)
 
@@ -111,6 +86,7 @@ function LevelManager:clockReset()
     self.lastBaseKillMS = now
     self.lastFormationActiveMS = now
     self.lastEnemySpawnMS = now
+    self.levelClearedMs = nil
 end
 
 function LevelManager:reset()
@@ -141,9 +117,6 @@ function LevelManager:setAggressionValues()
     -- How much time between base kills for an alert
     self.baseKillSecs = lume.clamp(ENEMYBASEKILL_SECS_MAX - (ENEMYBASEKILL_SECOND_LEVEL_DEC * (self.level - 1)),
         ENEMYBASEKILL_SECS_MIN, ENEMYBASEKILL_SECS_MAX)
-
-    -- For lower levels, less obstacles will appear. After the Xth level, all asteroid and mine obstacles are present
-    self.obstacleChance = self.level / ALL_OBSTACLES_LEVEL
 
     -- Enemy bases get more and more aggressive per level
     self.enemyBaseMultiShot = lume.clamp(self.level // ENEMYBASE_SHOTS_LEVEL_RATIO, ENEMYBASE_SHOTS_MIN,
@@ -267,14 +240,18 @@ function LevelManager:baseDestroyed()
 
     if self.basesToKill == 0 then
         self.levelClearedMs = pd.getCurrentTimeMilliseconds()
+    else
+        self.levelClearedMs = nil
     end
 end
 
 function LevelManager:isLevelClear()
     if self.basesToKill == 0 then
         local now = pd.getCurrentTimeMilliseconds()
-        if now - self.levelClearedMs > LEVEL_CLEARED_AFTER_MS then
-            return true
+        if self.levelClearedMs then
+            if now - self.levelClearedMs > LEVEL_CLEARED_AFTER_MS then
+                return true
+            end
         end
     end
 
