@@ -6,6 +6,7 @@ import 'enemyBigBullet'
 import 'enemyBaseZap'
 import 'enemyMonster'
 import 'playerBullet'
+import 'mine'
 
 -- Manages pools of game objects, in an attempt to avoid Lua GC issues.
 PoolManager = {}
@@ -14,7 +15,8 @@ PoolManager.__index = PoolManager
 -- Object pooling
 -- TODO: That is a lot of asteroids
 ASTEROID_POOL_SIZE = 80
-EGG_POOL_SIZE = 8
+MINE_POOL_SIZE = 30
+EGG_POOL_SIZE = 10
 ENEMY_POOL_SIZE = 20
 ENEMYBASE_POOL_SIZE = 16
 ENEMYBIGBULLET_POOL_SIZE = 15
@@ -24,6 +26,7 @@ PLAYERBULLET_POOL_SIZE = 4
 
 local levelObjPoolSize = {}
 levelObjPoolSize[Asteroid] = ASTEROID_POOL_SIZE
+levelObjPoolSize[Mine] = MINE_POOL_SIZE
 levelObjPoolSize[Egg] = EGG_POOL_SIZE
 levelObjPoolSize[Enemy] = ENEMY_POOL_SIZE
 levelObjPoolSize[EnemyBase] = ENEMYBASE_POOL_SIZE

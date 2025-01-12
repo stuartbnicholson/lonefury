@@ -10,9 +10,9 @@ local MAP_CELL_SIZE <const> = 16
 
 -- The number of enemy bases goes up per level with variation, and they get more radius to occupy
 local basesPerLevel = {
-    { min = 1, max = 2,  radius = 40 },
-    { min = 2, max = 3,  radius = 40 },
-    { min = 3, max = 4,  radius = 50 },
+    { min = 1, max = 2,  radius = 30 },
+    { min = 2, max = 3,  radius = 30 },
+    { min = 3, max = 4,  radius = 40 },
     { min = 4, max = 5,  radius = 50 },
     { min = 5, max = 6,  radius = 60 },
     { min = 6, max = 7,  radius = 60 },
@@ -23,14 +23,14 @@ local basesPerLevel = {
 
 -- The number of asteroids, eggs and mines per level
 local obstaclesPerLevel = {
-    { asteroids = 20, mines = 0,  eggs = 5,  radius = 50 },
-    { asteroids = 30, mines = 5,  eggs = 5,  radius = 60 },
-    { asteroids = 40, mines = 10, eggs = 5,  radius = 60 },
+    { asteroids = 20, mines = 0,  eggs = 5,  radius = 35 },
+    { asteroids = 30, mines = 5,  eggs = 5,  radius = 45 },
+    { asteroids = 40, mines = 10, eggs = 5,  radius = 55 },
     { asteroids = 50, mines = 10, eggs = 10, radius = 60 },
+    { asteroids = 50, mines = 20, eggs = 10, radius = 60 },
     { asteroids = 40, mines = 30, eggs = 10, radius = 60 },
-    { asteroids = 30, mines = 40, eggs = 10, radius = 60 },
-    { asteroids = 30, mines = 40, eggs = 10, radius = 60 },
-    { asteroids = 20, mines = 50, eggs = 10, radius = 60 }
+    { asteroids = 40, mines = 30, eggs = 10, radius = 60 },
+    { asteroids = 40, mines = 30, eggs = 10, radius = 60 }
     -- After this we just keep repeating the highest
 }
 
@@ -54,17 +54,6 @@ function LevelRandomGenerator.new()
     return self
 end
 
-function LevelRandomGenerator:spawn(levelManager, obj, cellX, cellY)
-    local poolObj = PoolManager:freeInPool(obj)
-    if (poolObj) then
-        local enemyX = cellX * MAP_CELL_SIZE
-        local enemyY = cellY * MAP_CELL_SIZE
-        levelManager:addToLevel(enemyX, enemyY, obj, poolObj)
-    else
-        print('Level Generate nil poolObj')
-    end
-end
-
 function LevelRandomGenerator:spawnLevels(level)
     -- How good is this player that they're hitting the cap :)
     if level > #basesPerLevel then
@@ -82,13 +71,22 @@ function LevelRandomGenerator:spawnLevels(level)
     return numBases, bases.radius, obstacles.asteroids, obstacles.mines, obstacles.eggs, obstacles.radius
 end
 
+function LevelRandomGenerator:spawn(levelManager, obj, cellX, cellY)
+    local poolObj = PoolManager:freeInPool(obj)
+    if poolObj then
+        local worldX = cellX * MAP_CELL_SIZE
+        local worldY = cellY * MAP_CELL_SIZE
+        levelManager:addToLevel(worldX, worldY, obj, poolObj)
+    else
+        print("Level Generate nil poolObj?")
+    end
+end
+
 function LevelRandomGenerator:scatterObstacles(levelManager, obj, numObstacles, radius)
     for i = 1, numObstacles, 1 do
         local cellX, cellY = LevelRandomGenerator.randomPointInCircle(radius, 90, 90)
-
         if (self.occupiedMap:sample(cellX, cellY) == gfx.kColorClear) then
             gfx.drawPixel(cellX, cellY)
-
             self:spawn(levelManager, obj, cellX, cellY)
         else
             -- We don't really care if we lose a few asteroids
@@ -132,7 +130,7 @@ function LevelRandomGenerator:generate(levelManager)
     self:scatterObstacles(levelManager, Asteroid, numAsteroids, obstacleRadius)
 
     -- TODO: Scatter some mines around
-    -- self:scatterObstacles(levelManager, Mine, numMines, obstacleRadius)
+    self:scatterObstacles(levelManager, Mine, numMines, obstacleRadius)
 
     -- Scatter some eggs around
     self:scatterObstacles(levelManager, Egg, numEggs, obstacleRadius)
@@ -147,5 +145,5 @@ function LevelRandomGenerator.randomPointInCircle(circleRadius, centreX, centreY
     local x = centreX + radius * math.cos(angle)
     local y = centreY + radius * math.sin(angle)
 
-    return x, y
+    return math.floor(x), math.floor(y)
 end

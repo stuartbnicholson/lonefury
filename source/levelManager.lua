@@ -58,6 +58,7 @@ function LevelManager.new(levelGenerator)
     self.spawn = {}
     self.spawn[Asteroid] = self.simpleSpawn
     self.spawn[Egg] = self.simpleSpawn
+    self.spawn[Mine] = self.simpleSpawn
     self.spawn[Enemy] = self.simpleSpawn
     self.spawn[EnemyBase] = self.enemyBaseSpawn
 

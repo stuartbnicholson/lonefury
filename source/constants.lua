@@ -13,6 +13,7 @@ SPRITE_TAGS             = {
     enemyBullet = 5,
     enemyBase = 6,
     egg = 7,
+    mine = 8
 }
 
 -- World gameplay occurs in (minus the dashboard)
@@ -34,9 +35,10 @@ WORLD_PLAYER_STARTY     = WORLD_HEIGHT >> 1
 -- Playing scoring!
 SCORE_ASTEROID          = 5
 SCORE_EGG               = 8
-SCORE_ENEMY             = 10
+SCORE_ENEMY             = 15
 SCORE_ENEMYBASE_SPHERE  = 25 -- * 6 = 150
-SCORE_ENEMYBASE_ONESHOT = 200
+SCORE_ENEMYBASE_ONESHOT = 250
+SCORE_MINE              = 10
 
 HIGHSCORE_TABLEFILE     = 'highscores'
 HIGHSCORE_MAX           = 6
