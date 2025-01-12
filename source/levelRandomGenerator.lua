@@ -23,7 +23,7 @@ local basesPerLevel = {
 
 -- The number of asteroids, eggs and mines per level
 local obstaclesPerLevel = {
-    { asteroids = 20, mines = 0,  eggs = 5,  radius = 35 },
+    { asteroids = 20, mines = 2,  eggs = 5,  radius = 35 },
     { asteroids = 30, mines = 5,  eggs = 5,  radius = 45 },
     { asteroids = 40, mines = 10, eggs = 5,  radius = 55 },
     { asteroids = 50, mines = 10, eggs = 10, radius = 60 },

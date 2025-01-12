@@ -1,27 +1,34 @@
-import 'CoreLibs/sprites'
-
+-- MineExplosions differ from Explosions, they render the same but are actually dangerous sprites. Colliding with them will kill the player and enemies.
+import 'CoreLibs/animation'
 import 'assets'
 
 local gfx = playdate.graphics
 
-Mine = {}
-Mine.__index = Mine
+MineExplosion = {}
+MineExplosion.__index = MineExplosion
 
-local mineImg = Assets.getImage('images/mine.png')
+local imgTable = Assets.getImagetable('images/explolarge-table-32-32.png')
 
-function Mine.new()
-    local self = gfx.sprite.new(mineImg)
-    self:setTag(SPRITE_TAGS.mine)
+function MineExplosion.new()
+    local self = gfx.sprite.new(imgTable:getImage(1))
+    self:setTag(SPRITE_TAGS.mineExplosion)
     self:setVisible(false)
     self:setZIndex(10)
-    self:setCollideRect(0, 0, 15, 15)
+    self:setCollideRect(0, 0, 32, 32)
     self:setGroupMask(GROUP_OBSTACLE)
-    self:setCollidesWithGroupsMask(GROUP_PLAYER|GROUP_BULLET|GROUP_ENEMY|GROUP_ENEMY_BASE)
+    self:setCollidesWithGroupsMask(GROUP_PLAYER|GROUP_ENEMY)
+    self:moveTo(-100, -100)
+
+    self.loop = gfx.animation.loop.new(120, imgTable, false)
+    self.worldX = -100 -- Start offscreen
+    self.worldY = -100
 
     -- Pool management
     function self:spawn(worldX, worldY)
         self.worldX = worldX
         self.worldY = worldY
+        self.loop.frame = 1
+        self.loop.paused = false
         self.isSpawned = true
 
         self:add()
@@ -35,10 +42,10 @@ function Mine.new()
     end
 
     function self:update()
-        -- TODO: visible only controls drawing, not being part of collisions. etc.
         local viewX, viewY = WorldToViewPort(self.worldX, self.worldY)
 
         if NearViewport(viewX, viewY, self.width, self.height) then
+            self:setImage(self.loop:image())
             self:setVisible(true)
         else
             self:setVisible(false)
@@ -47,24 +54,9 @@ function Mine.new()
         -- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
         -- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
         self:moveTo(viewX, viewY)
-    end
 
-    function self:bulletHit(other, x, y)
-        -- Mine explosions should are DANGEROUS, so they're a separate sprite
-        self:explode()
-
-        if other:getTag() == SPRITE_TAGS.playerBullet then
-            Player:scored(SCORE_MINE)
-        end
-    end
-
-    function self:explode()
-        self:despawn()
-
-        -- Find and spawn a MineExplosion
-        local poolObj = PoolManager:freeInPool(MineExplosion)
-        if poolObj then
-            poolObj:spawn(self.worldX, self.worldY)
+        if not self.loop:isValid() then
+            self:despawn()
         end
     end
 
