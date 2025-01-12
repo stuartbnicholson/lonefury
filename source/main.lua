@@ -92,12 +92,43 @@ StateRespawn = StateRespawn.new()
 StateGameOver = StateGameOver.new()
 StateTest = StateTest.new()
 
+-- Set the initial Game State
 local currentState = StateMenu
 -- local currentState = StateTest
 currentState:start()
 
 Dashboard = Dashboard.new()
 Starfield = Starfield.new()
+
+-- Add to the System Menu
+function SetupMenu()
+    local menu = pd.getSystemMenu()
+
+    local menuItem, error = menu:addCheckmarkMenuItem("Show FPS", false,
+        function(value)
+            ShowFPS = value
+        end)
+
+    local menuItem2, error = menu:addCheckmarkMenuItem("Show Level", false,
+        function(value)
+            ShowLevel = value
+        end)
+end
+
+SetupMenu()
+
+local pauseImage = gfx.image.new(400, 240)
+function pd.gameWillPause()
+    if ShowLevel then
+        pauseImage:clear(gfx.kColorBlack)
+        gfx.pushContext(pauseImage)
+        LevelGenerator.occupiedMap:draw(0, 0)
+        gfx.popContext()
+        pd.setMenuImage(pauseImage)
+    else
+        pd.setMenuImage(nil)
+    end
+end
 
 local ms = pd.getCurrentTimeMilliseconds
 function pd.update()

@@ -1,7 +1,7 @@
 name=LoneFury
-author=Snic
+author=cranehed
 description=Shoot kill furious lone starfighter pilot
-bundleID=com.snic.lonefury
-version=1.0
-buildNumber=100
+bundleID=com.cranehed.lonefury
+version=0.1
+buildNumber=001
 imagePath=SystemAssets

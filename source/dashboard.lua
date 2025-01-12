@@ -2,6 +2,7 @@
 import 'lume'
 import 'assets'
 import 'constants'
+import 'globals'
 
 local gfx = playdate.graphics
 local pd = playdate
@@ -95,7 +96,9 @@ function Dashboard:update()
     local frame = 1 + (Player:getAngle() // 45) % 8
     mapPlayerTable:drawImage(frame, mx + MINIMAP_SX - 3, my + MINIMAP_SY - 2)
 
-    pd.drawFPS(VIEWPORT_WIDTH + 64, 3)
+    if ShowFPS then
+        pd.drawFPS(VIEWPORT_WIDTH + 64, 3)
+    end
 end
 
 function Dashboard:drawAlertTimer()
