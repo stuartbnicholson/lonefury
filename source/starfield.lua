@@ -43,6 +43,22 @@ function Starfield:update()
     pdx *= HINT_STAR_VELOCITY
     pdy *= HINT_STAR_VELOCITY
 
+    -- Decide which direction to draw the hint stars, based on the Player
+    local dx = 0
+    local dy = 0
+    local angle = Player:getAngle()
+
+    -- TODO: Angled schmutz?
+    if angle < 45 or angle > 315 then
+        dy = 1
+    elseif angle < 135 then
+        dx = 1
+    elseif angle < 225 then
+        dy = 1
+    elseif angle < 315 then
+        dx = 1
+    end
+
     gfx.pushContext()
     gfx.setColor(gfx.kColorWhite)
     for i = 1, #self.hintStars do
@@ -53,7 +69,8 @@ function Starfield:update()
         self.hintStars[i].x = x
         self.hintStars[i].y = y
 
-        gfx.drawPixel(self.hintStars[i])
+        -- gfx.drawPixel(self.hintStars[i])
+        gfx.drawLine(x, y, x + dx, y + dy)
     end
     gfx.popContext()
 end
