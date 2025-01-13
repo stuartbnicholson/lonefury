@@ -143,6 +143,11 @@ function Player:new()
         self.deltaX = 0
         self.deltaY = 0
 
+        -- Special case: colliding with a mine detonates it
+        if other:getTag() == SPRITE_TAGS.mine then
+            other:explode()
+        end
+
         SoundManager:playerDies()
         Explode(ExplosionSmall, self.worldV.dx, self.worldV.dy, true)
     end

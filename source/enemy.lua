@@ -25,10 +25,10 @@ function Enemy.new()
     self.imgTable = imgTable
     self:setTag(SPRITE_TAGS.enemy)
     self:setZIndex(30)
-	self:setCollideRect(2, 2, 11, 10)
-	self:setGroupMask(GROUP_ENEMY)
-	-- self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_OBSTACLE|GROUP_ENEMY)
-	self:setCollidesWithGroupsMask(GROUP_OBSTACLE|GROUP_ENEMY)
+    self:setCollideRect(2, 2, 11, 10)
+    self:setGroupMask(GROUP_ENEMY)
+    -- self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_OBSTACLE|GROUP_ENEMY)
+    self:setCollidesWithGroupsMask(GROUP_OBSTACLE|GROUP_ENEMY)
     self.worldV = geom.vector2D.new(0, 0)
     self.velocity = geom.vector2D.new(0, 0)
 
@@ -129,10 +129,10 @@ function Enemy.new()
         end
 
         -- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
-		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
+        -- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
         local c, n
         viewX, viewY, c, n = self:moveWithCollisions(viewX, viewY)
-        for i=1,n do
+        for i = 1, n do
             if c[i].other:getGroupMask() ~= GROUP_ENEMY and self:alphaCollision(c[i].other) == true then
                 self:collision(c[i].other, c[i].touch.x, c[i].touch.y)
                 break
@@ -145,6 +145,11 @@ function Enemy.new()
     function self:collision(other, x, y)
         -- We cheat here. Enemies IGNORE off-screen collisions, otherwise they'd never make it to the Player area.
         if self:isVisible() then
+            -- Special case: colliding with a mine detonates it
+            if other:getTag() == SPRITE_TAGS.mine then
+                other:explode()
+            end
+
             Explode(ExplosionSmall, self.worldV.dx, self.worldV.dy)
             SoundManager:enemyDies()
 

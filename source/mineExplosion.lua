@@ -41,6 +41,10 @@ function MineExplosion.new()
         self:remove()
     end
 
+    function self:bulletHit(other, x, y)
+        -- Bullets can hit the mineExplosion because it's treated as an obstacle, but they have no effect.
+    end
+
     function self:update()
         local viewX, viewY = WorldToViewPort(self.worldX, self.worldY)
 
