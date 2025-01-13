@@ -6,7 +6,6 @@ local gfx = pd.graphics
 
 local titleImg = Assets.getImage('images/title.png')
 local font = Assets.getFont('images/Xevious-2x-table-16-16.png')
-local music = Assets.getSample('assets/kronbits/Retro Music - ABMU - ChipWave 10.wav')
 
 local TIMEOUT_MS = 1200 * 5
 
@@ -26,6 +25,7 @@ function StateMenu:start()
     print('StateMenu start')
 
     self.started = pd.getCurrentTimeMilliseconds()
+    SoundManager:introMusic()
 end
 
 function StateMenu:update()

@@ -20,6 +20,6 @@ function StateStart:start()
 end
 
 function StateStart:update()
-    StateGame:start()
-    return StateGame
+    StateRespawn:start()
+    return StateRespawn
 end
