@@ -6,6 +6,7 @@ local gfx = pd.graphics
 
 local titleImg = Assets.getImage('images/title.png')
 local font = Assets.getFont('images/Xevious-2x-table-16-16.png')
+local music = Assets.getSample('assets/kronbits/Retro Music - ABMU - ChipWave 10.wav')
 
 local TIMEOUT_MS = 1200 * 5
 
@@ -48,8 +49,8 @@ function StateMenu:update()
         StateStart:start()
         return StateStart
     elseif pd.getCurrentTimeMilliseconds() - self.started > TIMEOUT_MS then
-        StateHighscore:start(true)
-        return StateHighscore
+        StateInstructions:start()
+        return StateInstructions
     else
         return self
     end

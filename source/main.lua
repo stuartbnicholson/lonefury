@@ -10,6 +10,7 @@ import 'levelManager'
 import 'soundManager'
 import 'highScoreManager'
 import 'stateMenu'
+import 'stateInstructions'
 import 'stateHighscore'
 import 'stateHighscoreEntry'
 import 'stateStart'
@@ -83,6 +84,7 @@ HighScoreManager = HighScoreManager.new()
 
 -- TODO: The game state machine
 StateMenu = StateMenu.new()
+StateInstructions = StateInstructions.new()
 StateHighscore = StateHighscore.new()
 StateHighscoreEntry = StateHighscoreEntry.new()
 StartStart = StateStart.new()
