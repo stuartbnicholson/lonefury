@@ -15,7 +15,6 @@ local explode_b = Assets.getSample('assets/oryx/explode_b.wav')
 local explode_c = Assets.getSample('assets/oryx/explode_c.wav')
 local collect_b = Assets.getSample('assets/oryx/collect_b.wav')
 local score = Assets.getSample('assets/oryx/score.wav')
-local music = Assets.getSample('assets/kronbits/Retro Music - ABMU - ChipWave 10.wav')
 
 function SoundManager.new()
     local self = setmetatable({}, SoundManager)
@@ -28,6 +27,10 @@ function SoundManager.new()
 
     self.enemySynth = snd.synth.new(snd.kWaveSawtooth)
     self.enemySynth:setADSR(0.1, 0.12, 0.15, 0.15)
+
+    self.musicPlayer, error = snd.sampleplayer.new('assets/kronbits/Retro Music - ABMU - ChipWave 10 mono.wav')
+    assert(self.musicPlayer, error)
+    self.musicPlayer:setVolume(0.5)
 
     return self
 end
@@ -70,7 +73,14 @@ function SoundManager:interfaceClick()
     score:play(1)
 end
 
-function SoundManager:introMusic()
-    -- TODO: Need proper player management for the music
-    -- music:play(1)
+function SoundManager:introMusic(play)
+    if play then
+        if not self.musicPlayer:isPlaying() then
+            self.musicPlayer:play(0) -- Loop until stopped
+        end
+    else
+        if self.musicPlayer:isPlaying() then
+            self.musicPlayer:stop()
+        end
+    end
 end

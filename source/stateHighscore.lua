@@ -18,6 +18,8 @@ end
 function StateHighscore:start(acceptButtons)
     print('StateHighscore start')
 
+    SoundManager:introMusic(true)
+
     self.acceptButtons = acceptButtons
     self.started = pd.getCurrentTimeMilliseconds()
 end

@@ -25,7 +25,7 @@ function StateMenu:start()
     print('StateMenu start')
 
     self.started = pd.getCurrentTimeMilliseconds()
-    SoundManager:introMusic()
+    SoundManager:introMusic(true)
 end
 
 function StateMenu:update()
