@@ -26,12 +26,12 @@ local baseSphereMask = Assets.getImage('images/baseSphereMask.png')
 
 -- Horiz sphere mask/ruin positions for 18,18 sprite
 local sphereHorizPos = {}
-sphereHorizPos[Sphere1] = geom.point.new(-1,15)
-sphereHorizPos[Sphere2] = geom.point.new(23,-1)
-sphereHorizPos[Sphere3] = geom.point.new(47,15)
-sphereHorizPos[Sphere4] = geom.point.new(-1,-1)
-sphereHorizPos[Sphere5] = geom.point.new(23,15)
-sphereHorizPos[Sphere6] = geom.point.new(47,-1)
+sphereHorizPos[Sphere1] = geom.point.new(-1, 15)
+sphereHorizPos[Sphere2] = geom.point.new(23, -1)
+sphereHorizPos[Sphere3] = geom.point.new(47, 15)
+sphereHorizPos[Sphere4] = geom.point.new(-1, -1)
+sphereHorizPos[Sphere5] = geom.point.new(23, 15)
+sphereHorizPos[Sphere6] = geom.point.new(47, -1)
 local sphereHorizRuin1 = Sphere2|Sphere5
 local sphereHorizRuinFlip = {}
 sphereHorizRuinFlip[Sphere1] = gfx.kImageUnflipped
@@ -43,12 +43,12 @@ sphereHorizRuinFlip[Sphere6] = gfx.kImageFlippedXY
 
 -- Vert sphere mask/ruin positions for 18,18 sprite
 local sphereVertPos = {}
-sphereVertPos[Sphere1] = geom.point.new(15,-1)
-sphereVertPos[Sphere2] = geom.point.new(-1,23)
-sphereVertPos[Sphere3] = geom.point.new(15,47)
-sphereVertPos[Sphere4] = geom.point.new(-1,-1)
-sphereVertPos[Sphere5] = geom.point.new(15,23)
-sphereVertPos[Sphere6] = geom.point.new(-1,47)
+sphereVertPos[Sphere1] = geom.point.new(15, -1)
+sphereVertPos[Sphere2] = geom.point.new(-1, 23)
+sphereVertPos[Sphere3] = geom.point.new(15, 47)
+sphereVertPos[Sphere4] = geom.point.new(-1, -1)
+sphereVertPos[Sphere5] = geom.point.new(15, 23)
+sphereVertPos[Sphere6] = geom.point.new(-1, 47)
 local sphereVertRuin1 = Sphere1|Sphere3|Sphere4|Sphere6
 local sphereVertRuinFlip = {}
 sphereVertRuinFlip[Sphere1] = gfx.kImageUnflipped
@@ -64,46 +64,46 @@ EnemyBase = {}
 EnemyBase.__index = EnemyBase
 
 function EnemyBase.new(isVertical)
-    -- A base is composed of three sprite parts. The two base halves containing three spheres each,
-    -- and the central base gun. The central base gun is represented directly by this object.
-    isVertical = isVertical or math.random() > 0.5
+	-- A base is composed of three sprite parts. The two base halves containing three spheres each,
+	-- and the central base gun. The central base gun is represented directly by this object.
+	isVertical = isVertical or math.random() > 0.5
 	local self = gfx.sprite.new((isVertical and baseGunVert) or baseGunHoriz)
 	self:setTag(SPRITE_TAGS.enemyBase)
 	self:setZIndex(20)
 	self:setGroupMask(GROUP_ENEMY_BASE)
 	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
-    if isVertical then
-        self:setCollideRect(0, 0, 7, 16)
-        self.spherePos = sphereVertPos
-        self.sphereRuinFlip = sphereVertRuinFlip
-        self.sphereRuin1 = sphereVertRuin1
-    else
-        self:setCollideRect(0, 0, 16, 7)
-        self.spherePos = sphereHorizPos
-        self.sphereRuinFlip = sphereHorizRuinFlip
-        self.sphereRuin1 = sphereHorizRuin1
-    end
+	if isVertical then
+		self:setCollideRect(0, 0, 7, 16)
+		self.spherePos = sphereVertPos
+		self.sphereRuinFlip = sphereVertRuinFlip
+		self.sphereRuin1 = sphereVertRuin1
+	else
+		self:setCollideRect(0, 0, 16, 7)
+		self.spherePos = sphereHorizPos
+		self.sphereRuinFlip = sphereHorizRuinFlip
+		self.sphereRuin1 = sphereHorizRuin1
+	end
 
-    -- Base members
-    self.isVertical = isVertical
+	-- Base members
+	self.isVertical = isVertical
 	self.lastFiredMs = 0
 
-    -- The base halves
-    -- Each base half is 32x64 horiz, or 64x32 vert
-    -- The central gun is 16x7 horiz or 7x16 vert
-    -- We're assuming base gun is at 0,0
-    if self.isVertical then
-        self.xHalf = -(32 + 7) / 2
-        self.yHalf = 0
-    else
-        self.xHalf = 0
-        self.yHalf = -(32 + 7) / 2
-    end
+	-- The base halves
+	-- Each base half is 32x64 horiz, or 64x32 vert
+	-- The central gun is 16x7 horiz or 7x16 vert
+	-- We're assuming base gun is at 0,0
+	if self.isVertical then
+		self.xHalf = -(32 + 7) / 2
+		self.yHalf = 0
+	else
+		self.xHalf = 0
+		self.yHalf = -(32 + 7) / 2
+	end
 
-    self.halves = {
-        EnemyBaseHalf.new(self, self.xHalf, self.yHalf, self.isVertical, false, {Sphere1, Sphere2, Sphere3}), -- Top, or left
-        EnemyBaseHalf.new(self, -self.xHalf, -self.yHalf, self.isVertical, true, {Sphere4, Sphere5, Sphere6})   -- Bottom, or right
-    }
+	self.halves = {
+		EnemyBaseHalf.new(self, self.xHalf, self.yHalf, self.isVertical, false, { Sphere1, Sphere2, Sphere3 }), -- Top, or left
+		EnemyBaseHalf.new(self, -self.xHalf, -self.yHalf, self.isVertical, true, { Sphere4, Sphere5, Sphere6 }) -- Bottom, or right
+	}
 
 	-- Pool management
 	function self:spawn(worldX, worldY, multiShot, fireMs)
@@ -121,21 +121,21 @@ function EnemyBase.new(isVertical)
 		self.isSpawned = true
 
 		self:add()
-        self.halves[1]:spawn()
-        self.halves[2]:spawn()
+		self.halves[1]:spawn()
+		self.halves[2]:spawn()
 	end
 
-    function self:despawn()
+	function self:despawn()
 		Dashboard:removeEnemyBase(self.worldX, self.worldY)
 
 		self:setVisible(false)
 		-- self.isAlive = SpheresDead
-        self.isSpawned = false
+		self.isSpawned = false
 
-        self:remove()
-        self.halves[1]:despawn()
-        self.halves[2]:despawn()
-    end
+		self:remove()
+		self.halves[1]:despawn()
+		self.halves[2]:despawn()
+	end
 
 	function self:sphereFire(firingSpheres)
 		assert(firingSpheres > 0, 'No spheres to fire')
@@ -233,13 +233,13 @@ function EnemyBase.new(isVertical)
 		end
 	end
 
-    function self:update()
+	function self:update()
 		local viewX, viewY = WorldToViewPort(self.worldX, self.worldY)
 
-        local visible = NearViewport(viewX, viewY, 72, 72) or false
-        self:setVisible(visible)
-        self.halves[1]:setVisible(visible)
-        self.halves[2]:setVisible(visible)
+		local visible = NearViewport(viewX, viewY, 72, 72) or false
+		self:setVisible(visible)
+		self.halves[1]:setVisible(visible)
+		self.halves[2]:setVisible(visible)
 
 		ActiveEnemyBases += 1
 		if visible then
@@ -249,54 +249,54 @@ function EnemyBase.new(isVertical)
 		-- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
 		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
 		self:moveTo(viewX, viewY)
-        self.halves[1]:moveTo(self.xHalf + viewX, self.yHalf + viewY)
-        self.halves[2]:moveTo(-self.xHalf + viewX, -self.yHalf + viewY)
+		self.halves[1]:moveTo(self.xHalf + viewX, self.yHalf + viewY)
+		self.halves[2]:moveTo(-self.xHalf + viewX, -self.yHalf + viewY)
 
-        if visible then
-			if Player.isAlive then
+		if visible then
+			if Player:alive() then
 				-- Fire some new bullets
 				self:fire()
 			end
 		end
-    end
+	end
 
-    function self:bulletHit(bullet, cx, cy)
+	function self:bulletHit(bullet, cx, cy)
 		-- TODO: Centre hit is an instant kill unless shields are down
 		self:baseExplodes()
-    end
+	end
 
-    function self:sphereHit(sphere)
-        -- If a sphere has been hit AND it isn't already destroyed, destroy it.
-        if self.spheresAlive & sphere > 0 then
-            -- If this is the last sphere in the base, destroy the whole base
-            self.spheresAlive = self.spheresAlive ~ sphere
+	function self:sphereHit(sphere)
+		-- If a sphere has been hit AND it isn't already destroyed, destroy it.
+		if self.spheresAlive & sphere > 0 then
+			-- If this is the last sphere in the base, destroy the whole base
+			self.spheresAlive = self.spheresAlive ~ sphere
 
-            if self.spheresAlive == SpheresDead then
-                self:baseExplodes()
-            else
-                self:sphereExplodes(sphere)
-            end
-        end
-    end
+			if self.spheresAlive == SpheresDead then
+				self:baseExplodes()
+			else
+				self:sphereExplodes(sphere)
+			end
+		end
+	end
 
 	function self:sphereExplodes(sphere)
 		Player:scored(SCORE_ENEMYBASE_SPHERE)
 
 		local point = self.spherePos[sphere]
 		-- Explode sphere
-        if self.isVertical then
-            if sphere < Sphere4 then
-    		    Explode(ExplosionMed, self.worldX + point.x - 36 + 10, self.worldY + point.y - 36 + 10)
-            else
-    		    Explode(ExplosionMed, self.worldX + point.x - 36 + 10 + 39, self.worldY + point.y - 36 + 10)
-            end
-        else
-            if sphere < Sphere4 then
-    		    Explode(ExplosionMed, self.worldX + point.x - 36 + 10, self.worldY + point.y - 36 + 10)
-            else
-    		    Explode(ExplosionMed, self.worldX + point.x - 36 + 10, self.worldY + point.y - 36 + 10 + 39)
-            end
-        end
+		if self.isVertical then
+			if sphere < Sphere4 then
+				Explode(ExplosionMed, self.worldX + point.x - 36 + 10, self.worldY + point.y - 36 + 10)
+			else
+				Explode(ExplosionMed, self.worldX + point.x - 36 + 10 + 39, self.worldY + point.y - 36 + 10)
+			end
+		else
+			if sphere < Sphere4 then
+				Explode(ExplosionMed, self.worldX + point.x - 36 + 10, self.worldY + point.y - 36 + 10)
+			else
+				Explode(ExplosionMed, self.worldX + point.x - 36 + 10, self.worldY + point.y - 36 + 10 + 39)
+			end
+		end
 
 		-- Select ruined sphere image
 		local ruinImg = baseRuin1
@@ -307,13 +307,13 @@ function EnemyBase.new(isVertical)
 		-- Select ruined sphere reflect
 		local flip = self.sphereRuinFlip[sphere]
 
-        -- Select half image
-        local halfImg
-        if sphere < Sphere4 then
-            halfImg = self.halves[1]:getImage()
-        else
-            halfImg = self.halves[2]:getImage()
-        end
+		-- Select half image
+		local halfImg
+		if sphere < Sphere4 then
+			halfImg = self.halves[1]:getImage()
+		else
+			halfImg = self.halves[2]:getImage()
+		end
 
 		gfx.pushContext(halfImg)
 		gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
@@ -323,7 +323,7 @@ function EnemyBase.new(isVertical)
 		gfx.popContext()
 	end
 
-    function self:baseExplodes()
+	function self:baseExplodes()
 		if self.spheresAlive == SpheresAlive then
 			Player:scored(SCORE_ENEMYBASE_ONESHOT)
 		end
@@ -335,5 +335,5 @@ function EnemyBase.new(isVertical)
 		self:despawn()
 	end
 
-    return self
+	return self
 end

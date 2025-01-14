@@ -108,7 +108,7 @@ end
 
 -- Enemy brain to chase the player
 function EnemyBrainChasePlayer(self)
-    if Player.isAlive then
+    if Player:alive() then
         -- They only ever chase live players...
         local pWV = Player:getWorldV()
 
@@ -130,7 +130,7 @@ end
 
 -- Enemy brain to avoid the player
 function EnemyBrainAvoidPlayer(self)
-    if Player.isAlive then
+    if Player:alive() then
         -- ...however they only ever avoid live players
         local pWV = Player:getWorldV()
 
@@ -167,7 +167,8 @@ end
 -- A more organic feel, but more math per enemy update!
 function EnemyBrainFlyFormation(self)
     if self.formationLeader then
-        local chaseX, chaseY = CalcFormation(self.formation, self.formationPos, self.formationLeader.angle, self.formationLeader.worldV)
+        local chaseX, chaseY = CalcFormation(self.formation, self.formationPos, self.formationLeader.angle,
+            self.formationLeader.worldV)
         local chaseV = geom.vector2D.new(chaseX, chaseY) -- TODO: GC!
 
         local d = PointsDistance(self.worldV.dx, self.worldV.dy, chaseX, chaseY)
@@ -192,7 +193,8 @@ end
 -- Enemy brain, rigid formation based on the leader's position.
 -- A less organic feel, but also less math per enemy update!
 function EnemyBrainFlyFormationRigid(self, turnAngle)
-    local formX, formY = CalcFormation(self.formation, self.formationPos, self.formationLeader.angle, self.formationLeader.worldV)
+    local formX, formY = CalcFormation(self.formation, self.formationPos, self.formationLeader.angle,
+        self.formationLeader.worldV)
     self.worldV.dx = formX
     self.worldV.dy = formY
 

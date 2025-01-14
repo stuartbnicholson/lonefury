@@ -74,7 +74,6 @@ function Player:new()
         assert(self.lives > 0)
         self.angle = 0
         SetTableImage(self.angle, self, self.imgTable)
-        self.isAlive = true
         self:setVisible(true)
 
         self.worldV.dx = WORLD_PLAYER_STARTX
@@ -82,6 +81,16 @@ function Player:new()
 
         -- TODO: add() is called multiple times. See StateRespawn. Is this an issue?
         self:add()
+    end
+
+    function self:alive()
+        return self.isAlive
+    end
+
+    function self:makeAlive()
+        -- Spawning isn't the same as being alive!
+        self:setVisible(true)
+        self.isAlive = true
     end
 
     -- Only called if sprite is in sprite list

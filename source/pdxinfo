@@ -3,5 +3,5 @@ author=cranehed
 description=Shoot kill furious lone starfighter pilot
 bundleID=com.cranehed.lonefury
 version=0.2
-buildNumber=002
+buildNumber=003
 imagePath=SystemAssets

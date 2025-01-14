@@ -233,6 +233,7 @@ end
 
 function LevelManager:baseDestroyed()
     self.basesToKill -= 1
+    print("LevelManager:basesToKill: " .. self.basesToKill)
     assert(self.basesToKill >= 0)
 
     local now = pd.getCurrentTimeMilliseconds()
@@ -260,7 +261,7 @@ function LevelManager:isLevelClear()
 end
 
 function LevelManager:percentAlertTimeLeft()
-    if Player.isAlive and self.lastBaseKillMS then
+    if Player:alive() and self.lastBaseKillMS then
         local lastKillSecs = (pd.getCurrentTimeMilliseconds() - self.lastBaseKillMS) / 1000
         return 1.0 - (lastKillSecs / self.baseKillSecs)
     else

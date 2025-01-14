@@ -63,7 +63,7 @@ end
 function StateGame:start()
     print('StateGame start')
 
-    Player:spawn()
+    Player:makeAlive()
     LevelManager:levelStart()
 end
 
@@ -77,7 +77,7 @@ function StateGame:update()
     -- ...then update world entities WITH collisions etc.
     WorldUpdate()
 
-    if not Player.isAlive then
+    if not Player:alive() then
         StateDead:start()
         return StateDead
     elseif LevelManager:isLevelClear() then
