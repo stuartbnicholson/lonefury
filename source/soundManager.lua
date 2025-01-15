@@ -73,8 +73,8 @@ function SoundManager:interfaceClick()
     score:play(1)
 end
 
-function SoundManager:introMusic(play)
-    if play then
+function SoundManager:titleMusic(play)
+    if play and TitleMusic then
         if not self.musicPlayer:isPlaying() then
             self.musicPlayer:play(0) -- Loop until stopped
         end

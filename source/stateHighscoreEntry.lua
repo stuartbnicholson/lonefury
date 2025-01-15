@@ -24,7 +24,7 @@ end
 function StateHighscoreEntry:start()
     print('StateHighscoreEntry start')
 
-    SoundManager:introMusic(true)
+    SoundManager:titleMusic(true)
 
     self.currentAlpha = 1
     self.currentPos = 1
