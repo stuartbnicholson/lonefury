@@ -48,10 +48,11 @@ function Player:new()
     function self:reset()
         self:resetAngle()
         self.lives = 3
-        self.bonusLives = 0
+        self.extraLives = 0
         self.score = 0
         self.shotsFired = 0
         self.shotsHit = 0
+        self.isAlive = false
     end
 
     function self:getWorldV()
@@ -142,8 +143,14 @@ function Player:new()
         -- Player has scored, ergo they've hit something
         self.shotsHit += 1
 
-        -- TODO: HERE: Extra lives? Other bonuses? Difficulty increase?
         -- Add an extra life every X points, have to track them separately so we don't add too many!
+        local extraLives = math.floor(self.score / SCORE_EXTRALIFE)
+        if self.extraLives < extraLives and self.lives < MAX_LIVES then
+            self.extraLives += 1
+            self.lives += 1
+            SoundManager:playerExtraLife()
+            Dashboard:drawLives()
+        end
 
         Dashboard:drawPlayerScore()
     end

@@ -15,6 +15,7 @@ local explode_b = Assets.getSample('assets/oryx/explode_b.wav')
 local explode_c = Assets.getSample('assets/oryx/explode_c.wav')
 local collect_b = Assets.getSample('assets/oryx/collect_b.wav')
 local score = Assets.getSample('assets/oryx/score.wav')
+local extra_life = Assets.getSample('assets/kronbits/Retro PowerUP 09.wav')
 
 function SoundManager.new()
     local self = setmetatable({}, SoundManager)
@@ -83,4 +84,8 @@ function SoundManager:titleMusic(play)
             self.musicPlayer:stop()
         end
     end
+end
+
+function SoundManager:playerExtraLife()
+    extra_life:play(1)
 end

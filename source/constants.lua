@@ -40,7 +40,9 @@ SCORE_ENEMY             = 15
 SCORE_ENEMYBASE_SPHERE  = 25 -- * 6 = 150
 SCORE_ENEMYBASE_ONESHOT = 250
 SCORE_MINE              = 10
-SCORE_EXTRALIFE         = 2500
+SCORE_EXTRALIFE         = 1800
+
+MAX_LIVES               = 5
 
 HIGHSCORE_TABLEFILE     = 'highscores'
 HIGHSCORE_MAX           = 6

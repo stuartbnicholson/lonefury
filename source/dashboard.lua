@@ -144,6 +144,11 @@ function Dashboard:drawPlayerScore()
 end
 
 function Dashboard:drawLivesMedals()
+    self:drawMedals()
+    self:drawLives()
+end
+
+function Dashboard:drawMedals()
     gfx.pushContext(self.dash)
 
     -- Medals
@@ -164,10 +169,14 @@ function Dashboard:drawLivesMedals()
         medal1Img:draw(x, y)
         x += 8
     end
+    gfx.popContext()
+end
 
+function Dashboard:drawLives()
+    gfx.pushContext(self.dash)
     -- Lives
-    x = 4
-    y = 222
+    local x = 4
+    local y = 222
     gfx.setColor(gfx.kColorBlack)
     gfx.fillRect(x, y, 75, 15)
     for i = 1, lume.clamp(Player.lives, 1, 6) - 1 do
