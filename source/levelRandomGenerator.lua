@@ -145,5 +145,5 @@ function LevelRandomGenerator.randomPointInCircle(circleRadius, centreX, centreY
     local x = centreX + radius * math.cos(angle)
     local y = centreY + radius * math.sin(angle)
 
-    return math.floor(x), math.floor(y)
+    return x, y
 end

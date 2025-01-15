@@ -63,7 +63,7 @@ end
 function StateGame:start()
     print('StateGame start')
 
-    Player:makeAlive()
+    Player:setAlive(true)
     LevelManager:levelStart()
 end
 

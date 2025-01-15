@@ -89,10 +89,12 @@ function Player:new()
         return self.isAlive
     end
 
-    function self:makeAlive()
-        -- Spawning isn't the same as being alive!
-        self:setVisible(true)
-        self.isAlive = true
+    function self:setAlive(alive)
+        self.isAlive = alive
+        if alive then
+            -- Spawning isn't the same as being alive!
+            self:setVisible(true)
+        end
     end
 
     -- Only called if sprite is in sprite list

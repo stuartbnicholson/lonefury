@@ -59,6 +59,8 @@ function EnemyMonster.new()
         -- Set initial position without collision
         local x, y = WorldToViewPort(worldX, worldY)
         self:moveTo(x, y)
+
+        SoundManager:roar()
     end
 
     function self:despawn()

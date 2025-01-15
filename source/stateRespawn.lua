@@ -29,6 +29,7 @@ function StateRespawn:start()
     Player.worldV.dy = WORLD_PLAYER_STARTY
     Player:resetAngle()
     Player:add()
+    Player:setAlive(false) -- Player is spawning, not quite alive yet!
 
     ViewPortWorldX, ViewPortWorldY = Player:getWorldV():unpack()
 
