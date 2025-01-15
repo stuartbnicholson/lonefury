@@ -13,7 +13,7 @@ function StateStart:start()
     print('StateStart start')
     MemoryCheck()
 
-    SoundManager:introMusic(false)
+    SoundManager:titleMusic(false)
     LevelManager:reset()
     Player:reset()
     Dashboard:drawPlayerScore()
