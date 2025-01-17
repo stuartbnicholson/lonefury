@@ -4,7 +4,6 @@ import 'globals'
 import 'dashboard'
 import 'starfield'
 import 'poolManager'
-import 'levelDefGenerator'
 import 'levelRandomGenerator'
 import 'levelManager'
 import 'soundManager'
@@ -76,7 +75,6 @@ Assets.preloadFonts({
 
 -- Managers
 PoolManager = PoolManager.new()
--- LevelGenerator = LevelDefGenerator.new()
 LevelGenerator = LevelRandomGenerator.new()
 LevelManager = LevelManager.new(LevelGenerator)
 SoundManager = SoundManager.new()
