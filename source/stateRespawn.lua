@@ -20,9 +20,11 @@ function StateRespawn:start()
     print('StateRespawn start')
     MemoryCheck()
 
-    -- Despawn every enemy
+    -- Despawn every enemy and their bullets
     PoolManager:refillPool(Enemy)
     PoolManager:refillPool(EnemyMonster)
+    PoolManager:refillPool(EnemyBigBullet)
+    PoolManager:refillPool(EnemyBaseZap)
 
     -- Recenter world, to make sure player isn't near anything dangerous
     Player.worldV.dx = WORLD_PLAYER_STARTX
@@ -34,7 +36,8 @@ function StateRespawn:start()
     ViewPortWorldX, ViewPortWorldY = Player:getWorldV():unpack()
 
     Dashboard:drawLivesMedals()
-    self.blinker:start(600, 600, false, 4)
+    self.blinker:start(600, 600, false, 5)
+    self.prevOn = false
 end
 
 function StateRespawn:update()
@@ -45,8 +48,17 @@ function StateRespawn:update()
     if self.blinker.running then
         if self.blinker.on then
             Player:setVisible(true)
+            if not self.prevOn then
+                if self.blinker.counter == 1 then
+                    SoundManager:playerSpawn2()
+                else
+                    SoundManager:playerSpawn1()
+                end
+            end
+            self.prevOn = true
         else
             Player:setVisible(false)
+            self.prevOn = false
         end
     else
         StateGame:start()
