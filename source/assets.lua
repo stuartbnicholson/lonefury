@@ -4,12 +4,12 @@ Assets = {}
 local images = {}
 local imagetables = {}
 local fonts = {}
-local samples = {}
+local samplePlayers = {}
 
 local unloadedImages = {}
 local unloadedImagetables = {}
 local unloadedFonts = {}
-local unloadedSamples = {}
+local unloadedSamplePlayers = {}
 
 local push = table.insert
 local pop = table.remove
@@ -41,11 +41,11 @@ function Assets.preloadFonts(list)
 	end
 end
 
-function Assets.preloadSamples(list)
+function Assets.preloadSamplePlayers(list)
 	for i = 1, #list do
 		local path = list[i]
 		if not samples[path] then
-			push(unloadedSamples, path)
+			push(unloadedSamplePlayers, path)
 		end
 	end
 end
@@ -86,20 +86,20 @@ local function getFont(path)
 	return font
 end
 
-local function getSample(path)
-	if samples[path] then
-		return samples[path]
+local function getSamplePlayer(path)
+	if samplePlayers[path] then
+		return samplePlayers[path]
 	end
-	local sample, err = snd.sample.new(path)
-	assert(sample, err)
-	samples[path] = sample
-	return sample
+	local samplePlayer, err = snd.sampleplayer.new(path)
+	assert(samplePlayer, err)
+	samplePlayers[path] = samplePlayer
+	return samplePlayer
 end
 
 Assets.getImage = getImage
 Assets.getImagetable = getImagetable
 Assets.getFont = getFont
-Assets.getSample = getSample
+Assets.getSamplePlayer = getSamplePlayer
 
 ------------------------
 
@@ -138,10 +138,10 @@ function Assets.lazyLoad(frameStart)
 		end
 	end
 
-	count = #unloadedSamples
+	count = #unloadedSamplePlayers
 	if count > 0 then
 		for i = count, 1, -1 do
-			getSample(pop(unloadedSamples))
+			getSamplePlayer(pop(unloadedSamplePlayers))
 			if outOfTime(frameStart) then return end
 		end
 	end
