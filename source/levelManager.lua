@@ -254,6 +254,8 @@ function LevelManager:isLevelClear()
             if now - self.levelClearedMs > LEVEL_CLEARED_AFTER_MS then
                 return true
             end
+        else
+            self.levelClearedMs = now
         end
     end
 
