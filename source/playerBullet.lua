@@ -2,7 +2,7 @@ import 'assets'
 
 local gfx = playdate.graphics
 
-local imgTable = Assets.getImagetable('images/playerBullet-table-4-4.png')
+local imgTable = Assets.getImagetable('images/playerBullet-table-6-6.png')
 
 PlayerBullet = {}
 PlayerBullet.__index = PlayerBullet
@@ -11,7 +11,7 @@ function PlayerBullet:new()
 	local self = gfx.sprite:new(imgTable:getImage(1))
 	self:setTag(SPRITE_TAGS.playerBullet)
 	self:setZIndex(0)
-	self:setCollideRect(0, 0, 4, 4)
+	self:setCollideRect(0, 0, 6, 6)
 	self:setGroupMask(GROUP_BULLET)
 	self:setCollidesWithGroupsMask(GROUP_ENEMY|GROUP_ENEMY_BASE|GROUP_OBSTACLE)
 	self:setVisible(false)
@@ -31,8 +31,8 @@ function PlayerBullet:new()
 
 	function self:despawn()
 		self:setVisible(false)
-        self.isSpawned = false
-        self:remove()
+		self.isSpawned = false
+		self:remove()
 	end
 
 	function self:collisionResponse(other)
@@ -49,9 +49,9 @@ function PlayerBullet:new()
 		if NearViewport(viewX, viewY, self.width, self.height) then
 			-- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
 			-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
-			local toX,toY,c,n = self:moveWithCollisions(viewX, viewY)
+			local toX, toY, c, n = self:moveWithCollisions(viewX, viewY)
 			local hit = false
-			for i=1,n do
+			for i = 1, n do
 				if self:alphaCollision(c[i].other) == true then
 					-- The first real collision is sufficient to stop the bullet
 					-- c[i].other:bulletHit(self, c[i].touch.x, c[i].touch.y)
