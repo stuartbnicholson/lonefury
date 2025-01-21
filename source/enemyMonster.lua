@@ -10,7 +10,7 @@ local geom = pd.geometry
 
 ENEMYMONSTER_SPEED = 2.8 * 3
 ENEMYMONSTER_TURN_ANGLE = 5 * 3
-ROAR_DELAY_MS = 600
+ROAR_DELAY_MS = 500
 
 EnemyMonster = {}
 EnemyMonster.__index = EnemyMonster
@@ -56,6 +56,7 @@ function EnemyMonster.new()
         self:setImage(self.imgTable:getImage(1))
         self.isSpawned = true
         self.visibleMS = nil
+        self.roared = nil
 
         self:add()
 
@@ -89,8 +90,9 @@ function EnemyMonster.new()
             self:setVisible(true)
             if not self.visibleMS then
                 self.visibleMS = pd.getCurrentTimeMilliseconds()
-            elseif pd.getCurrentTimeMilliseconds() - self.visibleMS > ROAR_DELAY_MS then
+            elseif pd.getCurrentTimeMilliseconds() - self.visibleMS > ROAR_DELAY_MS and not self.roared then
                 SoundManager:roar()
+                self.roared = true
                 self.visibleMS = nil
             end
         else

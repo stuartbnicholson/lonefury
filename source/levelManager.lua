@@ -292,8 +292,9 @@ function LevelManager:update()
 
     -- Check if we need to unleash a monster if the player is beyond board edges
     local playerWorldX, playerWorldY = Player:getWorldV():unpack()
-    if (playerWorldX < 0 or playerWorldX > WORLD_WIDTH or playerWorldY < 0 or playerWorldY > WORLD_HEIGHT)
-        and PoolManager:freeInPool(EnemyMonster) ~= nil then
-        self:spawnMonster()
+    if (playerWorldX <= 0 or playerWorldX >= WORLD_WIDTH or playerWorldY <= 0 or playerWorldY >= WORLD_HEIGHT) then
+        if PoolManager:freeInPool(EnemyMonster) ~= nil then
+            self:spawnMonster()
+        end
     end
 end
