@@ -178,14 +178,16 @@ function LevelManager:formationLeaderDied(leader)
 end
 
 function LevelManager:spawnFormation()
-    -- Spawn far enough away from the player, point pointing towards them.
+    -- Spawn far enough away from the player, but pointing towards them.
     local playerV = Player:getWorldV()
     local x, y = AngleToDeltaXY(math.random(360))
     x = playerV.dx + (x * FORMATION_SPAWN_DIST)
     y = playerV.dy + (y * FORMATION_SPAWN_DIST)
 
+    local angle = PointsAngle(x, y, playerV.x, playerV.y)
+
     -- Formations don't collide outside viewport, so we don't care if we spawn overlapping stuff
-    self:spawnFormationAt(x, y, (Player:getAngle() + 180) % 360, EnemyBrainFlyFormation)
+    self:spawnFormationAt(x, y, angle, EnemyBrainFlyFormation)
 
     self.lastFormationSpawnMS = pd.getCurrentTimeMilliseconds()
     self.lastFormationActiveMS = pd.getCurrentTimeMilliseconds()
@@ -212,16 +214,15 @@ function LevelManager:spawnFormationAt(worldX, worldY, angle, formationBrain)
 end
 
 function LevelManager:spawnMonster()
-    -- Spawn far enough away from the player, point pointing towards them.
+    -- Spawn far enough away from the player, but pointing towards them.
     local playerV = Player:getWorldV()
     local x, y = AngleToDeltaXY(math.random(360))
-    worldX = playerV.dx + (x * FORMATION_SPAWN_DIST)
-    worldY = playerV.dy + (y * FORMATION_SPAWN_DIST)
-    local angle = (Player:getAngle() + 180) % 360
-
+    x = playerV.dx + (x * FORMATION_SPAWN_DIST)
+    y = playerV.dy + (y * FORMATION_SPAWN_DIST)
+    local angle = PointsAngle(x, y, playerV.x, playerV.y)
     local monster = PoolManager:freeInPool(EnemyMonster)
     if monster ~= nil then
-        monster:spawn(worldX, worldY)
+        monster:spawn(x, y)
         monster:setAngle(angle)
     end
 end
