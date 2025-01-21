@@ -11,7 +11,6 @@ Dashboard = {}
 Dashboard.__index = Dashboard
 
 local DASH_WIDTH = 80
-local DASH_HEIGHT = 240
 
 local MINIMAP_SX = 325
 local MINIMAP_SY = 122
@@ -52,12 +51,12 @@ function Dashboard:worldToDashXY(worldX, worldY)
     local mx, my
 
     mx = worldX / VIEWPORT_WIDTH
-    mx = lume.clamp(mx, 0, MINIMAP_WIDTH)
     mx = mx * MINIMAP_CELLW
+    mx = lume.clamp(mx, 0, MINIMAP_WIDTH)
 
     my = worldY / VIEWPORT_HEIGHT
-    my = lume.clamp(my, 0, MINIMAP_HEIGHT)
     my = my * MINIMAP_CELLH
+    my = lume.clamp(my, 0, MINIMAP_HEIGHT)
 
     return mx, my
 end
@@ -86,13 +85,15 @@ function Dashboard:update()
     self:drawAlertTimer()
 
     -- Draw formation leaders
+    local mx, my
     for _, worldV in pairs(LevelManager:getFormationLeaders()) do
         mx, my = self:worldToDashXY(worldV.dx, worldV.dy)
         formationImg:draw(mx + MINIMAP_SX, my + MINIMAP_SY)
     end
 
     -- Draw the player ship roughly pointing the right way, but clipped to the mini map
-    local mx, my = self:worldToDashXY(Player:getWorldV():unpack())
+    mx, my = self:worldToDashXY(Player:getWorldV():unpack())
+    print('Minimap player x:', mx, ',', my)
     local frame = 1 + (Player:getAngle() // 45) % 8
     mapPlayerTable:drawImage(frame, mx + MINIMAP_SX - 3, my + MINIMAP_SY - 2)
 
