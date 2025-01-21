@@ -4,11 +4,13 @@ import 'enemyAI'
 
 -- An unkillable beast that will destroy the player should they wander too far out of the play area
 
-local gfx = playdate.graphics
-local geom = playdate.geometry
+local pd = playdate
+local gfx = pd.graphics
+local geom = pd.geometry
 
 ENEMYMONSTER_SPEED = 2.8 * 3
 ENEMYMONSTER_TURN_ANGLE = 5 * 3
+ROAR_DELAY_MS = 600
 
 EnemyMonster = {}
 EnemyMonster.__index = EnemyMonster
@@ -53,14 +55,13 @@ function EnemyMonster.new()
         self.velocity.dy = 0
         self:setImage(self.imgTable:getImage(1))
         self.isSpawned = true
+        self.visibleMS = nil
 
         self:add()
 
         -- Set initial position without collision
         local x, y = WorldToViewPort(worldX, worldY)
         self:moveTo(x, y)
-
-        SoundManager:roar()
     end
 
     function self:despawn()
@@ -86,6 +87,12 @@ function EnemyMonster.new()
         -- TODO: visible only controls drawing, not being part of collisions. etc.
         if NearViewport(viewX, viewY, self.width, self.height) then
             self:setVisible(true)
+            if not self.visibleMS then
+                self.visibleMS = pd.getCurrentTimeMilliseconds()
+            elseif pd.getCurrentTimeMilliseconds() - self.visibleMS > ROAR_DELAY_MS then
+                SoundManager:roar()
+                self.visibleMS = nil
+            end
         else
             self:setVisible(false)
         end
