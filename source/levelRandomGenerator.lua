@@ -74,8 +74,8 @@ end
 function LevelRandomGenerator:spawn(levelManager, obj, cellX, cellY)
     local poolObj = PoolManager:freeInPool(obj)
     if poolObj then
-        local worldX = cellX * MAP_CELL_SIZE
-        local worldY = cellY * MAP_CELL_SIZE
+        local worldX = (cellX * MAP_CELL_SIZE) + 8 -- Sprites are centered
+        local worldY = (cellY * MAP_CELL_SIZE) + 8
         levelManager:addToLevel(worldX, worldY, obj, poolObj)
     else
         print("Level Generate nil poolObj?")
@@ -117,7 +117,7 @@ function LevelRandomGenerator:generate(levelManager)
             local cellX, cellY = LevelRandomGenerator.randomPointInCircle(baseRadius, 90, 90)
             if not gfx.checkAlphaCollision(self.occupiedMap, 0, 0, gfx.kImageUnflipped, baseOccupied, cellX, cellY, gfx.kImageUnflipped) then
                 baseOccupied:draw(cellX, cellY)
-                self:spawn(levelManager, EnemyBase, cellX, cellY)
+                self:spawn(levelManager, EnemyBase, cellX + 2, cellY + 2) -- Sprites are centered
                 break
             else
                 -- We really DO care if we can't place all the bases
