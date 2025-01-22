@@ -153,6 +153,19 @@ function EnemyBase.new(isVertical)
 		assert(true, 'No firing sphere?')
 	end
 
+	function self:numSpheresLeft()
+		local spheres = 0
+
+		spheres += self.spheresAlive & Sphere1
+		spheres += (self.spheresAlive & Sphere2) >> 1
+		spheres += (self.spheresAlive & Sphere3) >> 2
+		spheres += (self.spheresAlive & Sphere4) >> 3
+		spheres += (self.spheresAlive & Sphere5) >> 4
+		spheres += (self.spheresAlive & Sphere6) >> 5
+
+		return spheres
+	end
+
 	function self:fire()
 		-- Check if enough time has elapsed since base last fired
 		local now = pd.getCurrentTimeMilliseconds()
@@ -326,6 +339,8 @@ function EnemyBase.new(isVertical)
 	function self:baseExplodes()
 		if self.spheresAlive == SpheresAlive then
 			Player:scored(SCORE_ENEMYBASE_ONESHOT)
+		else
+			Player:scored(self:numSpheresLeft() * SCORE_ENEMYBASE_SPHERE)
 		end
 
 		ScreenShake(1, 2)

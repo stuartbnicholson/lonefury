@@ -19,7 +19,7 @@ EnemyBaseHalf.__index = EnemyBaseHalf
 
 function EnemyBaseHalf.new(enemyBase, worldX, worldY, isVertical, isFlipped, spheres)
     -- One half of an enemy base, may be flipped horiz or vertically
-	local self = gfx.sprite.new()
+    local self = gfx.sprite.new()
     self.enemyBase = enemyBase
     self.isVertical = isVertical
     self.isFlipped = isFlipped
@@ -28,17 +28,19 @@ function EnemyBaseHalf.new(enemyBase, worldX, worldY, isVertical, isFlipped, sph
     if self.isVertical then
         self.flip = (self.isFlipped and gfx.kImageFlippedX) or gfx.kImageUnflipped
         self:setImage(gfx.image.new(baseHalfVert:getSize()))
-        self:setCollideRect((self.isFlipped and 0) or COLLIDE_BOUNDARY, COLLIDE_BOUNDARY, 32 - COLLIDE_BOUNDARY , 64 - (COLLIDE_BOUNDARY << 1))
+        self:setCollideRect((self.isFlipped and 0) or COLLIDE_BOUNDARY, COLLIDE_BOUNDARY, 32 - COLLIDE_BOUNDARY,
+            64 - (COLLIDE_BOUNDARY << 1))
     else
         self.flip = (self.isFlipped and gfx.kImageFlippedY) or gfx.kImageUnflipped
         self:setImage(gfx.image.new(baseHalfHoriz:getSize()))
-        self:setCollideRect(COLLIDE_BOUNDARY, (self.isFlipped and 0) or COLLIDE_BOUNDARY, 64 - (COLLIDE_BOUNDARY << 1), 32 - COLLIDE_BOUNDARY)
+        self:setCollideRect(COLLIDE_BOUNDARY, (self.isFlipped and 0) or COLLIDE_BOUNDARY, 64 - (COLLIDE_BOUNDARY << 1),
+            32 - COLLIDE_BOUNDARY)
     end
 
     self:setTag(SPRITE_TAGS.enemyBase)
-	self:setZIndex(20)
-	self:setGroupMask(GROUP_ENEMY_BASE)
-	self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
+    self:setZIndex(20)
+    self:setGroupMask(GROUP_ENEMY_BASE)
+    self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
 
     function self:spawn()
         -- Reset base halves back to undamaged
@@ -61,18 +63,12 @@ function EnemyBaseHalf.new(enemyBase, worldX, worldY, isVertical, isFlipped, sph
     end
 
     function self:bulletHit(bullet, cx, cy)
-		-- Sprites are default positioned by centre
-		local x, y = self:getPosition()
+        -- Sprites are default positioned by centre
+        local x, y = self:getPosition()
         local w, h = self:getImage():getSize()
         x = cx - x + (w >> 1)
         y = cy - y + (h >> 1)
 
-        --[[
-        gfx.pushContext(self:getImage())
-        crossImg:draw(x - 1, y - 1)
-        print(x, y)
-        gfx.popContext()
-        ]]
         local v = (self.isVertical and y) or x
         if v < 14 then
             self.enemyBase:sphereHit(self.spheres[1])

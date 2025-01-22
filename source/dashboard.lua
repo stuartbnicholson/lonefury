@@ -93,7 +93,6 @@ function Dashboard:update()
 
     -- Draw the player ship roughly pointing the right way, but clipped to the mini map
     mx, my = self:worldToDashXY(Player:getWorldV():unpack())
-    print('Minimap player x:', mx, ',', my)
     local frame = 1 + (Player:getAngle() // 45) % 8
     mapPlayerTable:drawImage(frame, mx + MINIMAP_SX - 3, my + MINIMAP_SY - 2)
 

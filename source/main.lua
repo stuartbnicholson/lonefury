@@ -167,9 +167,9 @@ function WorldUpdate()
     LevelManager:update()
     Dashboard:update()
 
-    if pd.getCurrentTimeMilliseconds() % 1000 < 10 then
-        print('Active ', ActiveEnemy, ActiveEnemyFormations, ActiveEnemyBases, ActiveVisibleEnemyBases)
-    end
+    -- if pd.getCurrentTimeMilliseconds() % 1000 < 10 then
+    --     print('Active ', ActiveEnemy, ActiveEnemyFormations, ActiveEnemyBases, ActiveVisibleEnemyBases)
+    -- end
 end
 
 -- From https://sdk.play.date/2.4.2/Inside%20Playdate.html
