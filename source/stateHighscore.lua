@@ -16,8 +16,6 @@ function StateHighscore.new()
 end
 
 function StateHighscore:start(acceptButtons)
-    print('StateHighscore start')
-
     SoundManager:titleMusic(true)
 
     self.acceptButtons = acceptButtons

@@ -25,7 +25,6 @@ function StateGameOver.new()
 end
 
 function StateGameOver:start()
-    print('StateGameOver start')
     MemoryCheck()
 
     self.timerComplete = false

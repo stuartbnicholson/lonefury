@@ -23,8 +23,6 @@ function StateMenu.new()
 end
 
 function StateMenu:start()
-    print('StateMenu start')
-
     self.started = pd.getCurrentTimeMilliseconds()
     SoundManager:titleMusic(true)
 end

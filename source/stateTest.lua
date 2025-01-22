@@ -45,8 +45,6 @@ function LevelManagerMock:addToLevel(x, y, objClass, objInst)
 end
 
 function StateTest:start()
-    print('StateTest start')
-
     self.levelManager = LevelManagerMock.new()
     self.levelGenerator = LevelRandomGenerator.new()
 

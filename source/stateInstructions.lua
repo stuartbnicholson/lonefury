@@ -24,8 +24,6 @@ function StateInstructions.new()
 end
 
 function StateInstructions:start()
-    print('StateInstructions start')
-
     self.started = pd.getCurrentTimeMilliseconds()
 end
 

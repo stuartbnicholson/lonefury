@@ -10,7 +10,6 @@ function StateNewLevel.new()
 end
 
 function StateNewLevel:start()
-    print('StateNewLevel start')
     MemoryCheck()
 
     LevelManager:nextLevel()

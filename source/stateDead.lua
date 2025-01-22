@@ -22,14 +22,9 @@ function StateDead.new()
 end
 
 function StateDead:start()
-    print('StateDead start')
-
     self.timerComplete = false
     self.timer:reset()
     self.timer:start()
-
-    print('Shots fired: ', Player.shotsFired)
-    print('Shots hit: ', Player.shotsHit)
 end
 
 function StateDead:update()

@@ -17,7 +17,6 @@ function StateRespawn.new()
 end
 
 function StateRespawn:start()
-    print('StateRespawn start')
     MemoryCheck()
 
     -- Despawn every enemy and their bullets

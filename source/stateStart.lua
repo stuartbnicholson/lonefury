@@ -10,7 +10,6 @@ function StateStart.new()
 end
 
 function StateStart:start()
-    print('StateStart start')
     MemoryCheck()
 
     SoundManager:titleMusic(false)
