@@ -6,6 +6,7 @@ local gfx = pd.graphics
 
 local titleImg = Assets.getImage('images/title.png')
 local font = Assets.getFont('images/Xevious-2x-table-16-16.png')
+local smallFont = Assets.getFont('images/Xevious-table-8-8.png')
 
 local TIMEOUT_MS = 1200 * 5
 
@@ -31,19 +32,22 @@ end
 function StateMenu:update()
     Starfield:update()
     Dashboard:update()
+    gfx.animation.blinker.updateAll()
 
     -- Centered in the play area
     local w, h = titleImg:getSize()
     titleImg:draw((VIEWPORT_WIDTH - w) >> 1, ((VIEWPORT_HEIGHT - h) >> 1) - 32)
 
-    gfx.animation.blinker.updateAll()
+    gfx.pushContext()
+    gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+    gfx.setFont(smallFont)
+    gfx.drawText("V" .. pd.metadata.version, 285, 230)
+
     if self.blinker.on then
-        gfx.pushContext()
-        gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
         gfx.setFont(font)
         gfx.drawText('PRESS A BUTTON', 48, 186)
-        gfx.popContext()
     end
+    gfx.popContext()
 
     if pd.buttonIsPressed(pd.kButtonA|pd.kButtonB|pd.kButtonUp|pd.kButtonDown|pd.kButtonLeft|pd.kButtonRight) then
         StateStart:start()
