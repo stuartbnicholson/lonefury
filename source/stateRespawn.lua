@@ -1,5 +1,6 @@
 -- State: Player is respawning for another round
 import 'CoreLibs/animation'
+import 'CoreLibs/ui'
 
 local pd = playdate
 local gfx = pd.graphics
@@ -42,6 +43,10 @@ end
 function StateRespawn:update()
     LevelManager:clockReset() -- While the Player spawns, keep resetting the level clock
     WorldUpdate()
+
+    if pd.isCrankDocked() then
+        pd.ui.crankIndicator:draw()
+    end
 
     gfx.animation.blinker.updateAll()
     if self.blinker.running then
