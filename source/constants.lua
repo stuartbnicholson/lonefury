@@ -1,3 +1,6 @@
+-- Enables developer features
+DEVELOPER_BUILD         = true
+
 -- Collision Groups
 GROUP_PLAYER            = 0x01
 GROUP_BULLET            = 0x02
@@ -6,6 +9,7 @@ GROUP_OBSTACLE          = 0x08
 GROUP_ENEMY_BASE        = 0x10
 
 SPRITE_TAGS             = {
+
     player = 1,
     playerBullet = 2,
     asteroid = 3,

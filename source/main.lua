@@ -117,11 +117,13 @@ function SetupMenu()
         end)
     assert(menuItem2, error)
 
-    local menuItem3, error = menu:addCheckmarkMenuItem("Show Level", false,
-        function(value)
-            ShowLevel = value
-        end)
-    assert(menuItem3, error)
+    if DEVELOPER_BUILD then
+        local menuItem3, error = menu:addCheckmarkMenuItem("Show Level", false,
+            function(value)
+                ShowLevel = value
+            end)
+        assert(menuItem3, error)
+    end
 end
 
 SetupMenu()
