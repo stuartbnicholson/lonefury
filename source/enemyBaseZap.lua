@@ -10,7 +10,7 @@ local gfx = playdate.graphics
 EnemyBaseZap = {}
 EnemyBaseZap.__index = EnemyBaseZap
 
-local imgTable = Assets.getImagetable('images/baseZap-table-11-11.png')
+local imgTable = Assets.getImagetable('images/baseZap-table-17-17.png')
 
 local VELOCITY <const> = 8.0
 
@@ -19,7 +19,7 @@ function EnemyBaseZap:new()
     local self = gfx.sprite:new(imgTable:getImage(1))
     self:setTag(SPRITE_TAGS.enemyBullet)
     self:setZIndex(5)
-    self:setCollideRect(1, 1, 9, 9)
+    self:setCollideRect(3, 3, 11, 11)
     self:setGroupMask(GROUP_BULLET)
     self:setCollidesWithGroupsMask(GROUP_PLAYER|GROUP_OBSTACLE|GROUP_ENEMY)
     self:setVisible(false)
@@ -32,12 +32,16 @@ function EnemyBaseZap:new()
         self.deltaY = deltaY * VELOCITY
         self.isSpawned = true
 
-        local idx = 1
-        if isVertical then idx = 2 end
-        self:setImage(imgTable:getImage(idx), flip)
+        self.frame = 1
+        self.flip = flip
+        self.isVertical = isVertical
+        if isVertical then self.frame = 3 end
+        self:setImage(imgTable:getImage(self.frame), self.flip)
         self:moveTo(WorldToViewPort(self.worldX, self.worldY))
         self:setVisible(true)
         self:add()
+
+        SoundManager:enemyBaseZap()
     end
 
     function self:despawn()
@@ -77,6 +81,14 @@ function EnemyBaseZap:new()
                 -- Bullet can be re-used
                 self:despawn()
             end
+
+            -- Simple two frame flip
+            if self.isVertical then
+                if self.frame == 3 then self.frame = 4 else self.frame = 3 end
+            else
+                if self.frame == 2 then self.frame = 1 else self.frame = 2 end
+            end
+            self:setImage(imgTable:getImage(self.frame), self.flip)
         else
             -- Bullet can be re-used
             self:despawn()

@@ -313,8 +313,13 @@ function EnemyBase.new(isVertical)
 
 		if visible then
 			if Player:alive() then
-				-- Fire some new bullets
-				self:fire()
+				-- Being visible and being active are slightly different things.
+				-- Once the base is partially on-screen it becomes active
+				local active = NearViewport(viewX, viewY, 20, 20) or false
+				if active then
+					-- Fire some new bullets
+					self:fire()
+				end
 			end
 		end
 	end
