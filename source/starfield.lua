@@ -20,6 +20,10 @@ function Starfield.new()
     for i = 1, STATIC_STARS do
         gfx.drawPixel(math.random(VIEWPORT_WIDTH), math.random(VIEWPORT_HEIGHT))
     end
+
+    -- Make sure there's no stars underneath the Player's ship because it looks visually ugly.
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillCircleAtPoint(HALF_VIEWPORT_WIDTH - 1, HALF_VIEWPORT_HEIGHT - 1, 12)
     gfx.popContext()
 
     -- Make background transparent so we can see starfield draws
@@ -35,7 +39,7 @@ end
 
 function Starfield:update()
     -- This was originally an attempt to parallax scroll a viewport sized image, which requires drawing a large image multiple times
-    -- which consumes about 5fps so probably isn't worth the effort. Instead we'll draw a stationary background and some 'hint' stars.
+    -- which consumes about 5fps so probably isn't worth the effort. Instead we'll draw a stationary background and some 'hints' that move.
     self.image:draw(0, 0)
 
     -- Draw some hint stars that move
