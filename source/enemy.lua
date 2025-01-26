@@ -100,8 +100,12 @@ function Enemy.new()
     -- See sprite:moveWithCollisions
     function self:collisionResponse(other)
         if other:getGroupMask() == GROUP_ENEMY then
-            -- Enemies bounce off each other
-            return gfx.sprite.kCollisionTypeSlide
+            -- Enemies slide or bounce off each other randomly
+            if math.random(2) == 1 then
+                return gfx.sprite.kCollisionTypeSlide
+            else
+                return gfx.sprite.kCollisionTypeBounce
+            end
         else
             return gfx.sprite.kCollisionTypeOverlap
         end
