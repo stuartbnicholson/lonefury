@@ -111,13 +111,13 @@ function SetupMenu()
         end)
     assert(menuItem1, error)
 
-    local menuItem2, error = menu:addCheckmarkMenuItem("Show FPS", false,
-        function(value)
-            ShowFPS = value
-        end)
-    assert(menuItem2, error)
-
     if DEVELOPER_BUILD then
+        local menuItem2, error = menu:addCheckmarkMenuItem("Show FPS", false,
+            function(value)
+                ShowFPS = value
+            end)
+        assert(menuItem2, error)
+
         local menuItem3, error = menu:addCheckmarkMenuItem("Show Level", false,
             function(value)
                 ShowLevel = value
