@@ -110,6 +110,8 @@ function LevelRandomGenerator:generate(levelManager)
     gfx.fillCircleInRect(cellsWidthHalf - 4, cellsHeightHalf - 4, 8, 8)
 
     -- Scatter bases around first
+    -- TODO: Did consider some light trig to keep them separated, but I enjoy the fact they can overlap closely.
+    -- It might actually be more fun to randomly add fixed patterns of base levels...
     local poolObj
     local enemyX, enemyY
     for i = 1, numBases, 1 do

@@ -1,6 +1,7 @@
 -- A refactor of enemyBase that splits the base into three sub-sprites
 import 'assets'
 import 'enemyBaseHalf'
+import 'enemyBaseZap'
 
 local pd = playdate
 local gfx = pd.graphics
@@ -87,6 +88,9 @@ function EnemyBase.new(isVertical)
 	-- Base members
 	self.isVertical = isVertical
 	self.lastFiredMs = 0
+	self.fireMs = 0
+	self.lastZappedMs = 0
+	self.zapMs = 0
 
 	-- The base halves
 	-- Each base half is 32x64 horiz, or 64x32 vert
@@ -106,7 +110,7 @@ function EnemyBase.new(isVertical)
 	}
 
 	-- Pool management
-	function self:spawn(worldX, worldY, multiShot, fireMs)
+	function self:spawn(worldX, worldY, multiShot, fireMs, zapMs)
 		self.worldX = worldX
 		self.worldY = worldY
 		Dashboard:addEnemyBase(self.worldX, self.worldY)
@@ -114,6 +118,7 @@ function EnemyBase.new(isVertical)
 		-- Game level dictates the bases's rage.
 		self.multiShot = multiShot
 		self.fireMs = fireMs
+		self.zapMs = zapMs
 
 		self:setVisible(false)
 		self.spheresAlive = SpheresAlive
@@ -166,6 +171,42 @@ function EnemyBase.new(isVertical)
 		return spheres
 	end
 
+	-- Enemy base zaps are fast and infrequent
+	function self:zap()
+		local zap = PoolManager:freeInPool(EnemyBaseZap)
+		if zap then
+			-- Where is the Base relative to the Player, so we can zap towards them
+			local pX, pY = Player:getWorldV():unpack()
+			local deltaX = 0
+			local deltaY = 0
+			local flip = gfx.kImageUnflipped
+			if self.isVertical then
+				-- Vertical bases are firing in Y axis, towards centre
+				if self.worldY >= pY then
+					-- Firing upwards
+					deltaY = -1.0
+				else
+					-- Firing downwards
+					deltaY = 1.0
+					flip = gfx.kImageFlippedY
+				end
+			else
+				-- Horizontal bases are firing in X axis, towards centre
+				if self.worldX >= pX then
+					-- Firing left
+					deltaX = -1.0
+				else
+					-- Firing right
+					deltaX = 1.0
+					flip = gfx.kImageFlippedX
+				end
+			end
+
+			zap:spawn(self.worldX, self.worldY, deltaX, deltaY, self.isVertical, flip)
+		end
+	end
+
+	-- Enemy base bullets are slow and frequent
 	function self:fire()
 		-- Check if enough time has elapsed since base last fired
 		local now = pd.getCurrentTimeMilliseconds()
@@ -243,6 +284,11 @@ function EnemyBase.new(isVertical)
 					break
 				end
 			end
+		end
+
+		if self.zapMs > 0 and now - self.lastZappedMs >= self.zapMs then
+			self.lastZappedMs = now
+			self:zap()
 		end
 	end
 

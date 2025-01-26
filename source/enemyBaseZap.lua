@@ -10,29 +10,31 @@ local gfx = playdate.graphics
 EnemyBaseZap = {}
 EnemyBaseZap.__index = EnemyBaseZap
 
-local imgTable = Assets.getImagetable('images/bigBullet-table-4-4.png')
+local imgTable = Assets.getImagetable('images/baseZap-table-11-11.png')
 
--- TODO: If velocity increases, bullets get a lot harder to dodge
-local VELOCITY <const> = 4.0
+local VELOCITY <const> = 8.0
 
 -- TODO: All these bullet classes are very similar...
 function EnemyBaseZap:new()
-    local self = gfx.sprite:new()
+    local self = gfx.sprite:new(imgTable:getImage(1))
     self:setTag(SPRITE_TAGS.enemyBullet)
     self:setZIndex(5)
-    self:setCollideRect(0, 0, 4, 4)
+    self:setCollideRect(1, 1, 9, 9)
     self:setGroupMask(GROUP_BULLET)
     self:setCollidesWithGroupsMask(GROUP_PLAYER|GROUP_OBSTACLE|GROUP_ENEMY)
     self:setVisible(false)
 
     -- Spawning a bullet == firing a bullet
-    function self:spawn(worldX, worldY, deltaX, deltaY)
+    function self:spawn(worldX, worldY, deltaX, deltaY, isVertical, flip)
         self.worldX = worldX
         self.worldY = worldY
         self.deltaX = deltaX * VELOCITY
         self.deltaY = deltaY * VELOCITY
         self.isSpawned = true
 
+        local idx = 1
+        if isVertical then idx = 2 end
+        self:setImage(imgTable:getImage(idx), flip)
         self:moveTo(WorldToViewPort(self.worldX, self.worldY))
         self:setVisible(true)
         self:add()
@@ -60,7 +62,6 @@ function EnemyBaseZap:new()
             -- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
             -- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
             local toX, toY, c, n = self:moveWithCollisions(viewX, viewY)
-            self:setImage(self.loop:image())
             self:setVisible(true)
             local hit = false
             for i = 1, n do

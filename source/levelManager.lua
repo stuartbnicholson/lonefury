@@ -1,7 +1,6 @@
 import 'lume'
 
 import 'constants'
-import 'asteroid'
 import 'egg'
 import 'enemy'
 import 'enemyBase'
@@ -21,6 +20,10 @@ local ENEMYBASE_SHOTS_MAX <const> = 6
 local ENEMYBASE_FIREMS_MAX <const> = 1500
 local ENEMYBASE_FIREMS_MIN <const> = 200
 local ENEMYBASE_FIREMS_LEVEL_REDUCTION <const> = 100
+local ENEMYBASE_FIRST_ZAP_LEVEL = 3
+local ENEMYBASE_ZAPMS_MAX <const> = 1500
+local ENEMYBASE_ZAPMS_MIN <const> = 500
+local ENEMYBASE_ZAPMS_LEVEL_REDUCTION <const> = 100
 local ENEMYBASEKILL_SECS_MIN = 8
 local ENEMYBASEKILL_SECS_MAX = 25
 local ENEMYBASEKILL_SECOND_LEVEL_DEC <const> = 3
@@ -53,6 +56,9 @@ function LevelManager.new(levelGenerator)
 
     self.level = 1
     self.basesToKill = 0
+    self.enemyBaseMultiShot = 0
+    self.enemyBaseFireMs = 0
+    self.enemyBaseZapMs = 0
     self.formationLeaders = {}
 
     self.spawn = {}
@@ -76,7 +82,7 @@ function LevelManager:simpleSpawn(worldX, worldY, obj)
 end
 
 function LevelManager:enemyBaseSpawn(worldX, worldY, obj)
-    obj:spawn(worldX, worldY, self.enemyBaseMultiShot, self.enemyBaseFireMs)
+    obj:spawn(worldX, worldY, self.enemyBaseMultiShot, self.enemyBaseFireMs, self.enemyBaseZapMs)
 
     self.basesToKill += 1
 end
@@ -124,6 +130,14 @@ function LevelManager:setAggressionValues()
         ENEMYBASE_SHOTS_MAX)
     self.enemyBaseFireMs = lume.clamp(ENEMYBASE_FIREMS_MAX - ((self.level - 1) * ENEMYBASE_FIREMS_LEVEL_REDUCTION),
         ENEMYBASE_FIREMS_MIN, ENEMYBASE_FIREMS_MAX)
+
+    if self.level < ENEMYBASE_FIRST_ZAP_LEVEL then
+        self.enemyBaseZapsMs = 0;
+    else
+        self.enemyBaseZapMs = lume.clamp(
+            ENEMYBASE_ZAPMS_MAX - ((self.level - ENEMYBASE_FIRST_ZAP_LEVEL) * ENEMYBASE_ZAPMS_LEVEL_REDUCTION),
+            ENEMYBASE_ZAPMS_MIN, ENEMYBASE_ZAPMS_MAX)
+    end
 
     -- Maximum formations
     self.formationsMax = lume.clamp(math.floor(FORMATION_SPAWN_MIN + (self.level * FORMATION_SPAWN_PER_LEVEL)),
