@@ -132,7 +132,7 @@ function LevelManager:setAggressionValues()
         ENEMYBASE_FIREMS_MIN, ENEMYBASE_FIREMS_MAX)
 
     if self.level < ENEMYBASE_FIRST_ZAP_LEVEL then
-        self.enemyBaseZapsMs = 0;
+        self.enemyBaseZapMs = 0;
     else
         self.enemyBaseZapMs = lume.clamp(
             ENEMYBASE_ZAPMS_MAX - ((self.level - ENEMYBASE_FIRST_ZAP_LEVEL) * ENEMYBASE_ZAPMS_LEVEL_REDUCTION),
