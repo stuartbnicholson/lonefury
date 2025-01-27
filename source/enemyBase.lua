@@ -155,7 +155,13 @@ function EnemyBase.new(isVertical)
 
 		self.gunShieldActive = gunShieldActive
 		if gunShieldActive then
-			self.gunShieldOffset = GUNSHIELD_MAX_OFFSET
+			if zapMs > 0 then
+				-- Shield and zap active, bases start with closed shields and open them to fire!
+				self.gunShieldOffset = 0
+			else
+				-- Bases slowly close shield when active
+				self.gunShieldOffset = GUNSHIELD_MAX_OFFSET
+			end
 			self.gunShield:add()
 		end
 	end
@@ -317,7 +323,8 @@ function EnemyBase.new(isVertical)
 			end
 		end
 
-		if self.zapMs > 0 and now - self.lastZappedMs >= self.zapMs then
+		-- Zap active and shield ful ly opened. Fire!
+		if self.zapMs > 0 and self.gunShieldOffset >= GUNSHIELD_MAX_OFFSET and now - self.lastZappedMs >= self.zapMs then
 			self.lastZappedMs = now
 			self:zap()
 		end
@@ -344,7 +351,6 @@ function EnemyBase.new(isVertical)
 		end
 
 		-- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
-		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
 		self:moveTo(viewX, viewY)
 		self.halves[1]:moveTo(self.xHalf + viewX, self.yHalf + viewY)
 		self.halves[2]:moveTo(-self.xHalf + viewX, -self.yHalf + viewY)
@@ -363,18 +369,30 @@ function EnemyBase.new(isVertical)
 			end
 		end
 
-		-- Update the gun shield
+		-- Update the gun shield.
+		-- If only the shield is enabled and the base is active, the shield closes and remains closed.
+		-- If the shield and the zap is enabled, the bases start with closed shields, open them over time and then fire the zaps.
+		-- TODO: These nested ifs could be replaced with function variables in the spawn...
 		if self.gunShieldActive then
-			if active then
-				-- Shield closes when base is active
-				if self.gunShieldOffset > 0 then
-					self.gunShieldOffset -= GUNSHIELD_CLOSE_RATE
+			if self.zapMs > 0 then
+				if active then
+					-- Shield opens when base is active and then zaps are fired
+					if self.gunShieldOffset < GUNSHIELD_MAX_OFFSET then
+						self.gunShieldOffset += GUNSHIELD_OPEN_RATE
+					end
+				else
+					-- Shield closes while offscreen
+					if self.gunShieldOffset > 0 then
+						self.gunShieldOffset -= GUNSHIELD_CLOSE_RATE
+					end
 				end
 			else
-				-- Shield opens when base is inactive or when zaps are an option...
-				-- if self.gunShieldOffset < GUNSHIELD_MAX_OFFSET then
-				--	self.gunShieldOffset += GUNSHIELD_OPEN_RATE
-				-- end
+				if active then
+					-- Shield closes when base is active
+					if self.gunShieldOffset > 0 then
+						self.gunShieldOffset -= GUNSHIELD_CLOSE_RATE
+					end
+				end
 			end
 		end
 
