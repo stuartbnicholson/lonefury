@@ -59,6 +59,10 @@ sphereVertRuinFlip[Sphere4] = gfx.kImageFlippedX
 sphereVertRuinFlip[Sphere5] = gfx.kImageFlippedXY
 sphereVertRuinFlip[Sphere6] = gfx.kImageFlippedXY
 
+-- How many milliseconds a base has to be offscreen to become idle
+-- Idle bases waking up reset their fire clocks on bullets and zaps
+BASE_IDLE_MS = 5000
+
 local fireSpheres = { Sphere1, Sphere5, Sphere3, Sphere4, Sphere6, Sphere2 }
 
 EnemyBase = {}
@@ -86,6 +90,7 @@ function EnemyBase.new(isVertical)
 	end
 
 	-- Base members
+	self.lastVisibleMs = 0
 	self.isVertical = isVertical
 	self.lastFiredMs = 0
 	self.fireMs = 0
@@ -119,6 +124,12 @@ function EnemyBase.new(isVertical)
 		self.multiShot = multiShot
 		self.fireMs = fireMs
 		self.zapMs = zapMs
+
+		-- Reset clocks
+		local now = pd.getCurrentTimeMilliseconds()
+		self.lastFiredMs = now
+		self.lastVisibleMs = now
+		self.lastZappedMs = now
 
 		self:setVisible(false)
 		self.spheresAlive = SpheresAlive
@@ -207,9 +218,8 @@ function EnemyBase.new(isVertical)
 	end
 
 	-- Enemy base bullets are slow and frequent
-	function self:fire()
+	function self:fire(now)
 		-- Check if enough time has elapsed since base last fired
-		local now = pd.getCurrentTimeMilliseconds()
 		if now - self.lastFiredMs >= self.fireMs then
 			local pWx, pWy = Player:getWorldV():unpack()
 			local angleToPlayer = PointsAngle(self.worldX, self.worldY, pWx, pWy)
@@ -293,6 +303,7 @@ function EnemyBase.new(isVertical)
 	end
 
 	function self:update()
+		local now = pd.getCurrentTimeMilliseconds()
 		local viewX, viewY = WorldToViewPort(self.worldX, self.worldY)
 
 		local visible = NearViewport(viewX, viewY, 72, 72) or false
@@ -302,6 +313,12 @@ function EnemyBase.new(isVertical)
 
 		ActiveEnemyBases += 1
 		if visible then
+			if now - self.lastVisibleMs > BASE_IDLE_MS then
+				-- Base has become visible after some time, reset the zap clock so zaps build up.
+				-- We don't reset the firing clock, so the base immediately starts firing
+				self.lastZappedMs = now
+			end
+			self.lastVisibleMs = now
 			ActiveVisibleEnemyBases += 1
 		end
 
@@ -318,7 +335,7 @@ function EnemyBase.new(isVertical)
 				local active = NearViewport(viewX, viewY, 20, 20) or false
 				if active then
 					-- Fire some new bullets
-					self:fire()
+					self:fire(now)
 				end
 			end
 		end
