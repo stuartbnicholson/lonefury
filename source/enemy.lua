@@ -225,7 +225,6 @@ function Enemy.new()
 
     -- A wingman in this leader's formation is dead
     function self:formationWingmanDead(formationPos)
-        print('My wingman died ', formationPos)
         self.formationWingmen[formationPos] = nil
     end
 

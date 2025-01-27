@@ -251,11 +251,9 @@ end
 
 function LevelManager:baseDestroyed()
     self.basesToKill -= 1
-    print("LevelManager:basesToKill: " .. self.basesToKill)
     assert(self.basesToKill >= 0)
 
     local now = pd.getCurrentTimeMilliseconds()
-    print('MS since last base destroyed: ', now - self.lastBaseKillMS)
     self.lastBaseKillMS = now
 
     if self.basesToKill == 0 then

@@ -63,7 +63,6 @@ function LevelRandomGenerator:spawnLevels(level)
     -- Determine the number of bases in range
     local bases = basesPerLevel[level]
     local numBases = math.random(bases.min, bases.max)
-    print('Num bases: ' .. numBases)
 
     -- Determine the number of asteroids, mines and eggs
     local obstacles = obstaclesPerLevel[level]
@@ -78,7 +77,7 @@ function LevelRandomGenerator:spawn(levelManager, obj, cellX, cellY)
         local worldY = (cellY * MAP_CELL_SIZE) + 8
         levelManager:addToLevel(worldX, worldY, obj, poolObj)
     else
-        print("Level Generate nil poolObj?")
+        assert(nil, "Level Generate nil poolObj?")
     end
 end
 
@@ -90,7 +89,6 @@ function LevelRandomGenerator:scatterObstacles(levelManager, obj, numObstacles, 
             self:spawn(levelManager, obj, cellX, cellY)
         else
             -- We don't really care if we lose a few asteroids
-            print('Level generator obstacle collision!')
         end
     end
 end
