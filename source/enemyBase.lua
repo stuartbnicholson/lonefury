@@ -364,18 +364,11 @@ function EnemyBase.new(isVertical)
 		end
 
 		-- Update the gun shield
-		self.gunShield:setVisible(visible)
 		if self.gunShieldActive then
 			if active then
 				-- Shield closes when base is active
 				if self.gunShieldOffset > 0 then
 					self.gunShieldOffset -= GUNSHIELD_CLOSE_RATE
-				end
-
-				if self.isVertical then
-					self.gunShield:moveTo(viewX + self.gunShieldOffset, viewY)
-				else
-					self.gunShield:moveTo(viewX, viewY + self.gunShieldOffset)
 				end
 			else
 				-- Shield opens when base is inactive or when zaps are an option...
@@ -384,6 +377,14 @@ function EnemyBase.new(isVertical)
 				-- end
 			end
 		end
+
+		-- Even if the gunShield isn't active, we keep it moving with the base to avoid respawning artifacts
+		if self.isVertical then
+			self.gunShield:moveTo(viewX + self.gunShieldOffset, viewY)
+		else
+			self.gunShield:moveTo(viewX, viewY + self.gunShieldOffset)
+		end
+		self.gunShield:setVisible(visible)
 	end
 
 	function self:bulletHit(bullet, cx, cy)
