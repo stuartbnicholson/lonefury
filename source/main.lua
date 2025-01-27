@@ -80,7 +80,7 @@ LevelManager = LevelManager.new(LevelGenerator)
 SoundManager = SoundManager.new()
 HighScoreManager = HighScoreManager.new()
 
--- TODO: The game state machine
+-- The game state machine
 StateMenu = StateMenu.new()
 StateInstructions = StateInstructions.new()
 StateHighscore = StateHighscore.new()

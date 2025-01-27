@@ -38,7 +38,7 @@ function EnemyBaseHalf.new(enemyBase, worldX, worldY, isVertical, isFlipped, sph
     end
 
     self:setTag(SPRITE_TAGS.enemyBase)
-    self:setZIndex(20)
+    self:setZIndex(22) -- 20 is the base gun, 21 is the gun shield, 22 is the base sides, so we can hide the gunshield under the base sides...
     self:setGroupMask(GROUP_ENEMY_BASE)
     self:setCollidesWithGroupsMask(GROUP_BULLET|GROUP_PLAYER)
 

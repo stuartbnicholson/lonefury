@@ -62,6 +62,10 @@ sphereVertRuinFlip[Sphere6] = gfx.kImageFlippedXY
 -- How many milliseconds a base has to be offscreen to become idle
 -- Idle bases waking up reset their fire clocks on bullets and zaps
 BASE_IDLE_MS = 5000
+-- A fully open shield
+GUNSHIELD_MAX_OFFSET = 7
+GUNSHIELD_CLOSE_RATE = 0.05
+GUNSHIELD_OPEN_RATE = 0.1
 
 local fireSpheres = { Sphere1, Sphere5, Sphere3, Sphere4, Sphere6, Sphere2 }
 
@@ -89,6 +93,13 @@ function EnemyBase.new(isVertical)
 		self.sphereRuin1 = sphereHorizRuin1
 	end
 
+	-- Gun shield sprite, we don't bother giving it any bounds box because the gun sprite handles the
+	-- collisions and knows when the shield is down.
+	self.gunShield = gfx.sprite.new((isVertical and baseGunShieldVert) or baseGunShieldHoriz)
+	self.gunShield:setZIndex(21)
+	self.gunShield:setVisible(false)
+	self.gunShieldOffset = GUNSHIELD_MAX_OFFSET
+
 	-- Base members
 	self.lastVisibleMs = 0
 	self.isVertical = isVertical
@@ -115,13 +126,14 @@ function EnemyBase.new(isVertical)
 	}
 
 	-- Pool management
-	function self:spawn(worldX, worldY, multiShot, fireMs, zapMs)
+	function self:spawn(worldX, worldY, multiShot, fireMs, gunShieldActive, zapMs)
 		self.worldX = worldX
 		self.worldY = worldY
 		Dashboard:addEnemyBase(self.worldX, self.worldY)
 
 		-- Game level dictates the bases's rage.
 		self.multiShot = multiShot
+		self.gunShieldActive = gunShieldActive
 		self.fireMs = fireMs
 		self.zapMs = zapMs
 
@@ -132,6 +144,7 @@ function EnemyBase.new(isVertical)
 		self.lastZappedMs = now
 
 		self:setVisible(false)
+		self.gunShield:setVisible(false)
 		self.spheresAlive = SpheresAlive
 		self.lastFiredIdx = 1
 		self.isSpawned = true
@@ -139,18 +152,26 @@ function EnemyBase.new(isVertical)
 		self:add()
 		self.halves[1]:spawn()
 		self.halves[2]:spawn()
+
+		self.gunShieldActive = gunShieldActive
+		if gunShieldActive then
+			self.gunShieldOffset = GUNSHIELD_MAX_OFFSET
+			self.gunShield:add()
+		end
 	end
 
 	function self:despawn()
 		Dashboard:removeEnemyBase(self.worldX, self.worldY)
 
 		self:setVisible(false)
-		-- self.isAlive = SpheresDead
 		self.isSpawned = false
 
 		self:remove()
 		self.halves[1]:despawn()
 		self.halves[2]:despawn()
+
+		self.gunShield:setVisible(false)
+		self.gunShield:remove()
 	end
 
 	function self:sphereFire(firingSpheres)
@@ -328,22 +349,48 @@ function EnemyBase.new(isVertical)
 		self.halves[1]:moveTo(self.xHalf + viewX, self.yHalf + viewY)
 		self.halves[2]:moveTo(-self.xHalf + viewX, -self.yHalf + viewY)
 
+		local active = false
 		if visible then
+			-- Being visible and being active are slightly different things.
+			-- Once the base is partially on-screen it becomes active
+			active = NearViewport(viewX, viewY, 20, 20) or false
+
 			if Player:alive() then
-				-- Being visible and being active are slightly different things.
-				-- Once the base is partially on-screen it becomes active
-				local active = NearViewport(viewX, viewY, 20, 20) or false
 				if active then
 					-- Fire some new bullets
 					self:fire(now)
 				end
 			end
 		end
+
+		-- Update the gun shield
+		self.gunShield:setVisible(visible)
+		if self.gunShieldActive then
+			if active then
+				-- Shield closes when base is active
+				if self.gunShieldOffset > 0 then
+					self.gunShieldOffset -= GUNSHIELD_CLOSE_RATE
+				end
+
+				if self.isVertical then
+					self.gunShield:moveTo(viewX + self.gunShieldOffset, viewY)
+				else
+					self.gunShield:moveTo(viewX, viewY + self.gunShieldOffset)
+				end
+			else
+				-- Shield opens when base is inactive or when zaps are an option...
+				-- if self.gunShieldOffset < GUNSHIELD_MAX_OFFSET then
+				--	self.gunShieldOffset += GUNSHIELD_OPEN_RATE
+				-- end
+			end
+		end
 	end
 
 	function self:bulletHit(bullet, cx, cy)
-		-- TODO: Centre hit is an instant kill unless shields are down
-		self:baseExplodes()
+		-- Centre hit is an instant kill unless shields active and sufficiently closed
+		if not (self.gunShieldActive and self.gunShieldOffset < 5) then
+			self:baseExplodes()
+		end
 	end
 
 	function self:sphereHit(sphere)

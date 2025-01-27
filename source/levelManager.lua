@@ -20,7 +20,8 @@ local ENEMYBASE_SHOTS_MAX <const> = 6
 local ENEMYBASE_FIREMS_MAX <const> = 1500
 local ENEMYBASE_FIREMS_MIN <const> = 200
 local ENEMYBASE_FIREMS_LEVEL_REDUCTION <const> = 100
-local ENEMYBASE_FIRST_ZAP_LEVEL = 3
+local ENEMYBASE_FIRST_SHIELD_LEVEL = 3 -- Bases start shielding their cores
+local ENEMYBASE_FIRST_ZAP_LEVEL = 5    -- Bases start zapping from their open cores
 local ENEMYBASE_ZAPMS_MAX <const> = 5000
 local ENEMYBASE_ZAPMS_MIN <const> = 1500
 local ENEMYBASE_ZAPMS_LEVEL_REDUCTION <const> = 150
@@ -82,7 +83,8 @@ function LevelManager:simpleSpawn(worldX, worldY, obj)
 end
 
 function LevelManager:enemyBaseSpawn(worldX, worldY, obj)
-    obj:spawn(worldX, worldY, self.enemyBaseMultiShot, self.enemyBaseFireMs, self.enemyBaseZapMs)
+    obj:spawn(worldX, worldY, self.enemyBaseMultiShot, self.enemyBaseFireMs, self.enemyBaseShieldActive,
+        self.enemyBaseZapMs)
 
     self.basesToKill += 1
 end
@@ -131,6 +133,7 @@ function LevelManager:setAggressionValues()
     self.enemyBaseFireMs = lume.clamp(ENEMYBASE_FIREMS_MAX - ((self.level - 1) * ENEMYBASE_FIREMS_LEVEL_REDUCTION),
         ENEMYBASE_FIREMS_MIN, ENEMYBASE_FIREMS_MAX)
 
+    self.enemyBaseShieldActive = self.level >= ENEMYBASE_FIRST_SHIELD_LEVEL
     if self.level < ENEMYBASE_FIRST_ZAP_LEVEL then
         self.enemyBaseZapMs = 0;
     else
