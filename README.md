@@ -24,7 +24,7 @@ If you look at [main.lua](./source/main.lua) you'll see it simply calls the curr
 
 Here's a mermaid diagram of the states used. You'll need a [plug-in to view this in VSCode](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid).
 
-::: mermaid
+``` mermaid
 stateDiagram
     [*] --> StateMenu
     StateMenu --> StateInstructions : Timer
@@ -43,7 +43,7 @@ stateDiagram
     StateHighScoreEntry --> StateMenu
     StateGameOver --> StateHighScore : Player score too low
     StateDead --> StateRespawn : Player ships remain
-:::
+```
 
 ## WorldView vs Viewport
 
