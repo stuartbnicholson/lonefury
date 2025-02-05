@@ -3,6 +3,7 @@ import 'enemyBase'
 import 'asteroid'
 
 -- Generates random levels, based on settings provided by the LevelManager and some simple rules
+-- Mostly random - bases sometimes appear in patterns based on the contents of assets/baseMaps.json
 local pd = playdate
 local gfx = pd.graphics
 
@@ -51,6 +52,12 @@ function LevelRandomGenerator.new()
     assert(occupiedMap, err)
     self.occupiedMap = occupiedMap
 
+    -- Load JSON base map definitions
+    local baseMapsFile, err = pd.file.open('assets/baseMaps.json')
+    assert(baseMapsFile, error)
+    self.baseMaps = json.decodeFile(baseMapsFile)
+    baseMapsFile:close()
+
     return self
 end
 
@@ -93,6 +100,54 @@ function LevelRandomGenerator:scatterObstacles(levelManager, obj, numObstacles, 
     end
 end
 
+function LevelRandomGenerator:findBaseMap(level, numBases)
+    for _, baseMap in ipairs(self.baseMaps) do
+        if baseMap.numBases >= numBases and baseMap.minLevel >= level then
+            return baseMap
+        end
+    end
+
+    return nil
+end
+
+function LevelRandomGenerator:placeBases(levelManager, baseMap)
+    -- Place bases based on a map, rather than scattering them randomly
+    for _, base in ipairs(baseMap.bases) do
+        local cellX = (base.x - 36) / MAP_CELL_SIZE
+        local cellY = (base.y - 36) / MAP_CELL_SIZE
+        baseOccupied:draw(cellX, cellY)
+        self:spawn(levelManager, EnemyBase, cellX + 2, cellY + 2) -- Sprites are centered
+    end
+end
+
+function LevelRandomGenerator:scatterBases(levelManager, numBases, baseRadius)
+    -- 20% of the time use a pre-defined baseMap layout, if we can find one
+    if math.random(100) > 80 then
+        local baseMap = self:findBaseMap(levelManager:getLevel(), numBases)
+
+        if baseMap then
+            self:placeBases(levelManager, baseMap)
+            return
+        end
+    end
+
+    -- TODO: Did consider some light trig to keep them separated, but I enjoy the fact they can overlap closely?
+    -- It might actually be more fun to randomly add fixed patterns of base levels...
+    for i = 1, numBases, 1 do
+        for j = 1, 3, 1 do
+            local cellX, cellY = LevelRandomGenerator.randomPointInCircle(baseRadius, 90, 90)
+            if not gfx.checkAlphaCollision(self.occupiedMap, 0, 0, gfx.kImageUnflipped, baseOccupied, cellX, cellY, gfx.kImageUnflipped) then
+                baseOccupied:draw(cellX, cellY)
+                self:spawn(levelManager, EnemyBase, cellX + 2, cellY + 2) -- Sprites are centered
+                break
+            else
+                -- We really DO care if we can't place all the bases
+                print('Level generator base collision!')
+            end
+        end
+    end
+end
+
 function LevelRandomGenerator:generate(levelManager)
     -- We're drawing on the occupiedMap as we spawn level objects
     self.occupiedMap:clear(gfx.kColorClear)
@@ -107,24 +162,8 @@ function LevelRandomGenerator:generate(levelManager)
     local cellsHeightHalf = self.cellsHeight / 2
     gfx.fillCircleInRect(cellsWidthHalf - 4, cellsHeightHalf - 4, 8, 8)
 
-    -- Scatter bases around first
-    -- TODO: Did consider some light trig to keep them separated, but I enjoy the fact they can overlap closely.
-    -- It might actually be more fun to randomly add fixed patterns of base levels...
-    local poolObj
-    local enemyX, enemyY
-    for i = 1, numBases, 1 do
-        for j = 1, 3, 1 do
-            local cellX, cellY = LevelRandomGenerator.randomPointInCircle(baseRadius, 90, 90)
-            if not gfx.checkAlphaCollision(self.occupiedMap, 0, 0, gfx.kImageUnflipped, baseOccupied, cellX, cellY, gfx.kImageUnflipped) then
-                baseOccupied:draw(cellX, cellY)
-                self:spawn(levelManager, EnemyBase, cellX + 2, cellY + 2) -- Sprites are centered
-                break
-            else
-                -- We really DO care if we can't place all the bases
-                print('Level generator base collision!')
-            end
-        end
-    end
+    -- Scatter bases around first because they're the largest, most interesting enemy
+    self:scatterBases(levelManager, numBases, baseRadius)
 
     -- Scatter some asteroids around
     self:scatterObstacles(levelManager, Asteroid, numAsteroids, obstacleRadius)

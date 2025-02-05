@@ -1,0 +1,39 @@
+[
+    {
+        "name": "baseMap",
+        "minLevel": 1,
+        "bases": [
+            {
+                "x": 1355,
+                "y": 1267,
+                "vert": false
+            },
+            {
+                "x": 1525,
+                "y": 1328,
+                "vert": false
+            },
+            {
+                "x": 1355,
+                "y": 1377,
+                "vert": false
+            },
+            {
+                "x": 1525,
+                "y": 1438,
+                "vert": false
+            },
+            {
+                "x": 1355,
+                "y": 1483,
+                "vert": false
+            },
+            {
+                "x": 1525,
+                "y": 1544,
+                "vert": false
+            }
+        ],
+        "numBases": 6
+    }
+]
