@@ -1,3 +1,5 @@
+import "CoreLibs/graphics"
+
 import 'assets'
 import 'constants'
 import 'globals'
