@@ -10,7 +10,7 @@ if (process.argv.length === 2) {
 }
 
 function levelPre(partName) {
-  console.log(`"{
+  console.log(`{
           "name": "${partName}",
           "minLevel": 1,
           "bases": [`);

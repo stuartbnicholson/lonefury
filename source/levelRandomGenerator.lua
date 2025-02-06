@@ -8,6 +8,7 @@ local pd = playdate
 local gfx = pd.graphics
 
 local MAP_CELL_SIZE <const> = 16
+local PERCENT_BASE_MAP = 20 -- The % chance of using a fixed base map if we have one for the level
 
 -- The number of enemy bases goes up per level with variation, and they get more radius to occupy
 local basesPerLevel = {
@@ -121,8 +122,8 @@ function LevelRandomGenerator:placeBases(levelManager, baseMap)
 end
 
 function LevelRandomGenerator:scatterBases(levelManager, numBases, baseRadius)
-    -- 20% of the time use a pre-defined baseMap layout, if we can find one
-    if math.random(100) > 80 then
+    -- PERCENT_BASE_MAP of the time use a pre-defined baseMap layout, if we can find one
+    if math.random(100) < PERCENT_BASE_MAP then
         local baseMap = self:findBaseMap(levelManager:getLevel(), numBases)
 
         if baseMap then

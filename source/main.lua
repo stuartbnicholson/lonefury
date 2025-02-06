@@ -18,7 +18,6 @@ import 'stateNewLevel'
 import 'stateDead'
 import 'stateRespawn'
 import 'stateGameOver'
-import 'stateTest'
 
 local pd = playdate
 local gfx = pd.graphics
@@ -90,7 +89,6 @@ StateGame = StateGame.new()
 StateDead = StateDead.new()
 StateRespawn = StateRespawn.new()
 StateGameOver = StateGameOver.new()
-StateTest = StateTest.new()
 
 -- Set the initial Game State
 local currentState = StateMenu

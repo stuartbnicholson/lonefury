@@ -35,7 +35,9 @@ function SoundManager.new()
     self.enemySynth = snd.synth.new(snd.kWaveSawtooth)
     self.enemySynth:setADSR(0.1, 0.12, 0.15, 0.15)
 
-    self.musicPlayer, error = snd.sampleplayer.new('assets/kronbits/Retro Music - ABMU - ChipWave 10 mono.wav')
+    -- TODO: This WAV asset easily consumes the most Lua memory according to the Simulator -> Lua Memory panel.
+    -- There's almost a 1:1 relationship between the WAV file size, and the Lua memory it consumes too.
+    self.musicPlayer, error = snd.fileplayer.new('assets/kronbits/Retro Music - ABMU - ChipWave 10 mono')
     assert(self.musicPlayer, error)
     self.musicPlayer:setVolume(0.5)
 

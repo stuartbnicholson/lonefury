@@ -24,6 +24,7 @@
 
 lume = { _version = "2.3.0" }
 
+--[[
 local pairs, ipairs = pairs, ipairs
 local type, assert, unpack = type, assert, unpack or table.unpack
 local tostring, tonumber = tostring, tonumber
@@ -76,14 +77,14 @@ local iteratee = function(x)
   end
   return function(z) return z[x] end
 end
-
+]] --
 
 
 function lume.clamp(x, min, max)
   return x < min and min or (x > max and max or x)
 end
 
-
+--[[
 function lume.round(x, increment)
   if increment then return lume.round(x / increment) * increment end
   return x >= 0 and math_floor(x + .5) or math_ceil(x - .5)
@@ -135,13 +136,13 @@ function lume.random(a, b)
   if not b then b = 0 end
   return a + math.random() * (b - a)
 end
-
+]] --
 
 function lume.randomchoice(t)
   return t[math.random(#t)]
 end
 
-
+--[[
 function lume.weightedchoice(t)
   local sum = 0
   for _, v in pairs(t) do
@@ -542,18 +543,18 @@ end
 
 
 local lambda_cache = {}
+]] --
+-- function lume.lambda(str)
+--   if not lambda_cache[str] then
+--     local args, body = str:match([[^([%w,_ ]-)%->(.-)$]])
+--     assert(args and body, "bad string lambda")
+--     local s = "return function(" .. args .. ")\nreturn " .. body .. "\nend"
+--     lambda_cache[str] = lume.dostring(s)
+--   end
+--   return lambda_cache[str]
+-- end
 
-function lume.lambda(str)
-  if not lambda_cache[str] then
-    local args, body = str:match([[^([%w,_ ]-)%->(.-)$]])
-    assert(args and body, "bad string lambda")
-    local s = "return function(" .. args .. ")\nreturn " .. body .. "\nend"
-    lambda_cache[str] = lume.dostring(s)
-  end
-  return lambda_cache[str]
-end
-
-
+--[[
 local serialize
 
 local serialize_map = {
@@ -775,6 +776,6 @@ setmetatable(lume,  {
     return lume.chain(...)
   end
 })
-
+]]
 
 return lume
