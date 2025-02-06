@@ -10,11 +10,13 @@ ENEMY_TURN_ANGLE = 5
 
 ENEMY_ART = {
     jelly = 1,
-    boomerang = 2
+    boomerang = 2,
+    dragonfly = 3
 }
 local enemyArt = {}
 enemyArt[ENEMY_ART.jelly] = Assets.getImagetable('images/enemy-table-15-15.png')
 enemyArt[ENEMY_ART.boomerang] = Assets.getImagetable('images/enemy2-table-15-15.png')
+enemyArt[ENEMY_ART.dragonfly] = Assets.getImagetable('images/enemy3-table-15-15.png')
 
 Enemy = {}
 Enemy.__index = Enemy
