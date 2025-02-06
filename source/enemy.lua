@@ -22,6 +22,9 @@ Enemy = {}
 Enemy.__index = Enemy
 
 function Enemy.new()
+    -- TODO: This is almost a bug. Every enemy starts as boomerang when the game is launched. Over time they get converted
+    -- to other enemy types as they're included in formations (see makeFormationLeader). This means when you launch the game you'll
+    -- see boomerangs, and as you play the other types will start to appear. To be honest this kinda works for me, so I've left it this way.
     local imgTable = enemyArt[ENEMY_ART.boomerang]
     local self = gfx.sprite:new(imgTable:getImage(1))
     self.imgTable = imgTable

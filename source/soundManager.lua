@@ -20,6 +20,8 @@ local roar = Assets.getSamplePlayer('assets/kronbits/Retro Roar 12.wav')
 local start2 = Assets.getSamplePlayer('assets/start 2.wav')
 local new_turn = Assets.getSamplePlayer('assets/oryx/new_turn.wav')
 new_turn:setVolume(0.5)
+local impact = Assets.getSamplePlayer('assets/kronbits/Retro Impact 17.wav')
+impact:setVolume(0.5)
 local zap = Assets.getSamplePlayer('assets/kronbits/Retro Weapon Laser 25.wav')
 zap:setVolume(0.7)
 
@@ -112,4 +114,8 @@ end
 
 function SoundManager:enemyBaseZap()
     zap:play(1)
+end
+
+function SoundManager:enemyBaseFailedHit()
+    impact:play(1)
 end

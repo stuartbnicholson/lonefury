@@ -76,6 +76,8 @@ function EnemyBaseHalf.new(enemyBase, worldX, worldY, isVertical, isFlipped, sph
             self.enemyBase:sphereHit(self.spheres[2])
         elseif v > 50 then
             self.enemyBase:sphereHit(self.spheres[3])
+        else
+            SoundManager:enemyBaseFailedHit()
         end
     end
 

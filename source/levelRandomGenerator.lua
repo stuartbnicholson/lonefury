@@ -109,7 +109,7 @@ end
 
 function LevelRandomGenerator:findBaseMap(level, numBases)
     for _, baseMap in ipairs(self.baseMaps) do
-        if baseMap.numBases >= numBases and baseMap.minLevel >= level then
+        if baseMap.numBases >= numBases and baseMap.minLevel <= level then
             return baseMap
         end
     end

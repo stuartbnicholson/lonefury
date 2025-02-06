@@ -409,6 +409,8 @@ function EnemyBase.new(isVertical)
 		-- Centre hit is an instant kill unless shields active and sufficiently closed
 		if not (self.gunShieldActive and self.gunShieldOffset < 5) then
 			self:baseExplodes()
+		else
+			SoundManager:enemyBaseFailedHit()
 		end
 	end
 
@@ -423,6 +425,8 @@ function EnemyBase.new(isVertical)
 			else
 				self:sphereExplodes(sphere)
 			end
+		else
+			SoundManager:enemyBaseFailedHit()
 		end
 	end
 
