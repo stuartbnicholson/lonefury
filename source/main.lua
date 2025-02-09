@@ -124,7 +124,7 @@ function SetupMenu()
             end)
         assert(menuItem3, error)
     else
-        local menuItem2, error = menu:addCheckmarkMenuItem("match crank", false,
+        local menuItem2, error = menu:addCheckmarkMenuItem("fixed crank", false,
             function(value)
                 FixedCrank = value
             end)
