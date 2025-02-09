@@ -4,6 +4,7 @@
 TitleMusic = true
 ShowFPS = false
 ShowLevel = false
+FixedCrank = true
 
 ActiveEnemy = 0
 ActiveVisibleEnemy = 0 -- Enemy in the Viewport

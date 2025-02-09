@@ -104,7 +104,7 @@ Starfield = Starfield.new()
 function SetupMenu()
     local menu = pd.getSystemMenu()
 
-    local menuItem1, error = menu:addCheckmarkMenuItem("Title music", true,
+    local menuItem1, error = menu:addCheckmarkMenuItem("title music", true,
         function(value)
             TitleMusic = value
             SoundManager:titleMusic(TitleMusic)
@@ -112,17 +112,23 @@ function SetupMenu()
     assert(menuItem1, error)
 
     if DEVELOPER_BUILD then
-        local menuItem2, error = menu:addCheckmarkMenuItem("Show FPS", false,
+        local menuItem2, error = menu:addCheckmarkMenuItem("show fps", false,
             function(value)
                 ShowFPS = value
             end)
         assert(menuItem2, error)
 
-        local menuItem3, error = menu:addCheckmarkMenuItem("Show Level", false,
+        local menuItem3, error = menu:addCheckmarkMenuItem("show Level", false,
             function(value)
                 ShowLevel = value
             end)
         assert(menuItem3, error)
+    else
+        local menuItem2, error = menu:addCheckmarkMenuItem("match crank", false,
+            function(value)
+                FixedCrank = value
+            end)
+        assert(menuItem2, error)
     end
 end
 

@@ -64,8 +64,12 @@ function Player:new()
     end
 
     function self:resetAngle()
-        self.angle = 0
-        self:setImage(self.imgTable:getImage(1))
+        if not FixedCrank then
+            self.angle = 0
+            self:setImage(self.imgTable:getImage(1))
+        else
+            self:crankAngle()
+        end
     end
 
     function self:getAngle()
@@ -220,6 +224,20 @@ function Player:new()
         end
 
         SetTableImage(self.angle, self, self.imgTable)
+    end
+
+    function self:crankAngle()
+        local angle = pd.getCrankPosition()
+        if angle ~= self.angle then
+            -- Ensure the angle is within the 0-360 range
+            angle = angle % 360
+            -- Calculate the nearest multiple of 15
+            local rounded = math.floor((angle + 7.5) / 15) * 15
+            angle = rounded % 360
+
+            self.angle = angle
+            SetTableImage(self.angle, self, self.imgTable)
+        end
     end
 
     self:reset()
