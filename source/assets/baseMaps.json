@@ -264,6 +264,58 @@
         "numBases": 8
     },
     {
+        "name": "smile",
+        "minLevel": 9,
+        "bases": [
+            {
+                "x": 1266,
+                "y": 1167,
+                "vert": false
+            },
+            {
+                "x": 1609,
+                "y": 1167,
+                "vert": false
+            },
+            {
+                "x": 1137,
+                "y": 1443,
+                "vert": false
+            },
+            {
+                "x": 1742,
+                "y": 1443,
+                "vert": false
+            },
+            {
+                "x": 1191,
+                "y": 1553,
+                "vert": false
+            },
+            {
+                "x": 1688,
+                "y": 1553,
+                "vert": false
+            },
+            {
+                "x": 1303,
+                "y": 1657,
+                "vert": false
+            },
+            {
+                "x": 1577,
+                "y": 1657,
+                "vert": false
+            },
+            {
+                "x": 1439,
+                "y": 1668,
+                "vert": false
+            }
+        ],
+        "numBases": 9
+    },
+    {
         "name": "playdate",
         "minLevel": 10,
         "bases": [
