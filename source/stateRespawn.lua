@@ -46,6 +46,8 @@ function StateRespawn:update()
 
     if pd.isCrankDocked() then
         pd.ui.crankIndicator:draw()
+    elseif FixedCrank then
+        Player:crankAngle()
     end
 
     gfx.animation.blinker.updateAll()
