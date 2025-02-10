@@ -44,6 +44,7 @@ function Player:new()
     self.deltaX = 0
     self.deltaY = 0
     self.lastFiredMs = 0
+    self.destroyed = {}
 
     function self:reset()
         self:resetAngle()
@@ -53,6 +54,12 @@ function Player:new()
         self.shotsFired = 0
         self.shotsHit = 0
         self.isAlive = false
+
+        self.destroyed[Asteroid] = 0
+        self.destroyed[Egg] = 0
+        self.destroyed[Enemy] = 0
+        self.destroyed[EnemyBase] = 0
+        self.destroyed[Mine] = 0
     end
 
     function self:getWorldV()
@@ -143,8 +150,16 @@ function Player:new()
         return self.score
     end
 
-    function self:scored(points)
+    function self:getDestroyed()
+        return self.destroyed
+    end
+
+    function self:scored(points, obj)
         self.score += points
+
+        if obj ~= nil then
+            self.destroyed[obj] += 1
+        end
 
         -- Player has scored, ergo they've hit something
         self.shotsHit += 1

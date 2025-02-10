@@ -476,9 +476,9 @@ function EnemyBase.new(isVertical)
 
 	function self:baseExplodes()
 		if self.spheresAlive == SpheresAlive then
-			Player:scored(SCORE_ENEMYBASE_ONESHOT)
+			Player:scored(SCORE_ENEMYBASE_ONESHOT, EnemyBase)
 		else
-			Player:scored(self:numSpheresLeft() * SCORE_ENEMYBASE_SPHERE)
+			Player:scored(self:numSpheresLeft() * SCORE_ENEMYBASE_SPHERE, EnemyBase)
 		end
 
 		ScreenShake(1, 2)

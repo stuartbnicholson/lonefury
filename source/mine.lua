@@ -54,7 +54,7 @@ function Mine.new()
         self:explode()
 
         if other:getTag() == SPRITE_TAGS.playerBullet then
-            Player:scored(SCORE_MINE)
+            Player:scored(SCORE_MINE, Mine)
         end
     end
 

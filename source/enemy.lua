@@ -173,7 +173,7 @@ function Enemy.new()
         end
 
         if other:getTag() == SPRITE_TAGS.playerBullet then
-            Player:scored(SCORE_ENEMY)
+            Player:scored(SCORE_ENEMY, Enemy)
         end
 
         self:despawn()

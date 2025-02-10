@@ -44,15 +44,15 @@ function Egg.new()
         end
 
         -- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
-		-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
-		self:moveTo(viewX, viewY)
+        -- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
+        self:moveTo(viewX, viewY)
     end
 
     function self:bulletHit(other, x, y)
         Explode(ExplosionSmall, self.worldX, self.worldY)
 
         if other:getTag() == SPRITE_TAGS.playerBullet then
-            Player:scored(SCORE_EGG)
+            Player:scored(SCORE_EGG, Egg)
         end
 
         self:hatch()

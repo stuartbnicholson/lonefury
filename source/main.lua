@@ -136,15 +136,70 @@ SetupMenu()
 
 local pauseImage = gfx.image.new(400, 240)
 function pd.gameWillPause()
+    gfx.pushContext(pauseImage)
     if ShowLevel then
         pauseImage:clear(gfx.kColorBlack)
-        gfx.pushContext(pauseImage)
         LevelGenerator.occupiedMap:draw(0, 0)
-        gfx.popContext()
-        pd.setMenuImage(pauseImage)
     else
-        pd.setMenuImage(nil)
+        local destroyed = Player:getDestroyed()
+
+        pauseImage:clear(gfx.kColorBlack)
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
+        gfx.setFont(Assets.getFont('images/Xevious-table-8-8.png'))
+        local smallTitle = Assets.getImage('images/smallTitle.png')
+        local x = 10
+        local y = 10
+        smallTitle:draw(x, y)
+
+        y = 73 + 8 + 16
+        gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+        gfx.drawText("BY: CRANEHED.ITCH.IO", x, y)
+        y += 8 + 16
+
+        gfx.drawText("LEVEL: ", x, y)
+        x += 120
+        gfx.drawText(LevelManager:getLevel(), x, y)
+
+        x = 10
+        y += 8 + 16
+        gfx.drawText("DESTROYED", x, y)
+
+        x = 10
+        y += 16
+        gfx.drawText("BASES:", x + 8, y)
+        x += 120
+        gfx.drawText(destroyed[EnemyBase], x, y)
+
+        x = 10
+        y += 16
+        gfx.drawText("ENEMIES:", x + 8, y)
+        x += 120
+        gfx.drawText(destroyed[Enemy], x, y)
+
+        x = 10
+        y += 16
+        gfx.drawText("ASTEROIDS:", x + 8, y)
+        x += 120
+        gfx.drawText(destroyed[Asteroid], x, y)
+
+        x = 10
+        y += 16
+        gfx.drawText("EGGS :", x + 8, y)
+        x += 120
+        gfx.drawText(destroyed[Egg], x, y)
+
+        x = 10
+        y += 16
+        gfx.drawText("MINES:", x + 8, y)
+        x += 120
+        gfx.drawText(destroyed[Mine], x, y)
     end
+    gfx.popContext()
+    pd.setMenuImage(pauseImage)
+end
+
+function pd.gameWillTerminate()
+    pd.setMenuImage(nil)
 end
 
 local ms = pd.getCurrentTimeMilliseconds
