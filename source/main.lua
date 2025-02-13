@@ -92,6 +92,12 @@ StateDead = StateDead.new()
 StateRespawn = StateRespawn.new()
 StateGameOver = StateGameOver.new()
 
+-- Load what few preferences we have
+local prefs = pd.datastore.read()
+if prefs then
+    TitleMusic, FixedCrank = table.unpack(prefs)
+end
+
 -- Set the initial Game State
 local currentState = StateMenu
 -- local currentState = StateTest
@@ -104,7 +110,7 @@ Starfield = Starfield.new()
 function SetupMenu()
     local menu = pd.getSystemMenu()
 
-    local menuItem1, error = menu:addCheckmarkMenuItem("title music", true,
+    local menuItem1, error = menu:addCheckmarkMenuItem("title music", TitleMusic,
         function(value)
             TitleMusic = value
             SoundManager:titleMusic(TitleMusic)
@@ -124,7 +130,7 @@ function SetupMenu()
             end)
         assert(menuItem3, error)
     else
-        local menuItem2, error = menu:addCheckmarkMenuItem("fixed crank", false,
+        local menuItem2, error = menu:addCheckmarkMenuItem("fixed crank", FixedCrank,
             function(value)
                 FixedCrank = value
             end)
@@ -199,6 +205,9 @@ function pd.gameWillPause()
 end
 
 function pd.gameWillTerminate()
+    -- Save what few preferences we have
+    pd.datastore.write({ TitleMusic, FixedCrank })
+
     pd.setMenuImage(nil)
 end
 

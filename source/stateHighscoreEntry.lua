@@ -22,7 +22,7 @@ function StateHighscoreEntry.new()
 end
 
 function StateHighscoreEntry:start()
-    SoundManager:titleMusic(true)
+    SoundManager:titleMusic(TitleMusic)
 
     self.currentAlpha = 1
     self.currentPos = 1

@@ -24,7 +24,7 @@ end
 
 function StateMenu:start()
     self.started = pd.getCurrentTimeMilliseconds()
-    SoundManager:titleMusic(true)
+    SoundManager:titleMusic(TitleMusic)
 end
 
 function StateMenu:update()

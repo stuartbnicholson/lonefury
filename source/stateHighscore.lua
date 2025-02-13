@@ -16,7 +16,7 @@ function StateHighscore.new()
 end
 
 function StateHighscore:start(acceptButtons)
-    SoundManager:titleMusic(true)
+    SoundManager:titleMusic(TitleMusic)
 
     self.acceptButtons = acceptButtons
     self.started = pd.getCurrentTimeMilliseconds()
