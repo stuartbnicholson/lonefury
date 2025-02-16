@@ -42,7 +42,7 @@ end
 
 function StateRespawn:update()
     LevelManager:clockReset() -- While the Player spawns, keep resetting the level clock
-    WorldUpdate()
+    WorldUpdateInTitles()
 
     if pd.isCrankDocked() then
         pd.ui.crankIndicator:draw()

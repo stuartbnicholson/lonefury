@@ -34,7 +34,7 @@ end
 
 function StateGameOver:update()
     -- Player is STILl dead, the world STILL goes on without them.
-    WorldUpdate()
+    WorldUpdateInTitles()
 
     gfx.pushContext()
     gfx.setFont(font)

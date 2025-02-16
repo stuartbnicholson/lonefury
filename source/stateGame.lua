@@ -77,7 +77,7 @@ function StateGame:update()
     ViewPortWorldX, ViewPortWorldY = Player:getWorldV():unpack()
 
     -- ...then update world entities WITH collisions etc.
-    WorldUpdate()
+    WorldUpdateInGame()
 
     if not Player:alive() then
         StateDead:start()

@@ -117,24 +117,18 @@ function SetupMenu()
         end)
     assert(menuItem1, error)
 
+    local menuItem2, error = menu:addCheckmarkMenuItem("fixed crank", FixedCrank,
+        function(value)
+            FixedCrank = value
+        end)
+    assert(menuItem2, error)
+
     if DEVELOPER_BUILD then
-        local menuItem2, error = menu:addCheckmarkMenuItem("show fps", false,
+        local menuItem3, error = menu:addCheckmarkMenuItem("show fps", false,
             function(value)
                 ShowFPS = value
             end)
-        assert(menuItem2, error)
-
-        local menuItem3, error = menu:addCheckmarkMenuItem("show Level", false,
-            function(value)
-                ShowLevel = value
-            end)
         assert(menuItem3, error)
-    else
-        local menuItem2, error = menu:addCheckmarkMenuItem("fixed crank", FixedCrank,
-            function(value)
-                FixedCrank = value
-            end)
-        assert(menuItem2, error)
     end
 end
 
@@ -190,7 +184,7 @@ function pd.gameWillPause()
 
         x = 10
         y += 16
-        gfx.drawText("EGGS :", x + 8, y)
+        gfx.drawText("EGGS:", x + 8, y)
         x += 120
         gfx.drawText(destroyed[Egg], x, y)
 
@@ -221,47 +215,29 @@ function pd.update()
     Assets.lazyLoad(frameStart)
 end
 
--- Common WorldUpdate that most States will use
-function WorldUpdate()
-    -- Reset activity counts
+-- In-game states use this
+function WorldUpdateInGame()
     ActiveEnemy = 0
     ActiveVisibleEnemy = 0
     ActiveEnemyFormations = 0
     ActiveEnemyBases = 0
     ActiveVisibleEnemyBases = 0
 
-    -- Update all the things
-    pd.timer.updateTimers()
-    gfx.animation.blinker.updateAll()
     Starfield:update()
     gfx.sprite.update()
     ExplosionsUpdate()
     LevelManager:update()
     Dashboard:update()
-
-    -- if pd.getCurrentTimeMilliseconds() % 1000 < 10 then
-    --     print('Active ', ActiveEnemy, ActiveEnemyFormations, ActiveEnemyBases, ActiveVisibleEnemyBases)
-    -- end
 end
 
--- From https://sdk.play.date/2.4.2/Inside%20Playdate.html
--- This function relies on the use of timers, so the timer core library
--- must be imported, and updateTimers() must be called in the update loop
-function ScreenShake(shakeTime, shakeMagnitude)
-    -- Creating a value timer that goes from shakeMagnitude to 0, over
-    -- the course of 'shakeTime' milliseconds
-    local shakeTimer = pd.timer.new(shakeTime, shakeMagnitude, 0)
-    -- Every frame when the timer is active, we shake the screen
-    shakeTimer.updateCallback = function(timer)
-        -- Using the timer value, so the shaking magnitude
-        -- gradually decreases over time
-        local magnitude = math.floor(timer.value)
-        local shakeX = math.random(-magnitude, magnitude)
-        local shakeY = math.random(-magnitude, magnitude)
-        pd.display.setOffset(shakeX, shakeY)
-    end
-    -- Resetting the display offset at the end of the screen shake
-    shakeTimer.timerEndedCallback = function()
-        pd.display.setOffset(0, 0)
-    end
+-- Non-game states use this
+function WorldUpdateInTitles()
+    pd.timer.updateTimers()
+    gfx.animation.blinker.updateAll()
+
+    Starfield:update()
+    gfx.sprite.update()
+    ExplosionsUpdate()
+    LevelManager:update()
+    Dashboard:update()
 end

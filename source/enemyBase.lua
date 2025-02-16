@@ -481,7 +481,6 @@ function EnemyBase.new(isVertical)
 			Player:scored(self:numSpheresLeft() * SCORE_ENEMYBASE_SPHERE, EnemyBase)
 		end
 
-		ScreenShake(1, 2)
 		Explode(ExplosionLarge, self.worldX, self.worldY)
 		LevelManager:baseDestroyed()
 
