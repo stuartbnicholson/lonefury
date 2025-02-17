@@ -25,7 +25,7 @@ function StateGameOver.new()
 end
 
 function StateGameOver:start()
-    if DEVELOPER_BUILD then MemoryCheck() end
+    -- if DEVELOPER_BUILD then MemoryCheck() end
 
     self.timerComplete = false
     self.timer:reset()

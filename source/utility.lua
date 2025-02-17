@@ -27,11 +27,11 @@ function SetTableImage(angle, sprite, imgTable)
 end
 
 function PointsDistance(x1, y1, x2, y2)
-	return math.sqrt((x2 - x1)^2 + (y2 - y1)^2)
+	return math.sqrt((x2 - x1) ^ 2 + (y2 - y1) ^ 2)
 end
 
 function VectorDistance(v1, v2)
-	return math.sqrt((v2.dx - v1.dx)^2 + (v2.dy - v1.dy)^2)
+	return math.sqrt((v2.dx - v1.dx) ^ 2 + (v2.dy - v1.dy) ^ 2)
 end
 
 function PointsAngle(x1, y1, x2, y2)
@@ -94,6 +94,7 @@ function ViewPortToWorld(x, y)
 	return x + ViewPortWorldX - (HALF_VIEWPORT_WIDTH), y + ViewPortWorldY - (HALF_VIEWPORT_HEIGHT)
 end
 
+--[[
 -- Borrowed from: https://devforum.play.date/t/tracking-memory-usage-throughout-your-game/1132
 local MemoryInit = collectgarbage("count") * 1024
 local MemoryUsed = MemoryInit
@@ -116,6 +117,7 @@ function MemoryCheck()
 
 	MemoryUsed = new
 end
+]]
 
 function RoundToNearestMultiple(number, multiple)
 	local sign = number >= 0 and 1 or -1

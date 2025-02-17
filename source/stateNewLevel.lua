@@ -10,7 +10,7 @@ function StateNewLevel.new()
 end
 
 function StateNewLevel:start()
-    if DEVELOPER_BUILD then MemoryCheck() end
+    -- if DEVELOPER_BUILD then MemoryCheck() end
 
     LevelManager:nextLevel()
     Dashboard:drawPlayerScore()

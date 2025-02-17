@@ -148,9 +148,6 @@ function LevelRandomGenerator:scatterBases(levelManager, numBases, baseRadius)
                 baseOccupied:draw(cellX, cellY)
                 self:spawn(levelManager, EnemyBase, cellX + 2, cellY + 2) -- Sprites are centered
                 break
-            else
-                -- We really DO care if we can't place all the bases
-                print('Level generator base collision!')
             end
         end
     end

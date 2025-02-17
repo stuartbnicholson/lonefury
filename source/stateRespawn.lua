@@ -18,7 +18,7 @@ function StateRespawn.new()
 end
 
 function StateRespawn:start()
-    if DEVELOPER_BUILD then MemoryCheck() end
+    -- if DEVELOPER_BUILD then MemoryCheck() end
 
     -- Despawn every enemy and their bullets
     PoolManager:refillPool(Enemy)

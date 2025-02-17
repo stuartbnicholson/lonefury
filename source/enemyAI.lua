@@ -117,7 +117,6 @@ function EnemyBrainChasePlayer(self)
     end
 
     local r = math.rad(self.angle)
-
     self.velocity.dx = math.sin(r) * self.speed
     self.velocity.dy = -math.cos(r) * self.speed
     self.worldV = self.worldV + self.velocity
@@ -186,8 +185,10 @@ function EnemyBrainFlyFormation(self)
     end
 
     local r = math.rad(self.angle)
-    self.worldV.dx -= -math.sin(r) * self.speed
-    self.worldV.dy -= math.cos(r) * self.speed
+
+    self.velocity.dx = math.sin(r) * self.speed
+    self.velocity.dy = -math.cos(r) * self.speed
+    self.worldV = self.worldV + self.velocity
 end
 
 -- Enemy brain, rigid formation based on the leader's position.

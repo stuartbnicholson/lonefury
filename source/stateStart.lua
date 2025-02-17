@@ -10,7 +10,7 @@ function StateStart.new()
 end
 
 function StateStart:start()
-    if DEVELOPER_BUILD then MemoryCheck() end
+    -- if DEVELOPER_BUILD then MemoryCheck() end
 
     SoundManager:titleMusic(false)
     LevelManager:reset()
