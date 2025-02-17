@@ -217,12 +217,9 @@ end
 
 -- In-game states use this
 function WorldUpdateInGame()
-    ActiveEnemy = 0
-    ActiveVisibleEnemy = 0
-    ActiveEnemyFormations = 0
-    ActiveEnemyBases = 0
-    ActiveVisibleEnemyBases = 0
+    gfx.animation.blinker.updateAll()
 
+    LevelManager.resetActiveCounts()
     Starfield:update()
     gfx.sprite.update()
     ExplosionsUpdate()

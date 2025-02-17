@@ -3,21 +3,21 @@
 import 'CoreLibs/animation'
 import 'assets'
 
-local gfx = playdate.graphics
+local gfx                = playdate.graphics
 
-Explosion = {}
-Explosion.__index = Explosion
+Explosion                = {}
+Explosion.__index        = Explosion
 
-ExplosionSmall  = 0x01 -- Player, enemies, bullets
-ExplosionMed    = 0x02 -- Enemy base spheres, larger enemies
-ExplosionLarge  = 0x04 -- Enemy base destruction
+ExplosionSmall           = 0x01 -- Player, enemies, bullets
+ExplosionMed             = 0x02 -- Enemy base spheres, larger enemies
+ExplosionLarge           = 0x04 -- Enemy base destruction
 
 local exploSmallImgTable = Assets.getImagetable('images/explosmall-table-15-15.png')
-local exploMedImgTable = Assets.getImagetable('images/explomed-table-20-20.png')
+local exploMedImgTable   = Assets.getImagetable('images/explomed-table-20-20.png')
 local exploLargeImgTable = Assets.getImagetable('images/explobase-table-72-72.png')
 
 function Explosion.new(size)
-    local w,h,imgTable
+    local w, h, imgTable
     if size == ExplosionSmall then
         imgTable = exploSmallImgTable
         w = 15
@@ -36,7 +36,7 @@ function Explosion.new(size)
     self.size = size
     self.width = w
     self.height = h
-    self.worldX = -100   -- Start offscreen
+    self.worldX = -100 -- Start offscreen
     self.x = -100
     self.worldY = -100
     self.y = -100

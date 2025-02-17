@@ -8,9 +8,9 @@ local pd = playdate
 local gfx = pd.graphics
 local geom = pd.geometry
 
-ENEMYMONSTER_SPEED = 2.8 * 3
-ENEMYMONSTER_TURN_ANGLE = 5 * 3
-ROAR_DELAY_MS = 500
+local ENEMYMONSTER_SPEED = 2.8 * 3
+local ENEMYMONSTER_TURN_ANGLE = 5 * 3
+local ROAR_DELAY_MS = 500
 
 EnemyMonster = {}
 EnemyMonster.__index = EnemyMonster

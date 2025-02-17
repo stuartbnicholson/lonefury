@@ -61,11 +61,11 @@ sphereVertRuinFlip[Sphere6] = gfx.kImageFlippedXY
 
 -- How many milliseconds a base has to be offscreen to become idle
 -- Idle bases waking up reset their fire clocks on bullets and zaps
-BASE_IDLE_MS = 5000
+local BASE_IDLE_MS = 5000
 -- A fully open shield
-GUNSHIELD_MAX_OFFSET = 7
-GUNSHIELD_CLOSE_RATE = 0.05
-GUNSHIELD_OPEN_RATE = 0.1
+local GUNSHIELD_MAX_OFFSET = 7
+local GUNSHIELD_CLOSE_RATE = 0.05
+local GUNSHIELD_OPEN_RATE = 0.1
 
 local fireSpheres = { Sphere1, Sphere5, Sphere3, Sphere4, Sphere6, Sphere2 }
 
@@ -339,7 +339,6 @@ function EnemyBase.new(isVertical)
 		self.halves[1]:setVisible(visible)
 		self.halves[2]:setVisible(visible)
 
-		ActiveEnemyBases += 1
 		if visible then
 			if now - self.lastVisibleMs > BASE_IDLE_MS then
 				-- Base has become visible after some time, reset the zap clock so zaps build up.
@@ -347,7 +346,6 @@ function EnemyBase.new(isVertical)
 				self.lastZappedMs = now
 			end
 			self.lastVisibleMs = now
-			ActiveVisibleEnemyBases += 1
 		end
 
 		-- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly

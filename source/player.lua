@@ -8,8 +8,8 @@ local pd = playdate
 local gfx = pd.graphics
 local geom = pd.geometry
 
-PLAYER_WIDTH = 15
-PLAYER_HEIGHT = 15
+local PLAYER_WIDTH = 15
+local PLAYER_HEIGHT = 15
 local SPEED <const> = 3.5
 local FWD_BULLET_SPEED <const> = 10.0
 local REAR_BULLET_SPEED <const> = FWD_BULLET_SPEED - SPEED

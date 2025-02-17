@@ -65,8 +65,7 @@ function Egg.new()
         if enemy then
             -- Make it fly away from the player for a short period of time
             SetEnemyTimerBrain(enemy, EnemyBrainAvoidPlayer, 500, EnemyBrainChasePlayer)
-            enemy.angle = math.random(0, 360)
-            enemy:spawn(self.worldX, self.worldY)
+            enemy:spawn(self.worldX, self.worldY, Player:getAngle())
         end
     end
 

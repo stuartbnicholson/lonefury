@@ -11,27 +11,27 @@ local crossImg = Assets.getImage('images/cross.png')
 -- Enemies in formation can be killed. If the lead enemy is killed, the formation breaks into individual enemies, at least in original Bosconian.
 -- This implies that LeadEnemy is in control of the formation.
 -- A formation also assumes the lead exists at geom.point.new(0, 0) and so isn't included in each formation list.
-FormationB = {
+local FormationB = {
     geom.point.new(-8, 15),
     geom.point.new(8, 15),
     geom.point.new(-8, 31),
     geom.point.new(8, 31),
 }
-FormationV = {
+local FormationV = {
     geom.point.new(-15, 15),
     geom.point.new(15, 15),
     geom.point.new(-30, 30),
     geom.point.new(30, 30)
 }
 
-FormationS = {
+local FormationS = {
     geom.point.new(-18, 14),
     geom.point.new(3, 27),
     geom.point.new(21, 37),
     geom.point.new(-1, 53),
 }
 
-FormationT = {
+local FormationT = {
     geom.point.new(-15, 15),
     geom.point.new(15, 15),
     geom.point.new(0, 30),
@@ -120,7 +120,6 @@ function EnemyBrainChasePlayer(self)
 
     self.velocity.dx = math.sin(r) * self.speed
     self.velocity.dy = -math.cos(r) * self.speed
-
     self.worldV = self.worldV + self.velocity
 
     if self.formationWingmen then
@@ -139,8 +138,9 @@ function EnemyBrainAvoidPlayer(self)
     end
 
     local r = math.rad(self.angle)
-    self.worldV.dx -= -math.sin(r) * self.speed
-    self.worldV.dy -= math.cos(r) * self.speed
+    self.velocity.dx = math.sin(r) * self.speed
+    self.velocity.dy = -math.cos(r) * self.speed
+    self.worldV = self.worldV + self.velocity
 end
 
 -- Brain until time has elapsed then revert to another brain
@@ -200,26 +200,4 @@ function EnemyBrainFlyFormationRigid(self, turnAngle)
 
     self.angle = self.formationLeader.angle
     SetTableImage(self.angle, self, self.imgTable)
-end
-
-function EnemyBrainOrbit(self)
-    -- Avoid targetV until targetDistance, and then orbit targetV
-    local dist = VectorDistance(self.worldV, self.orbitV)
-    if dist > self.orbitDist then
-        self.angle = DoLOSChase(self.angle, self.turnAngle, self.worldV, self.orbitV, self.tmpVector)
-    else
-        local angle = (VectorAngle(self.orbitV - self.worldV) + 360 + 15) % 360
-        self.tmpVector2.dx = (self.orbitV.dx + self.targetDist) * math.cos(math.rad(angle))
-        self.tmpVector2.dy = (self.orbitV.dy + self.targetDist) * math.sin(math.rad(angle))
-
-        self.angle = DoLOSChase(self.angle, self.turnAngle, self.worldV, self.tmpVector2, self.tmpVector)
-    end
-
-    SetTableImage(self.angle, self, self.imgTable)
-    local r = math.rad(self.angle)
-
-    self.velocity.dx = math.sin(r) * self.speed
-    self.velocity.dy = -math.cos(r) * self.speed
-
-    self.worldV = self.worldV + self.velocity
 end

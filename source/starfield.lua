@@ -4,9 +4,9 @@ local geom = playdate.geometry
 Starfield = {}
 Starfield.__index = Starfield
 
-STATIC_STARS = 160
-HINT_STARS = 10
-HINT_STAR_VELOCITY = 4.0
+local STATIC_STARS = 160
+local HINT_STARS = 10
+local HINT_STAR_VELOCITY = 4.0
 
 function Starfield.new()
     local self = setmetatable({}, Starfield)

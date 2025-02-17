@@ -11,6 +11,7 @@ local MAP_CELL_SIZE <const> = 16
 local PERCENT_BASE_MAP = 20 -- The % chance of using a fixed base map if we have one for the level
 
 -- The number of enemy bases goes up per level with variation, and they get more radius to occupy
+-- Each base also requires three sprites.
 local basesPerLevel = {
     { min = 1,  max = 2,  radius = 30 },
     { min = 2,  max = 3,  radius = 30 },
@@ -30,15 +31,15 @@ local basesPerLevel = {
 local obstaclesPerLevel = {
     { asteroids = 20, mines = 2,  eggs = 5,  radius = 35 },
     { asteroids = 30, mines = 5,  eggs = 5,  radius = 45 },
-    { asteroids = 40, mines = 10, eggs = 5,  radius = 55 },
-    { asteroids = 50, mines = 10, eggs = 10, radius = 60 },
-    { asteroids = 50, mines = 20, eggs = 10, radius = 60 },
-    { asteroids = 40, mines = 30, eggs = 10, radius = 60 },
-    { asteroids = 40, mines = 30, eggs = 10, radius = 60 },
-    { asteroids = 40, mines = 30, eggs = 10, radius = 60 },
-    { asteroids = 40, mines = 30, eggs = 10, radius = 70 },
-    { asteroids = 40, mines = 30, eggs = 10, radius = 70 },
-    { asteroids = 40, mines = 30, eggs = 10, radius = 70 }
+    { asteroids = 40, mines = 10, eggs = 5,  radius = 50 },
+    { asteroids = 40, mines = 10, eggs = 10, radius = 50 },
+    { asteroids = 40, mines = 20, eggs = 10, radius = 50 },
+    { asteroids = 37, mines = 20, eggs = 10, radius = 50 },
+    { asteroids = 34, mines = 20, eggs = 10, radius = 60 },
+    { asteroids = 31, mines = 20, eggs = 10, radius = 60 },
+    { asteroids = 28, mines = 20, eggs = 10, radius = 60 },
+    { asteroids = 25, mines = 20, eggs = 10, radius = 60 },
+    { asteroids = 22, mines = 20, eggs = 10, radius = 60 }
     -- After this we just keep repeating the highest
 }
 

@@ -5,10 +5,10 @@ import 'enemyAI'
 local gfx = playdate.graphics
 local geom = playdate.geometry
 
-ENEMY_SPEED = 2.8
+local ENEMY_SPEED = 2.8
 ENEMY_TURN_ANGLE = 5
 
-ENEMY_ART = {
+local ENEMY_ART = {
     jelly = 1,
     boomerang = 2,
     dragonfly = 3
@@ -59,10 +59,14 @@ function Enemy.new()
     end
 
     -- Pool management
-    function self:spawn(worldX, worldY)
+    function self:spawn(worldX, worldY, angle)
         self.worldV.dx = worldX
         self.worldV.dy = worldY
-        self.angle = 0
+        if angle then
+            self.angle = angle
+        else
+            self.angle = 0
+        end
         self.velocity.dx = 0
         self.velocity.dy = 0
         self:setImage(self.imgTable:getImage(1))
@@ -105,12 +109,7 @@ function Enemy.new()
     -- See sprite:moveWithCollisions
     function self:collisionResponse(other)
         if other:getGroupMask() == GROUP_ENEMY then
-            -- Enemies slide or bounce off each other randomly
-            if math.random(2) == 1 then
-                return gfx.sprite.kCollisionTypeSlide
-            else
-                return gfx.sprite.kCollisionTypeBounce
-            end
+            return gfx.sprite.kCollisionTypeSlide
         else
             return gfx.sprite.kCollisionTypeOverlap
         end
@@ -118,20 +117,15 @@ function Enemy.new()
 
     function self:update()
         -- As enemy bombers are always in flight, regardless if they're in the viewport or not, we always update them...
-        ActiveEnemy += 1
-        if self.formationWingmen then
-            ActiveEnemyFormations += 1
-        end
 
         -- Apply the enemy brain which will update position
-        assert(self.brain, 'Enemy has no brain')
         self.brain(self)
 
         local viewX, viewY = WorldToViewPort(self.worldV.dx, self.worldV.dy)
 
         -- TODO: visible only controls drawing, not being part of collisions. etc.
         if NearViewport(viewX, viewY, self.width, self.height) then
-            ActiveVisibleEnemy += 1
+            LevelManager.activeVisibleEnemy += 1
             self:setVisible(true)
         else
             self:setVisible(false)
@@ -184,6 +178,7 @@ function Enemy.new()
     ----------------------------------------
     function self:makeFormationLeader(wingmen)
         -- leader doesn't care about the formation, the wingmen have to fly formation around leader
+        self.brain = EnemyBrainChasePlayer
         self.formationWingmen = wingmen
 
         -- Random art for the leader, and random art for the wingmen, so sometimes they'll be different

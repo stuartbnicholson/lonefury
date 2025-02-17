@@ -186,6 +186,8 @@ function LevelManager:getFormationLeaders()
 end
 
 function LevelManager:formationLeaderAt(leader, worldV)
+    LevelManager.activeEnemyFormations += 1
+
     self.formationLeaders[leader] = worldV
     self.lastFormationActiveMS = pd.getCurrentTimeMilliseconds()
 end
@@ -210,7 +212,7 @@ function LevelManager:spawnFormation()
     self.lastFormationActiveMS = pd.getCurrentTimeMilliseconds()
 end
 
-function LevelManager:spawnFormationAt(worldX, worldY, angle, formationBrain)
+function LevelManager:spawnFormationAt(worldX, worldY, angle)
     -- Pick a formation
     local formation = lume.randomchoice(Formations)
 
@@ -226,7 +228,6 @@ function LevelManager:spawnFormationAt(worldX, worldY, angle, formationBrain)
     for i = 1, #enemies do
         enemies[i]:makeFormationWingman(leader, formation, i)
         enemies[i]:spawn(worldX + formation[i].x, worldY + formation[i].y)
-        enemies[i].brain = formationBrain
     end
 end
 
@@ -292,7 +293,7 @@ function LevelManager:update()
 
     -- Check if we need to challenge the player with pressure by spawning individual enemies.
     if now - self.lastEnemySpawnMS > ENEMY_SPAWN_MIN_MS then
-        if ActiveVisibleEnemy < self.enemiesVisibleMax and ActiveEnemyFormations < self.formationsMax then
+        if LevelManager.activeVisibleEnemy < self.enemiesVisibleMax and LevelManager.activeEnemyFormations < self.formationsMax then
             self:spawnSingleEnemy()
         end
     end
@@ -300,7 +301,7 @@ function LevelManager:update()
     -- Check if we need to challenge the player with time pressure by spawning formations.
     if self:percentAlertTimeLeft() < 0.005 then
         local formationActiveMS = now - self.lastFormationActiveMS
-        if ActiveEnemyFormations < self.formationsMax and formationActiveMS > FORMATION_SPAWN_MIN_MS then
+        if LevelManager.activeEnemyFormations < self.formationsMax and formationActiveMS > FORMATION_SPAWN_MIN_MS then
             self:spawnFormation()
         end
     end
@@ -312,4 +313,9 @@ function LevelManager:update()
             self:spawnMonster()
         end
     end
+end
+
+function LevelManager.resetActiveCounts()
+    LevelManager.activeVisibleEnemy = 0
+    LevelManager.activeEnemyFormations = 0
 end
