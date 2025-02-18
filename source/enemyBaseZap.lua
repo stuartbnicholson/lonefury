@@ -24,8 +24,6 @@ function EnemyBaseZap:new()
     self:setCollidesWithGroupsMask(GROUP_PLAYER|GROUP_OBSTACLE|GROUP_ENEMY)
     self:setVisible(false)
 
-    self.loop = gfx.animation.loop.new(150, imgTable, true)
-
     -- Spawning a bullet == firing a bullet
     function self:spawn(worldX, worldY, deltaX, deltaY, isVertical, flip)
         self.worldX = worldX
@@ -35,14 +33,13 @@ function EnemyBaseZap:new()
         self.isSpawned = true
 
         local frame = 1
-        if isVertical then frame = 3 end
-        self.loop.startFrame = frame
-        self.loop.endFrame = frame + 1
-        self.loop.paused = false
+        if isVertical then
+            frame = 3
+        end
 
         self.flip = flip
         self.isVertical = isVertical
-        self:setImage(self.loop:image(), self.flip)
+        self:setImage(imgTable:getImage(frame), self.flip)
         self:moveTo(WorldToViewPort(self.worldX, self.worldY))
         self:setVisible(true)
         self:add()
@@ -52,7 +49,6 @@ function EnemyBaseZap:new()
 
     function self:despawn()
         self:setVisible(false)
-        self.loop.paused = true
         self.isSpawned = false
         self:remove()
     end
@@ -87,8 +83,6 @@ function EnemyBaseZap:new()
             if hit then
                 -- Bullet can be re-used
                 self:despawn()
-            else
-                self:setImage(self.loop:image(), self.flip)
             end
         else
             -- Bullet can be re-used

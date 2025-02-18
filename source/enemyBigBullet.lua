@@ -11,6 +11,7 @@ EnemyBigBullet = {}
 EnemyBigBullet.__index = EnemyBigBullet
 
 local imgTable = Assets.getImagetable('images/bigBullet-table-4-4.png')
+local loop = gfx.animation.loop.new(50, imgTable, true)
 
 -- TODO: If velocity increases, bullets get a lot harder to dodge
 local VELOCITY <const> = 2.0
@@ -23,8 +24,6 @@ function EnemyBigBullet:new()
 	self:setGroupMask(GROUP_BULLET)
 	self:setCollidesWithGroupsMask(GROUP_PLAYER|GROUP_OBSTACLE|GROUP_ENEMY)
 	self:setVisible(false)
-
-	self.loop = gfx.animation.loop.new(50, imgTable, true)
 
 	-- Spawning a bullet == firing a bullet
 	function self:spawn(worldX, worldY, deltaX, deltaY)
@@ -39,11 +38,11 @@ function EnemyBigBullet:new()
 		self:add()
 	end
 
-    function self:despawn()
+	function self:despawn()
 		self:setVisible(false)
-        self.isSpawned = false
-        self:remove()
-    end
+		self.isSpawned = false
+		self:remove()
+	end
 
 	function self:collisionResponse(other)
 		return gfx.sprite.kCollisionTypeOverlap
@@ -60,11 +59,11 @@ function EnemyBigBullet:new()
 		if NearViewport(viewX, viewY, self.width, self.height) then
 			-- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
 			-- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
-			local toX,toY,c,n = self:moveWithCollisions(viewX, viewY)
-			self:setImage(self.loop:image())
-	        self:setVisible(true)
+			local toX, toY, c, n = self:moveWithCollisions(viewX, viewY)
+			self:setImage(loop:image())
+			self:setVisible(true)
 			local hit = false
-			for i=1,n do
+			for i = 1, n do
 				if self:alphaCollision(c[i].other) == true then
 					-- The first real collision is sufficient to stop the bullet
 					c[i].other:bulletHit(self, c[i].touch.x, c[i].touch.y)
@@ -77,10 +76,10 @@ function EnemyBigBullet:new()
 				-- Bullet can be re-used
 				self:despawn()
 			end
-        else
+		else
 			-- Bullet can be re-used
 			self:despawn()
-        end
+		end
 	end
 
 	return self

@@ -166,16 +166,18 @@ end
 -- A more organic feel, but more math per enemy update!
 function EnemyBrainFlyFormation(self)
     if self.formationLeader then
-        local chaseX, chaseY = CalcFormation(self.formation, self.formationPos, self.formationLeader.angle,
-            self.formationLeader.worldV)
-        local chaseV = geom.vector2D.new(chaseX, chaseY) -- TODO: GC!
+        local chaseX, chaseY = CalcFormation(self.formation, self.formationPos,
+            self.formationLeader.angle, self.formationLeader.worldV)
+        self.tmpVector2.dx = chaseX
+        self.tmpVector2.dy = chaseY
 
+        -- TODO: The fact I have to do this distance catch up stuff indicates
         local d = PointsDistance(self.worldV.dx, self.worldV.dy, chaseX, chaseY)
         -- TODO: Distance seems to vary from 5 to 10 when moving
         -- Notice we give formation followers the potential to tavel up to 2x normal speed, in order to stay in formation
         self.speed = lume.clamp(d / self.maxSpeed, 0.1, self.maxSpeed * 2)
 
-        self.angle = DoLOSChase(self.angle, self.turnAngle, self.worldV, chaseV, self.tmpVector)
+        self.angle = DoLOSChase(self.angle, self.turnAngle, self.worldV, self.tmpVector2, self.tmpVector)
         SetTableImage(self.angle, self, self.imgTable)
     else
         -- Used to have a formation leader and they've gone? Flee!

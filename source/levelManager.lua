@@ -16,9 +16,9 @@ local pd = playdate
 -- Every two levels, enemy bases have an extra shot
 local ENEMYBASE_SHOTS_LEVEL_RATIO <const> = 2
 local ENEMYBASE_SHOTS_MIN <const> = 1
-local ENEMYBASE_SHOTS_MAX <const> = 6
+local ENEMYBASE_SHOTS_MAX <const> = 3
 local ENEMYBASE_FIREMS_MAX <const> = 1500
-local ENEMYBASE_FIREMS_MIN <const> = 200
+local ENEMYBASE_FIREMS_MIN <const> = 500
 local ENEMYBASE_FIREMS_LEVEL_REDUCTION <const> = 100
 local ENEMYBASE_FIRST_SHIELD_LEVEL = 3 -- Bases start shielding their cores
 local ENEMYBASE_FIRST_ZAP_LEVEL = 5    -- Bases start zapping from their open cores
