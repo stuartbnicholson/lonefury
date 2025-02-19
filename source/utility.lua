@@ -27,11 +27,15 @@ function SetTableImage(angle, sprite, imgTable)
 end
 
 function PointsDistance(x1, y1, x2, y2)
-	return math.sqrt((x2 - x1) ^ 2 + (y2 - y1) ^ 2)
+	local dx = x2 - x1
+	local dy = y2 - y1
+	return math.sqrt((dx * dx) + (dy * dy))
 end
 
 function VectorDistance(v1, v2)
-	return math.sqrt((v2.dx - v1.dx) ^ 2 + (v2.dy - v1.dy) ^ 2)
+	local dx = v2.dx - v1.dx
+	local dy = v2.dy - v1.dy
+	return math.sqrt((dx * dx) + (dy * dy))
 end
 
 function PointsAngle(x1, y1, x2, y2)

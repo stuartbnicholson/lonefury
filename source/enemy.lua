@@ -67,9 +67,9 @@ function Enemy.new()
         else
             self.angle = 0
         end
+        SetTableImage(self.angle, self, self.imgTable)
         self.velocity.dx = 0
         self.velocity.dy = 0
-        self:setImage(self.imgTable:getImage(1))
         self.isSpawned = true
 
         self:add()
