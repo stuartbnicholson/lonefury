@@ -225,9 +225,14 @@ function LevelManager:spawnFormationAt(worldX, worldY, angle)
     leader:spawn(worldX, worldY)
     leader:setAngle(angle)
 
+    -- Spawn in formation behind leader
+    local leaderV = leader.worldV
+    local x, y
     for i = 1, #enemies do
         enemies[i]:makeFormationWingman(leader, formation, i)
-        enemies[i]:spawn(worldX + formation[i].x, worldY + formation[i].y)
+
+        x, y = CalcFormation(formation, i, angle, leaderV)
+        enemies[i]:spawn(x, y)
     end
 end
 
