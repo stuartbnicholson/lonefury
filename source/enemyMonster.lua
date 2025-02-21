@@ -80,7 +80,6 @@ function EnemyMonster.new()
 
     function self:update()
         -- Apply the enemy brain which will update position
-        assert(self.brain, 'Enemy has no brain')
         self.brain(self)
 
         local viewX, viewY = WorldToViewPort(self.worldV.dx, self.worldV.dy)
@@ -95,19 +94,20 @@ function EnemyMonster.new()
                 self.roared = true
                 self.visibleMS = nil
             end
-        else
-            self:setVisible(false)
-        end
 
-        -- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
-        -- TODO: Other options include sprite:remove() and sprite:add(), but then we'd need to track this ourselves because update() won't be called
-        local c, n
-        viewX, viewY, c, n = self:moveWithCollisions(viewX, viewY)
-        for i = 1, n do
-            if c[i].other:getGroupMask() ~= GROUP_ENEMY and self:alphaCollision(c[i].other) == true then
-                self:collision(c[i].other, c[i].touch.x, c[i].touch.y)
-                break
+            -- Regardless we still have to move sprites relative to viewport, otherwise collisions occur incorrectly
+            local c, n
+            viewX, viewY, c, n = self:moveWithCollisions(viewX, viewY)
+            for i = 1, n do
+                if self:alphaCollision(c[i].other) == true then
+                    self:collision(c[i].other, c[i].touch.x, c[i].touch.y)
+                    break
+                end
             end
+        else
+            -- We cheat here. Enemies IGNORE off-screen collisions, or they will not make it to the Player areas.
+            self:setVisible(false)
+            self:moveTo(viewX, viewY)
         end
 
         self.worldV.dx, self.worldV.dy = ViewPortToWorld(viewX, viewY)
