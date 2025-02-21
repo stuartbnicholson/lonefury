@@ -26,16 +26,13 @@ function SetTableImage(angle, sprite, imgTable)
 	return i, flip
 end
 
-function PointsDistance(x1, y1, x2, y2)
+function PointsDistanceSqrd(x1, y1, x2, y2)
 	local dx = x2 - x1
 	local dy = y2 - y1
-	return math.sqrt((dx * dx) + (dy * dy))
-end
 
-function VectorDistance(v1, v2)
-	local dx = v2.dx - v1.dx
-	local dy = v2.dy - v1.dy
-	return math.sqrt((dx * dx) + (dy * dy))
+	-- Don't use sqrt because it's a reasonably complex float operation.
+	-- Distances are returned squared, caller needs to work with this.
+	return (dx * dx) + (dy * dy)
 end
 
 function PointsAngle(x1, y1, x2, y2)

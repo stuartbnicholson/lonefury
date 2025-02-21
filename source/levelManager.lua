@@ -13,6 +13,9 @@ import 'enemyAI'
 -- Also tracks things like level alerts, increasing difficulty etc.
 local pd = playdate
 
+-- A convenience constant so it's easier to start on later levels for testing.
+local START_LEVEL = 1
+
 -- Every two levels, enemy bases have an extra shot
 local ENEMYBASE_SHOTS_LEVEL_RATIO <const> = 2
 local ENEMYBASE_SHOTS_MIN <const> = 1
@@ -101,7 +104,7 @@ end
 function LevelManager:reset()
     PoolManager:reset()
 
-    self.level = 1 -- ad astra!
+    self.level = START_LEVEL -- ad astra!
     self.basesToKill = 0
 
     self:clockReset()
@@ -146,8 +149,8 @@ function LevelManager:setAggressionValues()
     self.formationsMax = lume.clamp(math.floor(FORMATION_SPAWN_MIN + (self.level * FORMATION_SPAWN_PER_LEVEL)),
         FORMATION_SPAWN_MIN, FORMATION_SPAWN_MAX)
 
-    -- Maximum on-screen enemies
-    self.enemiesVisibleMax = lume.clamp(math.floor(ENEMY_VISIBLE_MIN + (self.level * ENEMY_VISIBLE_PER_LEVEL)),
+    -- Maximum single enemies
+    self.activeEnemiesMax = lume.clamp(math.floor(ENEMY_VISIBLE_MIN + (self.level * ENEMY_VISIBLE_PER_LEVEL)),
         ENEMY_VISIBLE_MIN, ENEMY_VISIBLE_MAX)
 end
 
@@ -298,7 +301,7 @@ function LevelManager:update()
 
     -- Check if we need to challenge the player with pressure by spawning individual enemies.
     if now - self.lastEnemySpawnMS > ENEMY_SPAWN_MIN_MS then
-        if LevelManager.activeVisibleEnemy < self.enemiesVisibleMax and LevelManager.activeEnemyFormations < self.formationsMax then
+        if LevelManager.activeEnemy < self.activeEnemiesMax and LevelManager.activeEnemyFormations < self.formationsMax then
             self:spawnSingleEnemy()
         end
     end
@@ -321,6 +324,6 @@ function LevelManager:update()
 end
 
 function LevelManager.resetActiveCounts()
-    LevelManager.activeVisibleEnemy = 0
+    LevelManager.activeEnemy = 0
     LevelManager.activeEnemyFormations = 0
 end

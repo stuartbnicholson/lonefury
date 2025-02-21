@@ -182,12 +182,15 @@ function LevelRandomGenerator:generate(levelManager)
     gfx.popContext()
 end
 
-function LevelRandomGenerator.randomPointInCircle(circleRadius, centreX, centreY)
-    local angle = math.random() * 2 * math.pi
-    local radius = math.sqrt(math.random()) * circleRadius
+function LevelRandomGenerator.randomPointInCircle(radius, centreX, centreY)
+    local x, y
+    local radiusSqrd = radius * radius
+    -- Generate random x and y in the range [-R, R] without using sqrt
+    -- Using https://en.wikipedia.org/wiki/Rejection_sampling
+    repeat
+        x = (math.random() * 2 - 1) * radius
+        y = (math.random() * 2 - 1) * radius
+    until x * x + y * y <= radiusSqrd
 
-    local x = centreX + radius * math.cos(angle)
-    local y = centreY + radius * math.sin(angle)
-
-    return x, y
+    return centreX + x, centreY + y
 end

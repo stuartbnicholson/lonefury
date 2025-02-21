@@ -172,10 +172,12 @@ function EnemyBrainFlyFormation(self)
         self.tmpVector2.dy = chaseY
 
         -- TODO: The fact I have to do this distance catch up stuff indicates
-        local d = PointsDistance(self.worldV.dx, self.worldV.dy, chaseX, chaseY)
+        -- local d = PointsDistance(self.worldV.dx, self.worldV.dy, chaseX, chaseY)
+        local d = PointsDistanceSqrd(self.worldV.dx, self.worldV.dy, chaseX, chaseY)
         -- TODO: Distance seems to vary from 5 to 10 when moving
         -- Notice we give formation followers the potential to tavel up to 2x normal speed, in order to stay in formation
-        self.speed = lume.clamp(d / self.maxSpeed, 0.1, self.maxSpeed * 2)
+        -- self.speed = lume.clamp(d / self.maxSpeed, 0.1, self.maxSpeed * 2)
+        self.speed = lume.clamp(d / (self.maxSpeed * self.maxSpeed), 0.1, self.maxSpeed * 2)
 
         self.angle = DoLOSChase(self.angle, self.turnAngle, self.worldV, self.tmpVector2, self.tmpVector)
         SetTableImage(self.angle, self, self.imgTable)
