@@ -78,6 +78,7 @@ function LevelRandomGenerator:spawnLevels(level)
     -- Determine the number of bases in range
     local bases = basesPerLevel[level]
     local numBases = math.random(bases.min, bases.max)
+    print("numBases: ", numBases)
 
     -- Determine the number of asteroids, mines and eggs
     local obstacles = obstaclesPerLevel[level]
@@ -109,13 +110,19 @@ function LevelRandomGenerator:scatterObstacles(levelManager, obj, numObstacles, 
 end
 
 function LevelRandomGenerator:findBaseMap(level, numBases)
+    local maps = {}
+
     for _, baseMap in ipairs(self.baseMaps) do
         if baseMap.numBases >= numBases and baseMap.minLevel <= level then
-            return baseMap
+            table.insert(maps, baseMap)
         end
     end
 
-    return nil
+    if #maps > 0 then
+        return lume.randomchoice(maps)
+    else
+        return nil
+    end
 end
 
 function LevelRandomGenerator:placeBases(levelManager, baseMap)
