@@ -44,10 +44,10 @@ function EnemyBaseHalf.new(enemyBase, worldX, worldY, isVertical, isFlipped, sph
 
     function self:spawn()
         -- Reset base halves back to undamaged
-        gfx.pushContext(self:getImage())
-        local w, h = self:getImage():getSize()
-        gfx.setColor(gfx.kColorClear)
-        gfx.drawRect(0, 0, w, h)
+        local img = self:getImage()
+        img:clear(gfx.kColorClear)
+
+        gfx.pushContext(img)
         if self.isVertical then
             baseHalfVert:draw(0, 0, self.flip)
         else
