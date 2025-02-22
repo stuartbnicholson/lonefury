@@ -1,0 +1,58 @@
+{
+          "name": "81Map",
+          "minLevel": 1,
+          "bases": [
+                {
+            "x": 1056,
+            "y": 1194,
+            "vert": false
+        },
+                {
+            "x": 1753,
+            "y": 1194,
+            "vert": false
+        },
+                {
+            "x": 917,
+            "y": 1337,
+            "vert": false
+        },
+                {
+            "x": 1196,
+            "y": 1337,
+            "vert": false
+        },
+                {
+            "x": 1056,
+            "y": 1480,
+            "vert": false
+        },
+                {
+            "x": 1753,
+            "y": 1480,
+            "vert": false
+        },
+                {
+            "x": 917,
+            "y": 1623,
+            "vert": false
+        },
+                {
+            "x": 1196,
+            "y": 1623,
+            "vert": false
+        },
+                {
+            "x": 1056,
+            "y": 1766,
+            "vert": false
+        },
+                {
+            "x": 1753,
+            "y": 1766,
+            "vert": false
+        },
+
+            ],
+            "numBases": 10
+        }
