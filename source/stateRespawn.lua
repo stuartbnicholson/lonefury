@@ -1,6 +1,4 @@
 -- State: Player is respawning for another round
-import 'CoreLibs/animation'
-import 'CoreLibs/ui'
 
 local pd = playdate
 local gfx = pd.graphics

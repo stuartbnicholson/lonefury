@@ -1,7 +1,3 @@
-import 'CoreLibs/sprites'
-
-import 'assets'
-
 local gfx = playdate.graphics
 
 Asteroid = {}

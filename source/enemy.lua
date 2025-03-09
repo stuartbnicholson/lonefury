@@ -1,7 +1,3 @@
-import 'utility'
-import 'assets'
-import 'enemyAI'
-
 local gfx = playdate.graphics
 local geom = playdate.geometry
 

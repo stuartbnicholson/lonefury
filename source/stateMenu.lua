@@ -1,5 +1,4 @@
 -- State: Game title screen before game starts.
-import 'CoreLibs/animation'
 
 local pd = playdate
 local gfx = pd.graphics

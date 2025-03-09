@@ -1,5 +1,3 @@
-import 'assets'
-
 local gfx = playdate.graphics
 
 local imgTable = Assets.getImagetable('images/playerBullet-table-6-6.png')

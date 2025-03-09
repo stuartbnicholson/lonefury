@@ -1,8 +1,3 @@
-import 'CoreLibs/animation'
-
-import 'constants'
-import 'assets'
-
 -- All enemy bases and other large enemies share these bullets. This is as way of
 -- easily controlling the number of big bullets in flight at any one time during a game.
 local gfx = playdate.graphics

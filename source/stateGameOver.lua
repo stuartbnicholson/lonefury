@@ -1,5 +1,4 @@
 -- State: Player is dead and has no lives left, but enemies and bullets are still in flight.
-import 'CoreLibs/timer'
 
 local pd = playdate
 local gfx = pd.graphics

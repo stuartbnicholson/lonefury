@@ -1,7 +1,3 @@
-import 'constants'
-import 'enemyBase'
-import 'asteroid'
-
 -- Generates random levels, based on settings provided by the LevelManager and some simple rules
 -- Mostly random - bases sometimes appear in patterns based on the contents of assets/baseMaps.json
 local pd = playdate

@@ -1,6 +1,3 @@
-import 'CoreLibs/sprites'
-import 'CoreLibs/timer'
-
 local pd = playdate
 local gfx = pd.graphics
 

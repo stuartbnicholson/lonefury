@@ -1,9 +1,4 @@
 -- The game dashboard. Shows the player's score, lives, minimap, condition etc.
-import 'lume'
-import 'assets'
-import 'constants'
-import 'globals'
-
 local gfx = playdate.graphics
 local pd = playdate
 

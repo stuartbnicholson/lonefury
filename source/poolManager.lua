@@ -1,15 +1,5 @@
-import 'asteroid'
-import 'egg'
-import 'enemy'
-import 'enemyBase'
-import 'enemyBigBullet'
-import 'enemyBaseZap'
-import 'enemyMonster'
-import 'playerBullet'
-import 'mine'
-import 'mineExplosion'
-
 -- Manages pools of game objects, in an attempt to avoid Lua GC issues.
+
 PoolManager = {}
 PoolManager.__index = PoolManager
 

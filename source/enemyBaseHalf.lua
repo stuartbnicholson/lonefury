@@ -1,5 +1,4 @@
 -- One half of an enemy base
-import 'assets'
 
 local pd = playdate
 local gfx = pd.graphics

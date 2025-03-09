@@ -1,6 +1,5 @@
-import 'constants'
-
 -- State: Game instructions before game starts.
+
 local pd = playdate
 local gfx = pd.graphics
 

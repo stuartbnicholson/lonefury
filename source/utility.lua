@@ -1,5 +1,3 @@
-import 'CoreLibs/sprites'
-
 local gfx = playdate.graphics
 
 -- Assumes 15 degrees angle increments, and an imageTable that contains 7 images, rotated from 0 degrees to 90 in 15 degree steps

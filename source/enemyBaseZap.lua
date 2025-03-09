@@ -1,8 +1,3 @@
-import 'CoreLibs/animation'
-
-import 'constants'
-import 'assets'
-
 -- All enemy bases share these zaps. They are the big shots fired from the base centers.
 -- This is as way of easily controlling the number of zaps in flight at any one time during a game.
 local gfx = playdate.graphics

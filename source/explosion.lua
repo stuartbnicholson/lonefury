@@ -1,8 +1,5 @@
 -- Explosions are non-critical pieces of animation. We create enough to share around,
 -- but won't be particularly distressed if there are explosions missing from an in-flight game.
-import 'CoreLibs/animation'
-import 'assets'
-
 local gfx                = playdate.graphics
 
 Explosion                = {}

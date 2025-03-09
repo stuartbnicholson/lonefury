@@ -1,7 +1,3 @@
-import 'utility'
-import 'assets'
-import 'enemyAI'
-
 -- An unkillable beast that will destroy the player should they wander too far out of the play area
 
 local pd = playdate

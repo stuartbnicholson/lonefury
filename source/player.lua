@@ -1,8 +1,5 @@
 -- The one and only Player sprite, which is a special case because it's controlled by player input
 -- and it's being 'alive' or not is separated from sprite functionality so it can be animated re-spawning etc.
-import 'CoreLibs/sprites'
-
-import 'assets'
 
 local pd = playdate
 local gfx = pd.graphics

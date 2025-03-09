@@ -1,15 +1,5 @@
 -- State: Game is actively running, player is fighting and dying but has lives left.
 
-import 'CoreLibs/sprites'
-import 'CoreLibs/crank'
-
-import 'constants'
-import 'asteroid'
-import 'player'
-import 'enemy'
-import 'enemyBase'
-import 'explosion'
-
 local pd = playdate
 local gfx = pd.graphics
 

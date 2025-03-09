@@ -1,5 +1,4 @@
 -- State: Game highscore screen before game starts.
-import 'constants'
 
 local pd = playdate
 

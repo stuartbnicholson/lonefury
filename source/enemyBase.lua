@@ -1,7 +1,4 @@
 -- A refactor of enemyBase that splits the base into three sub-sprites
-import 'assets'
-import 'enemyBaseHalf'
-import 'enemyBaseZap'
 
 local pd = playdate
 local gfx = pd.graphics

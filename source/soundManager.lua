@@ -1,5 +1,3 @@
-import 'assets'
-
 -- Plays retro 80's chip sounds and samples
 -- See https://www.youtube.com/watch?v=BMENZloYz6Q&list=LL&index=1
 -- WAV assets from https://www.oryxdesignlab.com/

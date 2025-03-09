@@ -1,7 +1,4 @@
 -- MineExplosions differ from Explosions, they render the same but are actually dangerous sprites. Colliding with them will kill the player and enemies.
-import 'CoreLibs/animation'
-import 'assets'
-
 local gfx = playdate.graphics
 
 MineExplosion = {}

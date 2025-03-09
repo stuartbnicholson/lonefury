@@ -1,5 +1,4 @@
 -- State: Game highscore entry screen after game finishes!
-import 'constants'
 
 local pd = playdate
 local gfx = pd.graphics
