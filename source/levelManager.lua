@@ -78,7 +78,7 @@ function LevelManager:simpleSpawn(worldX, worldY, obj)
 end
 
 function LevelManager:enemyBaseSpawn(worldX, worldY, obj)
-    obj:spawn(worldX, worldY, self.enemyBaseMultiShot, self.enemyBaseFireMs, self.enemyBaseShieldActive,
+    obj:spawn(worldX, worldY, self.level, self.enemyBaseMultiShot, self.enemyBaseFireMs, self.enemyBaseShieldActive,
         self.enemyBaseZapMs)
 
     self.basesToKill += 1

@@ -78,6 +78,9 @@ function EnemyBaseHalf.new(enemyBase, worldX, worldY, isVertical, isFlipped, sph
         else
             SoundManager:enemyBaseFailedHit()
         end
+
+        -- Base has been hit, it's aggressive now. Only really applicable for early levels
+        self.enemyBase.isAggro = true
     end
 
     return self

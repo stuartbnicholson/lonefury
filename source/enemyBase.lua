@@ -98,6 +98,7 @@ function EnemyBase.new(isVertical)
 	self.gunShieldOffset = GUNSHIELD_MAX_OFFSET
 
 	-- Base members
+	self.isAggro = false
 	self.lastVisibleMs = 0
 	self.isVertical = isVertical
 	self.lastFiredMs = 0
@@ -123,10 +124,13 @@ function EnemyBase.new(isVertical)
 	}
 
 	-- Pool management
-	function self:spawn(worldX, worldY, multiShot, fireMs, gunShieldActive, zapMs)
+	function self:spawn(worldX, worldY, level, multiShot, fireMs, gunShieldActive, zapMs)
 		self.worldX = worldX
 		self.worldY = worldY
 		Dashboard:addEnemyBase(self.worldX, self.worldY)
+
+		-- Bases aren't aggro until they're hit levels 1-2. From level 3 they start aggro
+		self.isAggro = level >= 3;
 
 		-- Game level dictates the bases's rage.
 		self.multiShot = multiShot
@@ -244,7 +248,7 @@ function EnemyBase.new(isVertical)
 	-- Enemy base bullets are slow and frequent
 	function self:fire(now)
 		-- Check if enough time has elapsed since base last fired
-		if now - self.lastFiredMs >= self.fireMs then
+		if self.isAggro and now - self.lastFiredMs >= self.fireMs then
 			local pWx, pWy = Player:getWorldV():unpack()
 			local angleToPlayer = PointsAngle(self.worldX, self.worldY, pWx, pWy)
 			local dx, dy = AngleToDeltaXY(angleToPlayer)
@@ -407,6 +411,9 @@ function EnemyBase.new(isVertical)
 		else
 			SoundManager:enemyBaseFailedHit()
 		end
+
+		-- Base has been hit, it's aggressive now. Only really applicable for early levels
+		self.isAggro = true
 	end
 
 	function self:sphereHit(sphere)
