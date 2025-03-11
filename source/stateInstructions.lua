@@ -24,12 +24,8 @@ end
 
 function StateInstructions:start()
     self.started = pd.getCurrentTimeMilliseconds()
-end
 
-function StateInstructions:update()
-    Starfield:update()
-    Dashboard:update()
-
+    Starfield.image:draw(0, 0)
     -- Display instructions and scores
     baseImg:draw(48, 25)
     enemy1Img:draw(68, 108)
@@ -48,6 +44,10 @@ function StateInstructions:update()
     gfx.drawText('LIFE**' .. SCORE_EXTRALIFE, 128, 188)
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
+    Dashboard:update()
+end
+
+function StateInstructions:update()
     if pd.buttonIsPressed(pd.kButtonA|pd.kButtonB|pd.kButtonUp|pd.kButtonDown|pd.kButtonLeft|pd.kButtonRight) then
         StateStart:start()
         return StateStart

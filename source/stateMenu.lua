@@ -22,14 +22,7 @@ function StateMenu.new()
 end
 
 function StateMenu:start()
-    self.started = pd.getCurrentTimeMilliseconds()
-    SoundManager:titleMusic(TitleMusic)
-end
-
-function StateMenu:update()
-    Starfield:update()
-    Dashboard:update()
-    gfx.animation.blinker.updateAll()
+    Starfield.image:draw(0, 0)
 
     -- Centered in the play area
     local w, h = titleImg:getSize()
@@ -38,10 +31,24 @@ function StateMenu:update()
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
     gfx.setFont(smallFont)
     gfx.drawText("V" .. pd.metadata.version, 285, 230)
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
+
+    Dashboard:update()
+
+    self.started = pd.getCurrentTimeMilliseconds()
+    SoundManager:titleMusic(TitleMusic)
+end
+
+function StateMenu:update()
+    gfx.animation.blinker.updateAll()
 
     if self.blinker.on then
         gfx.setFont(font)
+        gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
         gfx.drawText('PRESS A BUTTON', 48, 186)
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
+    else
+        gfx.fillRect(48, 186, 238, 15)
     end
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
 

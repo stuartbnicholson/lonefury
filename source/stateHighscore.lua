@@ -19,14 +19,13 @@ function StateHighscore:start(acceptButtons)
 
     self.acceptButtons = acceptButtons
     self.started = pd.getCurrentTimeMilliseconds()
+
+    Starfield.image:draw(0, 0)
+    HighScoreManager:draw(60, 40)
+    Dashboard:update()
 end
 
 function StateHighscore:update()
-    Starfield:update()
-    Dashboard:update()
-
-    HighScoreManager:draw(60, 40)
-
     if self.acceptButtons and pd.buttonIsPressed(pd.kButtonA|pd.kButtonB|pd.kButtonUp|pd.kButtonDown|pd.kButtonLeft|pd.kButtonRight) then
         StateStart:start()
         return StateStart

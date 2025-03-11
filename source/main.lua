@@ -119,13 +119,21 @@ if prefs then
     TitleMusic, FixedCrank = table.unpack(prefs)
 end
 
+Dashboard = Dashboard.new()
+Starfield = Starfield.new()
+
+-- Set the starfield as the sprite background. See the play.date lua documentation.
+-- This callback will have the clip rect set correctly so only what is required will redraw
+gfx.sprite.setBackgroundDrawingCallback(
+    function(x, y, w, h)
+        Starfield.image:draw(0, 0)
+    end
+)
+
 -- Set the initial Game State
 local currentState = StateMenu
 -- local currentState = StateTest
 currentState:start()
-
-Dashboard = Dashboard.new()
-Starfield = Starfield.new()
 
 -- Add to the System Menu
 function SetupMenu()
