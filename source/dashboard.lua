@@ -29,6 +29,7 @@ function Dashboard.new()
 
     self.dash = Assets.getImage('images/dashboard.png')
     self.miniMap = gfx.image.new(MINIMAP_WIDTH * MINIMAP_CELLW, MINIMAP_HEIGHT * MINIMAP_CELLH)
+    self.story = nil
 
     -- Initial dashboard draw
     self:drawPlayerScore()
@@ -90,6 +91,10 @@ function Dashboard:update()
     mx, my = self:worldToDashXY(Player:getWorldV():unpack())
     local frame = 1 + (Player:getAngle() // 45) % 8
     mapPlayerTable:drawImage(frame, mx + MINIMAP_SX - 3, my + MINIMAP_SY - 2)
+
+    if self.story then
+        self.story:update()
+    end
 
     if ShowFPS then
         pd.drawFPS(VIEWPORT_WIDTH + 64, 3)
@@ -180,4 +185,8 @@ function Dashboard:drawLives()
     end
 
     gfx.popContext()
+end
+
+function Dashboard:setStory(story)
+    self.story = story
 end

@@ -3,7 +3,7 @@
 local pd = playdate
 local gfx = pd.graphics
 
-local font = Assets.getFont('images/Xevious-2x-table-8-8.png')
+local font = Assets.getFont('images/Xevious-2x-table-16-16.png')
 local baseImg = Assets.getImage('images/baseHorizontal.png')
 local enemy1Img = Assets.getImagetable('images/enemy-table-15-15.png'):getImage(1)
 local enemy2Img = Assets.getImagetable('images/enemy2-table-15-15.png'):getImage(1)

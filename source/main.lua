@@ -40,6 +40,7 @@ import 'stateMenu'
 import 'stateNewLevel'
 import 'stateRespawn'
 import 'stateStart'
+import 'storylane'
 import 'utility'
 
 local pd = playdate
@@ -101,6 +102,7 @@ LevelGenerator = LevelRandomGenerator.new()
 LevelManager = LevelManager.new(LevelGenerator)
 SoundManager = SoundManager.new()
 HighScoreManager = HighScoreManager.new()
+StoryManager = StoryLane.new()
 
 -- The game state machine
 StateMenu = StateMenu.new()

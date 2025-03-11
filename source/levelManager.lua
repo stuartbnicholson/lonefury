@@ -248,6 +248,9 @@ end
 function LevelManager:levelStart()
     self:clockReset()
     self.levelStartMS = pd.getCurrentTimeMilliseconds()
+
+    -- Is there a story on this level?
+    Dashboard:setStory(StoryManager:start(self.level))
 end
 
 function LevelManager:baseDestroyed()
