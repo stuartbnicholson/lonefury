@@ -31,7 +31,6 @@ function StateInstructions:update()
     Dashboard:update()
 
     -- Display instructions and scores
-    gfx.pushContext()
     baseImg:draw(48, 25)
     enemy1Img:draw(68, 108)
     enemy2Img:draw(68 + 20, 106)
@@ -47,7 +46,7 @@ function StateInstructions:update()
     gfx.drawText(SCORE_MINE .. ' PTS', 128, 132)
     gfx.drawText(SCORE_ASTEROID .. ' PTS', 128 + 13, 154)
     gfx.drawText('LIFE**' .. SCORE_EXTRALIFE, 128, 188)
-    gfx.popContext()
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
     if pd.buttonIsPressed(pd.kButtonA|pd.kButtonB|pd.kButtonUp|pd.kButtonDown|pd.kButtonLeft|pd.kButtonRight) then
         StateStart:start()

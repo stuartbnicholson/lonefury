@@ -35,7 +35,6 @@ function StateMenu:update()
     local w, h = titleImg:getSize()
     titleImg:draw((VIEWPORT_WIDTH - w) >> 1, ((VIEWPORT_HEIGHT - h) >> 1) - 32)
 
-    gfx.pushContext()
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
     gfx.setFont(smallFont)
     gfx.drawText("V" .. pd.metadata.version, 285, 230)
@@ -44,7 +43,7 @@ function StateMenu:update()
         gfx.setFont(font)
         gfx.drawText('PRESS A BUTTON', 48, 186)
     end
-    gfx.popContext()
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
     if pd.buttonIsPressed(pd.kButtonA|pd.kButtonB|pd.kButtonUp|pd.kButtonDown|pd.kButtonLeft|pd.kButtonRight) then
         StateStart:start()

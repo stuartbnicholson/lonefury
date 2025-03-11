@@ -78,7 +78,6 @@ function StateHighscoreEntry:update()
     Dashboard:update()
     gfx.animation.blinker.updateAll()
 
-    gfx.pushContext()
     gfx.setFont(font)
 
     HighScoreManager:draw(60, 40)
@@ -110,7 +109,6 @@ function StateHighscoreEntry:update()
     elseif pd.buttonJustPressed(pd.kButtonRight | pd.kButtonA | pd.kButtonB) then
         state = self:saveLetter(alph)
     end
-    gfx.popContext()
 
     return state
 end

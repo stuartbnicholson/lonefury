@@ -98,7 +98,6 @@ end
 
 function Dashboard:drawAlertTimer()
     -- LevelManager tells us percentage time left to next alert
-    gfx.pushContext()
     local percent = LevelManager:percentAlertTimeLeft()
 
     if percent == 1 then
@@ -123,7 +122,7 @@ function Dashboard:drawAlertTimer()
             gfx.fillRect(ALERT_SX, ALERT_SY, 77, 13)
         end
     end
-    gfx.popContext()
+    gfx.setColor(gfx.kColorWhite);
 end
 
 function Dashboard:drawPlayerScore()

@@ -63,7 +63,6 @@ function Starfield:update()
         dx = 1
     end
 
-    gfx.pushContext()
     gfx.setColor(gfx.kColorWhite)
     for i = 1, #self.hintStars do
         local x = self.hintStars[i].x
@@ -76,5 +75,4 @@ function Starfield:update()
         -- gfx.drawPixel(self.hintStars[i])
         gfx.drawLine(x, y, x + dx, y + dy)
     end
-    gfx.popContext()
 end
