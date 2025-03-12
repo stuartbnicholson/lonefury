@@ -30,7 +30,6 @@ function HighScoreManager.new()
 end
 
 function HighScoreManager:draw(startX, startY)
-    gfx.pushContext()
     gfx.setFont(font)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
 
@@ -68,7 +67,7 @@ function HighScoreManager:draw(startX, startY)
         y += 20
         x = startX
     end
-    gfx.popContext()
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
 end
 
 function HighScoreManager:isHighScore(score)

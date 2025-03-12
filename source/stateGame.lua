@@ -41,16 +41,7 @@ function StateGame:buttonUpdate()
             Player:right()
         end
     else
-        if not FixedCrank then
-            local crankTicks = pd.getCrankTicks(CrankTicksPerRev)
-            if crankTicks > 0 then
-                Player:right()
-            elseif crankTicks < 0 then
-                Player:left()
-            end
-        else
-            Player:crankAngle()
-        end
+        Player:crankAngle()
     end
 end
 

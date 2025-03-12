@@ -4,4 +4,3 @@
 TitleMusic = true
 ShowFPS = false
 ShowLevel = false
-FixedCrank = false

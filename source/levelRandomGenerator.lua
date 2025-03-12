@@ -74,7 +74,6 @@ function LevelRandomGenerator:spawnLevels(level)
     -- Determine the number of bases in range
     local bases = basesPerLevel[level]
     local numBases = math.random(bases.min, bases.max)
-    print("numBases: ", numBases)
 
     -- Determine the number of asteroids, mines and eggs
     local obstacles = obstaclesPerLevel[level]

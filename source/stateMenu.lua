@@ -1,7 +1,7 @@
 -- State: Game title screen before game starts.
 
 local pd = playdate
-local gfx = pd.graphics
+local gfx = playdate.graphics
 
 local titleImg = Assets.getImage('images/title.png')
 local font = Assets.getFont('images/Xevious-2x-table-16-16.png')
@@ -22,29 +22,37 @@ function StateMenu.new()
 end
 
 function StateMenu:start()
-    self.started = pd.getCurrentTimeMilliseconds()
-    SoundManager:titleMusic(TitleMusic)
-end
-
-function StateMenu:update()
-    Starfield:update()
-    Dashboard:update()
-    gfx.animation.blinker.updateAll()
+    Starfield.image:draw(0, 0)
 
     -- Centered in the play area
     local w, h = titleImg:getSize()
     titleImg:draw((VIEWPORT_WIDTH - w) >> 1, ((VIEWPORT_HEIGHT - h) >> 1) - 32)
 
-    gfx.pushContext()
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
     gfx.setFont(smallFont)
     gfx.drawText("V" .. pd.metadata.version, 285, 230)
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
+
+    Dashboard:update()
+
+    self.started = pd.getCurrentTimeMilliseconds()
+    SoundManager:titleMusic(TitleMusic)
+end
+
+function StateMenu:update()
+    gfx.animation.blinker.updateAll()
 
     if self.blinker.on then
         gfx.setFont(font)
+        gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
         gfx.drawText('PRESS A BUTTON', 48, 186)
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
+    else
+        gfx.setColor(gfx.kColorBlack)
+        gfx.fillRect(48, 186, 238, 15)
+        gfx.setColor(gfx.kColorWhite)
     end
-    gfx.popContext()
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
     if pd.buttonIsPressed(pd.kButtonA|pd.kButtonB|pd.kButtonUp|pd.kButtonDown|pd.kButtonLeft|pd.kButtonRight) then
         StateStart:start()

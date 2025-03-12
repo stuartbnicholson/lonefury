@@ -5,6 +5,7 @@ import 'CoreLibs/sprites'
 import 'CoreLibs/timer'
 import 'CoreLibs/ui'
 
+import 'utility'
 import 'assets'
 import 'asteroid'
 import 'constants'
@@ -41,7 +42,6 @@ import 'stateNewLevel'
 import 'stateRespawn'
 import 'stateStart'
 import 'storylane'
-import 'utility'
 
 local pd = playdate
 local gfx = pd.graphics
@@ -69,6 +69,8 @@ Assets.preloadImages({
     'images/baseGunShieldHoriz.png',
     -- Dashboard
     'images/dashboard.png',
+    'images/alert.png',
+    'images/dangerBar.png',
     'images/playerLife.png',
     'images/medal1.png',
     'images/medal5.png'
@@ -118,16 +120,25 @@ StateGameOver = StateGameOver.new()
 -- Load what few preferences we have
 local prefs = pd.datastore.read()
 if prefs then
-    TitleMusic, FixedCrank = table.unpack(prefs)
+    TitleMusic, _ = table.unpack(prefs)
 end
+
+Starfield = Starfield.new()
+
+-- Set the starfield as the sprite background. See the play.date lua documentation.
+-- This callback will have the clip rect set correctly so only what is required will redraw
+gfx.sprite.setBackgroundDrawingCallback(
+    function(x, y, w, h)
+        Starfield.image:draw(0, 0)
+    end
+)
+
+Dashboard = Dashboard.new()
 
 -- Set the initial Game State
 local currentState = StateMenu
 -- local currentState = StateTest
 currentState:start()
-
-Dashboard = Dashboard.new()
-Starfield = Starfield.new()
 
 -- Add to the System Menu
 function SetupMenu()
@@ -140,18 +151,12 @@ function SetupMenu()
         end)
     assert(menuItem1, error)
 
-    local menuItem2, error = menu:addCheckmarkMenuItem("fixed crank", FixedCrank,
-        function(value)
-            FixedCrank = value
-        end)
-    assert(menuItem2, error)
-
     if DEVELOPER_BUILD then
-        local menuItem3, error = menu:addCheckmarkMenuItem("show fps", false,
+        local menuItem2, error = menu:addCheckmarkMenuItem("show fps", false,
             function(value)
                 ShowFPS = value
             end)
-        assert(menuItem3, error)
+        assert(menuItem2, error)
     end
 end
 
@@ -221,43 +226,80 @@ function pd.gameWillPause()
     pd.setMenuImage(pauseImage)
 end
 
+function pd.deviceDidUnlock()
+    Dashboard:draw()
+    Dashboard:update()
+end
+
+function pd.gameWillResume()
+    Dashboard:draw()
+    Dashboard:update()
+end
+
 function pd.gameWillTerminate()
     -- Save what few preferences we have
-    pd.datastore.write({ TitleMusic, FixedCrank })
+    pd.datastore.write({ TitleMusic, nil })
 
     pd.setMenuImage(nil)
 end
 
-local ms = pd.getCurrentTimeMilliseconds
+local alwaysRedrawOn = false
+local alwaysRedrawOnFrameCounter = 0
 function pd.update()
-    local frameStart = ms()
+    pd.resetElapsedTime()
 
     currentState = currentState:update()
 
-    -- From: https://devforum.play.date/t/best-practices-for-managing-lots-of-assets/395
-    Assets.lazyLoad(frameStart)
+    -- Adaptive sprite redraw management. This sprite 'dirtying' gets expensive with enough
+    -- aliens and bullets on screen. If the frame rate dives we enable setAlwaysRedraw(true) which will
+    -- result in computationally cheap full redraws at the cost of the battery. So we need to adaptively
+    -- turn it off too.
+    if alwaysRedrawOnFrameCounter > 0 then
+        -- alwaysRedrawOn was changed recently, leave it on for several frames before we recheck
+        alwaysRedrawOnFrameCounter -= 1
+    else
+        local elapsed = pd.getElapsedTime()
+        if elapsed > 0.035 and not alwaysRedrawOn then
+            alwaysRedrawOn = true
+            alwaysRedrawOnFrameCounter = 15 -- Favour leaving it on if we hit a frame spike
+            gfx.sprite.setAlwaysRedraw(alwaysRedrawOn)
+        elseif elapsed < 0.028 and alwaysRedrawOn then
+            alwaysRedrawOn = false
+            alwaysRedrawOnFrameCounter = 3
+            gfx.sprite.setAlwaysRedraw(alwaysRedrawOn)
+        end
+    end
 end
 
--- In-game states use this
+-- In-game states use this, so watch what goes in here
 function WorldUpdateInGame()
-    gfx.animation.blinker.updateAll()
+    gfx.setScreenClipRect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
 
+    gfx.animation.blinker.updateAll()
     LevelManager.resetActiveCounts()
-    Starfield:update()
+
     gfx.sprite.update()
+    Starfield:update()
     ExplosionsUpdate()
     LevelManager:update()
     Dashboard:update()
 end
 
--- Non-game states use this
+-- Non-game states use this, which includes the lazy asset loading out of the main game loop
 function WorldUpdateInTitles()
+    local frameStart = pd.getCurrentTimeMilliseconds()
+    pd.resetElapsedTime()
+
+    gfx.setScreenClipRect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
+
     pd.timer.updateTimers()
     gfx.animation.blinker.updateAll()
 
-    Starfield:update()
     gfx.sprite.update()
     ExplosionsUpdate()
     LevelManager:update()
     Dashboard:update()
+
+    -- From: https://devforum.play.date/t/best-practices-for-managing-lots-of-assets/395
+    Assets.lazyLoad(frameStart)
 end

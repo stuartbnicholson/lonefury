@@ -33,18 +33,21 @@ function StateRespawn:start()
 
     ViewPortWorldX, ViewPortWorldY = Player:getWorldV():unpack()
 
-    Dashboard:drawLivesMedals()
     self.blinker:start(600, 600, false, 5)
     self.prevOn = false
+
+    gfx.setScreenClipRect(400 - DASH_WIDTH, 0, DASH_WIDTH, VIEWPORT_HEIGHT)
+    Dashboard:drawLivesMedals()
 end
 
 function StateRespawn:update()
+    gfx.setScreenClipRect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
     LevelManager:clockReset() -- While the Player spawns, keep resetting the level clock
     WorldUpdateInTitles()
 
     if pd.isCrankDocked() then
-        pd.ui.crankIndicator:draw()
-    elseif FixedCrank then
+        pd.ui.crankIndicator:draw(-DASH_WIDTH, 0)
+    else
         Player:crankAngle()
     end
 

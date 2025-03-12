@@ -21,6 +21,9 @@ function StateHighscoreEntry.new()
 end
 
 function StateHighscoreEntry:start()
+    Dashboard:update()
+    Starfield.image:draw(0, 0)
+
     SoundManager:titleMusic(TitleMusic)
 
     self.currentAlpha = 1
@@ -74,11 +77,8 @@ function StateHighscoreEntry:saveLetter(alph)
 end
 
 function StateHighscoreEntry:update()
-    Starfield:update()
-    Dashboard:update()
     gfx.animation.blinker.updateAll()
 
-    gfx.pushContext()
     gfx.setFont(font)
 
     HighScoreManager:draw(60, 40)
@@ -88,9 +88,11 @@ function StateHighscoreEntry:update()
     if self.blinker.on then
         gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
         gfx.drawText(alph, self.rowX, self.rowY)
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
     else
         gfx.setColor(gfx.kColorBlack)
         gfx.fillRect(self.rowX, self.rowY, 16, 16)
+        gfx.setColor(gfx.kColorWhite)
     end
 
     if not pd.isCrankDocked() then
@@ -110,7 +112,6 @@ function StateHighscoreEntry:update()
     elseif pd.buttonJustPressed(pd.kButtonRight | pd.kButtonA | pd.kButtonB) then
         state = self:saveLetter(alph)
     end
-    gfx.popContext()
 
     return state
 end

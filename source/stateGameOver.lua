@@ -35,9 +35,8 @@ function StateGameOver:update()
     -- Player is STILl dead, the world STILL goes on without them.
     WorldUpdateInTitles()
 
-    gfx.pushContext()
     gfx.setFont(font)
-    gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+    gfx.setColor(gfx.kColorBlack)
     gfx.fillRect((VIEWPORT_WIDTH >> 1) - 73, (VIEWPORT_HEIGHT >> 1) - 27, 67, 16)
     gfx.fillRect((VIEWPORT_WIDTH >> 1) - 73 + 87, (VIEWPORT_HEIGHT >> 1) - 27, 67, 16)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
@@ -46,14 +45,14 @@ function StateGameOver:update()
     local shots = (Player.shotsFired > 999 and 999) or Player.shotsFired
     local text = 'SHOTS:' .. shots
     gfx.setFont(smallFont)
-    gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+    gfx.setColor(gfx.kColorBlack)
     gfx.fillRect((VIEWPORT_WIDTH >> 1) - 72, (VIEWPORT_HEIGHT >> 1) + 1, gfx.getTextSize(text) + 2, 9)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
     gfx.drawText(text, (VIEWPORT_WIDTH >> 1) - 71, (VIEWPORT_HEIGHT >> 1) + 2)
 
     local hits = (Player.shotsHit > 999 and 999) or Player.shotsHit
     text = 'HITS:' .. hits
-    gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+    gfx.setColor(gfx.kColorBlack)
     gfx.fillRect((VIEWPORT_WIDTH >> 1) + 13, (VIEWPORT_HEIGHT >> 1) + 1, gfx.getTextSize(text) + 2, 9)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
     gfx.drawText(text, (VIEWPORT_WIDTH >> 1) + 14, (VIEWPORT_HEIGHT >> 1) + 2)
@@ -63,11 +62,11 @@ function StateGameOver:update()
         percent = string.format("%.2f", (hits / shots) * 100.0)
     end
     text = 'PERCENT:' .. percent
-    gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+    gfx.setImageDrawMode(gfx.kColorBlack)
     gfx.fillRect((VIEWPORT_WIDTH >> 1) - 72, (VIEWPORT_HEIGHT >> 1) + 21, gfx.getTextSize(text) + 2, 9)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
     gfx.drawText(text, (VIEWPORT_WIDTH >> 1) - 71, (VIEWPORT_HEIGHT >> 1) + 22)
-    gfx.popContext()
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
     if self.timerComplete then
         if HighScoreManager:isHighScore(Player.score) then

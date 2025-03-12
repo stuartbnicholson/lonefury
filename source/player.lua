@@ -68,12 +68,7 @@ function Player:new()
     end
 
     function self:resetAngle()
-        if not FixedCrank then
-            self.angle = 0
-            self:setImage(self.imgTable:getImage(1))
-        else
-            self:crankAngle()
-        end
+        self:crankAngle()
     end
 
     function self:getAngle()
@@ -102,6 +97,9 @@ function Player:new()
         if alive then
             -- Spawning isn't the same as being alive!
             self:setVisible(true)
+        else
+            self.deltaX = 0
+            self.deltaY = 0
         end
     end
 
@@ -111,18 +109,6 @@ function Player:new()
 
         self.worldV.dx -= self.deltaX * SPEED
         self.worldV.dy -= self.deltaY * SPEED
-
-        -- Decel rather than chop, zero once we're close enough
-        if self.deltaX < 0.001 then
-            self.deltaX = 0
-        else
-            self.deltaX *= 0.65
-        end
-        if self.deltaY < 0.001 then
-            self.deltaY = 0
-        else
-            self.deltaY *= 0.65
-        end
 
         if self.isAlive then
             local _, _, c, n = self:checkCollisions(self.x, self.y)
@@ -163,6 +149,7 @@ function Player:new()
 
         -- Add an extra life every X points, have to track them separately so we don't add too many!
         local extraLives = math.floor(self.score / SCORE_EXTRALIFE)
+        gfx.setScreenClipRect(400 - DASH_WIDTH, 0, DASH_WIDTH, VIEWPORT_HEIGHT)
         if self.extraLives < extraLives and self.lives < MAX_LIVES then
             self.extraLives += 1
             self.lives += 1
@@ -171,6 +158,7 @@ function Player:new()
         end
 
         Dashboard:drawPlayerScore()
+        gfx.setScreenClipRect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
     end
 
     function self:collide(other)

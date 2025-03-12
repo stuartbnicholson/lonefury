@@ -6,7 +6,7 @@ Starfield.__index = Starfield
 
 local STATIC_STARS = 160
 local HINT_STARS = 10
-local HINT_STAR_VELOCITY = 4.0
+local HINT_STAR_VELOCITY = 5.0
 
 function Starfield.new()
     local self = setmetatable({}, Starfield)
@@ -38,10 +38,6 @@ function Starfield.new()
 end
 
 function Starfield:update()
-    -- This was originally an attempt to parallax scroll a viewport sized image, which requires drawing a large image multiple times
-    -- which consumes about 5fps so probably isn't worth the effort. Instead we'll draw a stationary background and some 'hints' that move.
-    self.image:draw(0, 0)
-
     -- Draw some hint stars that move
     local pdx, pdy = Player:getWorldDelta()
     pdx *= HINT_STAR_VELOCITY
@@ -63,7 +59,6 @@ function Starfield:update()
         dx = 1
     end
 
-    gfx.pushContext()
     gfx.setColor(gfx.kColorWhite)
     for i = 1, #self.hintStars do
         local x = self.hintStars[i].x
@@ -73,8 +68,6 @@ function Starfield:update()
         self.hintStars[i].x = x
         self.hintStars[i].y = y
 
-        -- gfx.drawPixel(self.hintStars[i])
         gfx.drawLine(x, y, x + dx, y + dy)
     end
-    gfx.popContext()
 end
