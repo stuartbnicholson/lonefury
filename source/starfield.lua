@@ -6,7 +6,7 @@ Starfield.__index = Starfield
 
 local STATIC_STARS = 160
 local HINT_STARS = 10
-local HINT_STAR_VELOCITY = 4.0
+local HINT_STAR_VELOCITY = 5.0
 
 function Starfield.new()
     local self = setmetatable({}, Starfield)
@@ -68,7 +68,6 @@ function Starfield:update()
         self.hintStars[i].x = x
         self.hintStars[i].y = y
 
-        -- gfx.drawPixel(self.hintStars[i])
         gfx.drawLine(x, y, x + dx, y + dy)
     end
 end

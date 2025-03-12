@@ -107,18 +107,6 @@ function Player:new()
         self.worldV.dx -= self.deltaX * SPEED
         self.worldV.dy -= self.deltaY * SPEED
 
-        -- Decel rather than chop, zero once we're close enough
-        if self.deltaX < 0.001 then
-            self.deltaX = 0
-        else
-            self.deltaX *= 0.65
-        end
-        if self.deltaY < 0.001 then
-            self.deltaY = 0
-        else
-            self.deltaY *= 0.65
-        end
-
         if self.isAlive then
             local _, _, c, n = self:checkCollisions(self.x, self.y)
             if n > 0 then
