@@ -1,6 +1,7 @@
 -- State: Game highscore screen before game starts.
 
 local pd = playdate
+local gfx = playdate.graphics
 
 local TIMEOUT_MS = 1200 * 5
 

@@ -170,7 +170,9 @@ function Player:new()
             Dashboard:drawLives()
         end
 
+        gfx.setScreenClipRect(400 - DASH_WIDTH, 0, DASH_WIDTH, VIEWPORT_HEIGHT)
         Dashboard:drawPlayerScore()
+        gfx.setScreenClipRect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
     end
 
     function self:collide(other)

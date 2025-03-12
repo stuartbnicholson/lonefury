@@ -119,7 +119,6 @@ if prefs then
     TitleMusic, FixedCrank = table.unpack(prefs)
 end
 
-Dashboard = Dashboard.new()
 Starfield = Starfield.new()
 
 -- Set the starfield as the sprite background. See the play.date lua documentation.
@@ -129,6 +128,8 @@ gfx.sprite.setBackgroundDrawingCallback(
         Starfield.image:draw(0, 0)
     end
 )
+
+Dashboard = Dashboard.new()
 
 -- Set the initial Game State
 local currentState = StateMenu
@@ -246,6 +247,8 @@ end
 
 -- In-game states use this
 function WorldUpdateInGame()
+    gfx.setScreenClipRect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
+
     gfx.animation.blinker.updateAll()
 
     LevelManager.resetActiveCounts()
@@ -258,6 +261,8 @@ end
 
 -- Non-game states use this
 function WorldUpdateInTitles()
+    gfx.setScreenClipRect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
+
     pd.timer.updateTimers()
     gfx.animation.blinker.updateAll()
 

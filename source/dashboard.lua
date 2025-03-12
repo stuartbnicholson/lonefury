@@ -5,8 +5,6 @@ local pd = playdate
 Dashboard = {}
 Dashboard.__index = Dashboard
 
-local DASH_WIDTH = 80
-
 local MINIMAP_SX = 325
 local MINIMAP_SY = 122
 local MINIMAP_WIDTH = 72
@@ -19,6 +17,7 @@ local ALERT_SY = 103
 local medal1Img = Assets.getImage('images/medal1.png')
 local medal5Img = Assets.getImage('images/medal5.png')
 local playerLifeImg = Assets.getImage('images/playerLife.png')
+local dangerImg = Assets.getImage('images/dangerBar.png')
 local alertImg = Assets.getImage('images/alert.png')
 local mapPlayerTable = Assets.getImagetable('images/mapPlayer-table-7-6.png')
 local formationImg = Assets.getImage('images/cross.png')
@@ -28,9 +27,10 @@ function Dashboard.new()
     local self = setmetatable({}, Dashboard)
 
     self.dash = Assets.getImage('images/dashboard.png')
-    self.miniMap = gfx.image.new(MINIMAP_WIDTH * MINIMAP_CELLW, MINIMAP_HEIGHT * MINIMAP_CELLH)
+    self.miniMap = gfx.image.new(MINIMAP_WIDTH, MINIMAP_HEIGHT, gfx.kColorBlack)
 
     -- Initial dashboard draw
+    self.dash:draw(400 - DASH_WIDTH, 0)
     self:drawPlayerScore()
     self:drawLivesMedals()
 
@@ -75,7 +75,8 @@ function Dashboard:removeEnemyBase(worldX, worldY)
 end
 
 function Dashboard:update()
-    self.dash:draw(VIEWPORT_WIDTH, 0)
+    gfx.setScreenClipRect(400 - DASH_WIDTH, 0, DASH_WIDTH, VIEWPORT_HEIGHT)
+
     self.miniMap:draw(MINIMAP_SX, MINIMAP_SY)
     self:drawAlertTimer()
 
@@ -94,20 +95,22 @@ function Dashboard:update()
     if ShowFPS then
         pd.drawFPS(VIEWPORT_WIDTH + 64, 3)
     end
+
+    gfx.setScreenClipRect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
 end
 
 function Dashboard:drawAlertTimer()
     -- LevelManager tells us percentage time left to next alert
     local percent = LevelManager:percentAlertTimeLeft()
 
-    if percent == 1 then
-        -- Don't draw anything, dashboard contains danger bar
+    if percent > 0.995 then
+        dangerImg:draw(ALERT_SX, ALERT_SY)
     elseif percent > 0 then
         self.blinkerTurnedOn = false
         gfx.setColor(gfx.kColorBlack)
 
-        local fill = percent * 77
-        gfx.fillRect(ALERT_SX + fill, ALERT_SY, 77 - fill, 13)
+        local fill = percent * 78
+        gfx.fillRect(ALERT_SX + fill, ALERT_SY, 78 - fill, 13)
     else
         if self.alertBlinker.on then
             alertImg:draw(ALERT_SX, ALERT_SY)
@@ -119,22 +122,18 @@ function Dashboard:drawAlertTimer()
         else
             self.blinkerTurnedOn = false
             gfx.setColor(gfx.kColorBlack)
-            gfx.fillRect(ALERT_SX, ALERT_SY, 77, 13)
+            gfx.fillRect(ALERT_SX, ALERT_SY, 78, 14)
         end
     end
     gfx.setColor(gfx.kColorWhite);
 end
 
 function Dashboard:drawPlayerScore()
-    gfx.pushContext(self.dash)
-
     gfx.setColor(gfx.kColorWhite)
-    gfx.fillRect(0, 0, DASH_WIDTH, 26)
+    gfx.fillRect(400 - DASH_WIDTH, 0, DASH_WIDTH, 26)
     gfx.setColor(gfx.kColorBlack)
     gfx.setFont(scoreFont)
-    gfx.drawText('' .. Player.score, 2, 3)
-
-    gfx.popContext()
+    gfx.drawText('' .. Player.score, 400 - DASH_WIDTH + 2, 3)
 end
 
 function Dashboard:drawLivesMedals()
@@ -143,12 +142,10 @@ function Dashboard:drawLivesMedals()
 end
 
 function Dashboard:drawMedals()
-    gfx.pushContext(self.dash)
-
     -- Medals
     local medal1 = LevelManager.level % 5
     local medal5 = math.floor(LevelManager.level / 5)
-    local x = 4
+    local x = 400 - DASH_WIDTH + 4
     local y = 205
     gfx.setColor(gfx.kColorBlack)
     gfx.fillRect(x, y, 64, 14)
@@ -163,13 +160,11 @@ function Dashboard:drawMedals()
         medal1Img:draw(x, y)
         x += 8
     end
-    gfx.popContext()
 end
 
 function Dashboard:drawLives()
-    gfx.pushContext(self.dash)
     -- Lives
-    local x = 4
+    local x = 400 - DASH_WIDTH + 4
     local y = 222
     gfx.setColor(gfx.kColorBlack)
     gfx.fillRect(x, y, 75, 15)
@@ -177,6 +172,4 @@ function Dashboard:drawLives()
         playerLifeImg:draw(x, y)
         x += 15
     end
-
-    gfx.popContext()
 end

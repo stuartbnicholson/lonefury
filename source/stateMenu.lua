@@ -1,7 +1,7 @@
 -- State: Game title screen before game starts.
 
 local pd = playdate
-local gfx = pd.graphics
+local gfx = playdate.graphics
 
 local titleImg = Assets.getImage('images/title.png')
 local font = Assets.getFont('images/Xevious-2x-table-16-16.png')
