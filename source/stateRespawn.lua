@@ -47,7 +47,7 @@ function StateRespawn:update()
 
     if pd.isCrankDocked() then
         pd.ui.crankIndicator:draw(-DASH_WIDTH, 0)
-    elseif FixedCrank then
+    else
         Player:crankAngle()
     end
 

@@ -5,6 +5,7 @@ import 'CoreLibs/sprites'
 import 'CoreLibs/timer'
 import 'CoreLibs/ui'
 
+import 'utility'
 import 'assets'
 import 'asteroid'
 import 'constants'
@@ -40,7 +41,6 @@ import 'stateMenu'
 import 'stateNewLevel'
 import 'stateRespawn'
 import 'stateStart'
-import 'utility'
 
 local pd = playdate
 local gfx = pd.graphics
@@ -116,7 +116,7 @@ StateGameOver = StateGameOver.new()
 -- Load what few preferences we have
 local prefs = pd.datastore.read()
 if prefs then
-    TitleMusic, FixedCrank = table.unpack(prefs)
+    TitleMusic, _ = table.unpack(prefs)
 end
 
 Starfield = Starfield.new()
@@ -147,18 +147,12 @@ function SetupMenu()
         end)
     assert(menuItem1, error)
 
-    local menuItem2, error = menu:addCheckmarkMenuItem("fixed crank", FixedCrank,
-        function(value)
-            FixedCrank = value
-        end)
-    assert(menuItem2, error)
-
     if DEVELOPER_BUILD then
-        local menuItem3, error = menu:addCheckmarkMenuItem("show fps", false,
+        local menuItem2, error = menu:addCheckmarkMenuItem("show fps", false,
             function(value)
                 ShowFPS = value
             end)
-        assert(menuItem3, error)
+        assert(menuItem2, error)
     end
 end
 
@@ -230,7 +224,7 @@ end
 
 function pd.gameWillTerminate()
     -- Save what few preferences we have
-    pd.datastore.write({ TitleMusic, FixedCrank })
+    pd.datastore.write({ TitleMusic, nil })
 
     pd.setMenuImage(nil)
 end

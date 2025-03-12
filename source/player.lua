@@ -68,12 +68,7 @@ function Player:new()
     end
 
     function self:resetAngle()
-        if not FixedCrank then
-            self.angle = 0
-            self:setImage(self.imgTable:getImage(1))
-        else
-            self:crankAngle()
-        end
+        self:crankAngle()
     end
 
     function self:getAngle()
