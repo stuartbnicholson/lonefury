@@ -97,6 +97,9 @@ function Player:new()
         if alive then
             -- Spawning isn't the same as being alive!
             self:setVisible(true)
+        else
+            self.deltaX = 0
+            self.deltaY = 0
         end
     end
 
@@ -146,6 +149,7 @@ function Player:new()
 
         -- Add an extra life every X points, have to track them separately so we don't add too many!
         local extraLives = math.floor(self.score / SCORE_EXTRALIFE)
+        gfx.setScreenClipRect(400 - DASH_WIDTH, 0, DASH_WIDTH, VIEWPORT_HEIGHT)
         if self.extraLives < extraLives and self.lives < MAX_LIVES then
             self.extraLives += 1
             self.lives += 1
@@ -153,7 +157,6 @@ function Player:new()
             Dashboard:drawLives()
         end
 
-        gfx.setScreenClipRect(400 - DASH_WIDTH, 0, DASH_WIDTH, VIEWPORT_HEIGHT)
         Dashboard:drawPlayerScore()
         gfx.setScreenClipRect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
     end
