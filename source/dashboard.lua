@@ -74,6 +74,14 @@ function Dashboard:removeEnemyBase(worldX, worldY)
     gfx.popContext()
 end
 
+function Dashboard:draw()
+    gfx.setScreenClipRect(400 - DASH_WIDTH, 0, DASH_WIDTH, VIEWPORT_HEIGHT)
+    self.dash:draw(400 - DASH_WIDTH, 0)
+    self:drawPlayerScore()
+    self:drawLivesMedals()
+    gfx.setScreenClipRect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
+end
+
 function Dashboard:update()
     gfx.setScreenClipRect(400 - DASH_WIDTH, 0, DASH_WIDTH, VIEWPORT_HEIGHT)
 

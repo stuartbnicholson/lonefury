@@ -68,6 +68,8 @@ Assets.preloadImages({
     'images/baseGunShieldHoriz.png',
     -- Dashboard
     'images/dashboard.png',
+    'images/alert.png',
+    'images/dangerBar.png',
     'images/playerLife.png',
     'images/medal1.png',
     'images/medal5.png'
@@ -220,6 +222,14 @@ function pd.gameWillPause()
     end
     gfx.popContext()
     pd.setMenuImage(pauseImage)
+end
+
+function pd.deviceDidUnlock()
+    Dashboard:draw()
+end
+
+function pd.gameWillResume()
+    Dashboard:draw()
 end
 
 function pd.gameWillTerminate()
