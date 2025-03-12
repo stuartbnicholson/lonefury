@@ -16,17 +16,14 @@ function StateHighscore.new()
 end
 
 function StateHighscore:start(acceptButtons)
-    Starfield:update()
     Dashboard:update()
+    Starfield.image:draw(0, 0)
+    HighScoreManager:draw(60, 40)
 
     SoundManager:titleMusic(TitleMusic)
 
     self.acceptButtons = acceptButtons
     self.started = pd.getCurrentTimeMilliseconds()
-
-    Starfield.image:draw(0, 0)
-    HighScoreManager:draw(60, 40)
-    Dashboard:update()
 end
 
 function StateHighscore:update()

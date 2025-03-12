@@ -21,8 +21,8 @@ function StateHighscoreEntry.new()
 end
 
 function StateHighscoreEntry:start()
-    Starfield:update()
     Dashboard:update()
+    Starfield.image:draw(0, 0)
 
     SoundManager:titleMusic(TitleMusic)
 
@@ -88,9 +88,11 @@ function StateHighscoreEntry:update()
     if self.blinker.on then
         gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
         gfx.drawText(alph, self.rowX, self.rowY)
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
     else
         gfx.setColor(gfx.kColorBlack)
         gfx.fillRect(self.rowX, self.rowY, 16, 16)
+        gfx.setColor(gfx.kColorWhite)
     end
 
     if not pd.isCrankDocked() then

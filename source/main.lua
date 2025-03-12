@@ -226,10 +226,12 @@ end
 
 function pd.deviceDidUnlock()
     Dashboard:draw()
+    Dashboard:update()
 end
 
 function pd.gameWillResume()
     Dashboard:draw()
+    Dashboard:update()
 end
 
 function pd.gameWillTerminate()
@@ -254,10 +256,10 @@ function WorldUpdateInGame()
     gfx.setScreenClipRect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
 
     gfx.animation.blinker.updateAll()
-
     LevelManager.resetActiveCounts()
-    Starfield:update()
+
     gfx.sprite.update()
+    Starfield:update()
     ExplosionsUpdate()
     LevelManager:update()
     Dashboard:update()
@@ -270,7 +272,6 @@ function WorldUpdateInTitles()
     pd.timer.updateTimers()
     gfx.animation.blinker.updateAll()
 
-    Starfield:update()
     gfx.sprite.update()
     ExplosionsUpdate()
     LevelManager:update()
