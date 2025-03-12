@@ -48,7 +48,9 @@ function StateMenu:update()
         gfx.drawText('PRESS A BUTTON', 48, 186)
         gfx.setImageDrawMode(gfx.kDrawModeCopy)
     else
+        gfx.setColor(gfx.kColorBlack)
         gfx.fillRect(48, 186, 238, 15)
+        gfx.setColor(gfx.kColorWhite)
     end
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
 

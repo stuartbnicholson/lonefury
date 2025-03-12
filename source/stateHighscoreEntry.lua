@@ -21,6 +21,9 @@ function StateHighscoreEntry.new()
 end
 
 function StateHighscoreEntry:start()
+    Starfield:update()
+    Dashboard:update()
+
     SoundManager:titleMusic(TitleMusic)
 
     self.currentAlpha = 1
@@ -74,8 +77,6 @@ function StateHighscoreEntry:saveLetter(alph)
 end
 
 function StateHighscoreEntry:update()
-    Starfield:update()
-    Dashboard:update()
     gfx.animation.blinker.updateAll()
 
     gfx.setFont(font)

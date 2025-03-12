@@ -15,6 +15,9 @@ function StateHighscore.new()
 end
 
 function StateHighscore:start(acceptButtons)
+    Starfield:update()
+    Dashboard:update()
+
     SoundManager:titleMusic(TitleMusic)
 
     self.acceptButtons = acceptButtons
