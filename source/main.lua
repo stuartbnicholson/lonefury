@@ -241,17 +241,35 @@ function pd.gameWillTerminate()
     pd.setMenuImage(nil)
 end
 
-local ms = pd.getCurrentTimeMilliseconds
+local alwaysRedrawOn = false
+local alwaysRedrawOnFrameCounter = 0
 function pd.update()
-    local frameStart = ms()
+    pd.resetElapsedTime()
 
     currentState = currentState:update()
 
-    -- From: https://devforum.play.date/t/best-practices-for-managing-lots-of-assets/395
-    Assets.lazyLoad(frameStart)
+    -- Adaptive sprite redraw management. This sprite 'dirtying' gets expensive with enough
+    -- aliens and bullets on screen. If the frame rate dives we enable setAlwaysRedraw(true) which will
+    -- result in computationally cheap full redraws at the cost of the battery. So we need to adaptively
+    -- turn it off too.
+    if alwaysRedrawOnFrameCounter > 0 then
+        -- alwaysRedrawOn was changed recently, leave it on for several frames before we recheck
+        alwaysRedrawOnFrameCounter -= 1
+    else
+        local elapsed = pd.getElapsedTime()
+        if elapsed > 0.035 and not alwaysRedrawOn then
+            alwaysRedrawOn = true
+            alwaysRedrawOnFrameCounter = 15 -- Favour leaving it on if we hit a frame spike
+            gfx.sprite.setAlwaysRedraw(alwaysRedrawOn)
+        elseif elapsed < 0.028 and alwaysRedrawOn then
+            alwaysRedrawOn = false
+            alwaysRedrawOnFrameCounter = 3
+            gfx.sprite.setAlwaysRedraw(alwaysRedrawOn)
+        end
+    end
 end
 
--- In-game states use this
+-- In-game states use this, so watch what goes in here
 function WorldUpdateInGame()
     gfx.setScreenClipRect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
 
@@ -265,8 +283,11 @@ function WorldUpdateInGame()
     Dashboard:update()
 end
 
--- Non-game states use this
+-- Non-game states use this, which includes the lazy asset loading out of the main game loop
 function WorldUpdateInTitles()
+    local frameStart = pd.getCurrentTimeMilliseconds()
+    pd.resetElapsedTime()
+
     gfx.setScreenClipRect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
 
     pd.timer.updateTimers()
@@ -276,4 +297,7 @@ function WorldUpdateInTitles()
     ExplosionsUpdate()
     LevelManager:update()
     Dashboard:update()
+
+    -- From: https://devforum.play.date/t/best-practices-for-managing-lots-of-assets/395
+    Assets.lazyLoad(frameStart)
 end
