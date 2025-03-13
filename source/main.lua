@@ -170,7 +170,10 @@ end
 SetupMenu()
 
 local pauseImage = gfx.image.new(400, 240)
+local systemMenuOpen = false
 function pd.gameWillPause()
+    systemMenuOpen = true
+
     gfx.pushContext(pauseImage)
     if ShowLevel then
         pauseImage:clear(gfx.kColorBlack)
@@ -234,13 +237,16 @@ function pd.gameWillPause()
 end
 
 function pd.deviceDidUnlock()
-    Dashboard:draw()
-    Dashboard:update()
+    if not systemMenuOpen then
+        Dashboard:draw()
+        Dashboard:update()
+    end
 end
 
 function pd.gameWillResume()
     Dashboard:draw()
     Dashboard:update()
+    systemMenuOpen = false
 end
 
 function pd.gameWillTerminate()
