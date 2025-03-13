@@ -148,11 +148,19 @@ function StoryLane:start(level, nowMs)
     return nil
 end
 
+function StoryLane:clear()
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillRect(TALKINGHEAD_X, TALKINGHEAD_Y, TALKINGHEAD_W, TALKINGHEAD_H)
+    gfx.fillRect(STORY_X, STORY_Y, STORY_W, STORY_H)
+    gfx.setColor(gfx.kColorWhite)
+end
+
 function StoryLane:update()
     local now = pd.getCurrentTimeMilliseconds()
 
     if Player:alive() and self.updateFunc then
         self:updateFunc(now)
     else
+        self:clear()
     end
 end

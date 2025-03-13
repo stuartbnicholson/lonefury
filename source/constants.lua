@@ -1,5 +1,5 @@
 -- Enables developer features
-DEVELOPER_BUILD         = false
+DEVELOPER_BUILD         = true
 
 -- Collision Groups
 GROUP_PLAYER            = 0x01
@@ -7,6 +7,7 @@ GROUP_BULLET            = 0x02
 GROUP_ENEMY             = 0x04
 GROUP_OBSTACLE          = 0x08
 GROUP_ENEMY_BASE        = 0x10
+GROUP_ENEMYMONSTER      = 0x12
 
 SPRITE_TAGS             = {
 
@@ -18,7 +19,8 @@ SPRITE_TAGS             = {
     enemyBase = 6,
     egg = 7,
     mine = 8,
-    mineExplosion = 9
+    mineExplosion = 9,
+    enemyMonster = 10
 }
 
 -- World gameplay occurs in (minus the dashboard)

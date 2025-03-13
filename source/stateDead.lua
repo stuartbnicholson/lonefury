@@ -22,6 +22,8 @@ function StateDead:start()
     self.timerComplete = false
     self.timer:reset()
     self.timer:start()
+
+    StoryManager:clear()
 end
 
 function StateDead:update()

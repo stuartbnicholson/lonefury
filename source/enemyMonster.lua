@@ -15,10 +15,10 @@ function EnemyMonster.new()
     local imgTable = Assets.getImagetable('images/enemyMonster-table-45-45.png')
     local self = gfx.sprite:new(imgTable:getImage(1))
     self.imgTable = imgTable
-    self:setTag(SPRITE_TAGS.enemy)
+    self:setTag(SPRITE_TAGS.enemyMonster)
     self:setZIndex(30)
     self:setCollideRect(2, 2, 41, 40)
-    self:setGroupMask(GROUP_ENEMY)
+    self:setGroupMask(GROUP_ENEMYMONSTER)
     self:setCollidesWithGroupsMask(GROUP_OBSTACLE|GROUP_ENEMY)
     self.worldV = geom.vector2D.new(0, 0)
     self.velocity = geom.vector2D.new(0, 0)
@@ -109,8 +109,13 @@ function EnemyMonster.new()
         self.worldV.dx, self.worldV.dy = ViewPortToWorld(viewX, viewY)
     end
 
+    function self:collisionResponse(other)
+        return gfx.sprite.kCollisionTypeOverlap
+    end
+
     function self:collision(other, x, y)
-        -- The monster cares not for your collisions
+        -- The monster destroys everything it hits so we treat it as a big bullet
+        other:bulletHit(self, x, y)
     end
 
     function self:bulletHit(other, x, y)
