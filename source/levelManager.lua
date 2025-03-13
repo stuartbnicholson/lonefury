@@ -246,11 +246,13 @@ function LevelManager:spawnMonster()
 end
 
 function LevelManager:levelStart()
+    local nowMs = pd.getCurrentTimeMilliseconds()
+
     self:clockReset()
-    self.levelStartMS = pd.getCurrentTimeMilliseconds()
+    self.levelStartMS = nowMs
 
     -- Is there a story on this level?
-    Dashboard:setStory(StoryManager:start(self.level))
+    Dashboard:setStory(StoryManager:start(self.level, nowMs))
 end
 
 function LevelManager:baseDestroyed()

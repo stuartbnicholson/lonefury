@@ -2,6 +2,7 @@
 
 local pd = playdate
 local gfx = pd.graphics
+local anim = gfx.animation
 
 local font = Assets.getFont('images/Xevious-2x-table-16-16.png')
 local alpha <const> = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -14,7 +15,7 @@ StateHighscoreEntry.__index = StateHighscoreEntry
 function StateHighscoreEntry.new()
     local self = setmetatable({}, StateHighscoreEntry)
 
-    self.blinker = gfx.animation.blinker.new(150, 150, true)
+    self.blinker = anim.blinker.new(150, 150, true)
     self.blinker:start()
 
     return self
@@ -77,7 +78,7 @@ function StateHighscoreEntry:saveLetter(alph)
 end
 
 function StateHighscoreEntry:update()
-    gfx.animation.blinker.updateAll()
+    anim.blinker.updateAll()
 
     gfx.setFont(font)
 

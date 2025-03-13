@@ -1,7 +1,8 @@
 -- State: Game title screen before game starts.
 
 local pd = playdate
-local gfx = playdate.graphics
+local gfx = pd.graphics
+local anim = gfx.animation
 
 local titleImg = Assets.getImage('images/title.png')
 local font = Assets.getFont('images/Xevious-2x-table-16-16.png')
@@ -15,7 +16,7 @@ StateMenu.__index = StateMenu
 function StateMenu.new()
     local self = setmetatable({}, StateMenu)
 
-    self.blinker = gfx.animation.blinker.new(800, 400, true)
+    self.blinker = anim.blinker.new(800, 400, true)
     self.blinker:start()
 
     return self
@@ -40,7 +41,7 @@ function StateMenu:start()
 end
 
 function StateMenu:update()
-    gfx.animation.blinker.updateAll()
+    anim.blinker.updateAll()
 
     if self.blinker.on then
         gfx.setFont(font)

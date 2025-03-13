@@ -1,12 +1,14 @@
 -- All enemy bases and other large enemies share these bullets. This is as way of
 -- easily controlling the number of big bullets in flight at any one time during a game.
-local gfx = playdate.graphics
+local pd = playdate
+local gfx = pd.graphics
+local anim = gfx.animation
 
 EnemyBigBullet = {}
 EnemyBigBullet.__index = EnemyBigBullet
 
 local imgTable = Assets.getImagetable('images/bigBullet-table-4-4.png')
-local loop = gfx.animation.loop.new(50, imgTable, true)
+local loop = anim.loop.new(50, imgTable, true)
 
 -- TODO: If velocity increases, bullets get a lot harder to dodge
 local VELOCITY <const> = 2.0

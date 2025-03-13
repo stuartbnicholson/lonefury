@@ -1,6 +1,7 @@
 -- The game dashboard. Shows the player's score, lives, minimap, condition etc.
-local gfx = playdate.graphics
 local pd = playdate
+local gfx = pd.graphics
+local anim = gfx.animation
 
 Dashboard = {}
 Dashboard.__index = Dashboard
@@ -36,7 +37,7 @@ function Dashboard.new()
     self:drawLivesMedals()
 
     -- Alert blinker
-    self.alertBlinker = gfx.animation.blinker.new(800, 400, true)
+    self.alertBlinker = anim.blinker.new(800, 400, true)
     self.alertBlinker:start()
     self.blinkerTurnedOn = false
 

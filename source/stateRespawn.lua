@@ -2,6 +2,7 @@
 
 local pd = playdate
 local gfx = pd.graphics
+local anim = gfx.animation
 
 StateRespawn = {}
 StateRespawn.__index = StateRespawn
@@ -9,7 +10,7 @@ StateRespawn.__index = StateRespawn
 function StateRespawn.new()
     local self = setmetatable({}, StateRespawn)
 
-    self.blinker = gfx.animation.blinker.new(600, 600, false, 4)
+    self.blinker = anim.blinker.new(600, 600, false, 4)
     self.blinker:stop()
 
     return self
@@ -51,7 +52,7 @@ function StateRespawn:update()
         Player:crankAngle()
     end
 
-    gfx.animation.blinker.updateAll()
+    anim.blinker.updateAll()
     if self.blinker.running then
         if self.blinker.on then
             Player:setVisible(true)

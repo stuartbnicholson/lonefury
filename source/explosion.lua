@@ -1,6 +1,8 @@
 -- Explosions are non-critical pieces of animation. We create enough to share around,
 -- but won't be particularly distressed if there are explosions missing from an in-flight game.
-local gfx                = playdate.graphics
+local pd                 = playdate
+local gfx                = pd.graphics
+local anim               = gfx.animation
 
 Explosion                = {}
 Explosion.__index        = Explosion
@@ -29,7 +31,7 @@ function Explosion.new(size)
         h = 72
     end
 
-    local self = gfx.animation.loop.new(120, imgTable, false)
+    local self = anim.loop.new(120, imgTable, false)
     self.size = size
     self.width = w
     self.height = h

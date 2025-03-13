@@ -45,6 +45,8 @@ import 'storylane'
 
 local pd = playdate
 local gfx = pd.graphics
+local anim = gfx.animation
+local timer = pd.timer
 
 -- Asset management
 Assets.preloadImages({
@@ -90,6 +92,7 @@ Assets.preloadImagetables({
     -- Dashboard
     'images/mapPlayer-table-7-6.png',
     'images/talkingHeads-table-32-32.png',
+    'images/fade-table-32-32.png',
     -- Explosions
     'images/explosmall-table-15-15.png',
     'images/explomed-table-20-20.png',
@@ -288,7 +291,7 @@ end
 function WorldUpdateInGame()
     gfx.setScreenClipRect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
 
-    gfx.animation.blinker.updateAll()
+    anim.blinker.updateAll()
     LevelManager.resetActiveCounts()
 
     gfx.sprite.update()
@@ -305,8 +308,8 @@ function WorldUpdateInTitles()
 
     gfx.setScreenClipRect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
 
-    pd.timer.updateTimers()
-    gfx.animation.blinker.updateAll()
+    timer.updateTimers()
+    anim.blinker.updateAll()
 
     gfx.sprite.update()
     ExplosionsUpdate()

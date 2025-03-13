@@ -1,5 +1,7 @@
 -- MineExplosions differ from Explosions, they render the same but are actually dangerous sprites. Colliding with them will kill the player and enemies.
-local gfx = playdate.graphics
+local pd = playdate
+local gfx = pd.graphics
+local anim = gfx.animation
 
 MineExplosion = {}
 MineExplosion.__index = MineExplosion
@@ -16,7 +18,7 @@ function MineExplosion.new()
     self:setCollidesWithGroupsMask(GROUP_PLAYER|GROUP_ENEMY)
     self:moveTo(-100, -100)
 
-    self.loop = gfx.animation.loop.new(120, imgTable, false)
+    self.loop = anim.loop.new(120, imgTable, false)
     self.worldX = -100 -- Start offscreen
     self.worldY = -100
 
