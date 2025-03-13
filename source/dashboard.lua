@@ -147,7 +147,7 @@ function Dashboard:drawPlayerScore()
     gfx.fillRect(400 - DASH_WIDTH, 0, DASH_WIDTH, 26)
     gfx.setColor(gfx.kColorBlack)
     gfx.setFont(scoreFont)
-    gfx.drawText('' .. Player.score, 400 - DASH_WIDTH + 2, 3)
+    gfx.drawText('' .. Player.score, 400 - DASH_WIDTH + 2, 6)
 end
 
 function Dashboard:drawLivesMedals()
