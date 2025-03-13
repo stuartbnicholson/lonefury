@@ -49,12 +49,16 @@ local gfx = pd.graphics
 -- Asset management
 Assets.preloadImages({
     'images/title.png',
+    'images/smallTitle.png',
     'images/alert.png',
     'images/cross.png',
     -- Obstacles
     'images/asteroid.png',
     'images/egg.png',
+    'images/mine.png',
     -- Bases
+    'images/baseOccupied.png',
+    'images/baseHorizontal.png',
     'images/baseQuarterVert.png',
     'images/baseGunVert.png',
     'images/baseQuarterHoriz.png',
@@ -78,24 +82,27 @@ Assets.preloadImages({
 Assets.preloadImagetables({
     'images/enemy-table-15-15.png',
     'images/enemy2-table-15-15.png',
-    'images/exhaust-table-16-16.png',
+    'images/enemy3-table-15-15.png',
     'images/enemyMonster-table-45-45.png',
     -- Bases
     'images/bigBullet-table-4-4.png',
-    'images/baseZap-table-11-11.png',
+    'images/baseZap-table-17-17.png',
     -- Dashboard
     'images/mapPlayer-table-7-6.png',
+    'images/talkingHeads-table-32-32.png',
     -- Explosions
     'images/explosmall-table-15-15.png',
     'images/explomed-table-20-20.png',
     'images/explobase-table-72-72.png',
     -- Player
-    'images/player-table-15-15.png'
+    'images/player-table-15-15.png',
+    'images/playerBullet-table-6-6.png'
 }
 )
 Assets.preloadFonts({
     'images/Xevious-2x-table-16-16.png',
-    'images/Xevious-Score-table-8-16.png'
+    'images/Xevious-Score-table-8-16.png',
+    'images/Xevious-table-8-8.png'
 })
 
 -- Managers

@@ -14,11 +14,6 @@ local FIRE_MS = 330
 
 local imgTable = Assets.getImagetable('images/player-table-15-15.png')
 
-local SHOW_EXHAUST <const> = false
-local exhaustTable = Assets.getImagetable('images/exhaust-table-16-16.png')
-
-local frameCount = 0
-
 Player = {}
 Player.__index = Player
 
@@ -105,8 +100,6 @@ function Player:new()
 
     -- Only called if sprite is in sprite list
     function self:update()
-        frameCount += 1
-
         self.worldV.dx -= self.deltaX * SPEED
         self.worldV.dy -= self.deltaY * SPEED
 
@@ -120,11 +113,6 @@ function Player:new()
                         break
                     end
                 end
-            end
-
-            -- TODO: Draw some exhaust
-            if SHOW_EXHAUST then
-                exhaustTable:drawImage(1 + frameCount % 12, self.x - 8, self.y + 7)
             end
         end
     end
