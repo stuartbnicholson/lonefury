@@ -1,5 +1,5 @@
 -- Enables developer features
-DEVELOPER_BUILD         = true
+DEVELOPER_BUILD         = false
 
 -- Collision Groups
 GROUP_PLAYER            = 0x01
