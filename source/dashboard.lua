@@ -81,6 +81,7 @@ function Dashboard:draw()
     self.dash:draw(400 - DASH_WIDTH, 0)
     self:drawPlayerScore()
     self:drawLivesMedals()
+    StoryManager:draw()
     gfx.setScreenClipRect(0, 0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT)
 end
 

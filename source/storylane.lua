@@ -61,6 +61,7 @@ function StoryLane:waitUpdate(nowMs)
     if nowMs > self.endMs then
         self.fadeFrame = 6
         self.updateFunc = StoryLane.fadeInUpdate
+        self.drawFunc = StoryLane.fadeInDraw
     end
 end
 
@@ -70,33 +71,27 @@ function StoryLane:fadeInUpdate(nowMs)
             self.fadeFrame -= 1
             self.endMs = nowMs + TALKINGHEAD_FADEMS
 
-            local fade = fade:getImage(self.fadeFrame)
-            self.head:setMaskImage(fade)
-            gfx.setImageDrawMode(gfx.kDrawModeCopy)
-            self.head:draw(TALKINGHEAD_X, TALKINGHEAD_Y)
+            self:drawFunc()
         else
             self.textIdx = 1
             self.endMs = nowMs
+
             self.updateFunc = StoryLane.talkingHeadUpdate
+            self.drawFunc = StoryLane.talkingHeadDraw
         end
     end
 end
 
+function StoryLane:fadeInDraw()
+    local fade = fade:getImage(self.fadeFrame)
+    self.head:setMaskImage(fade)
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
+    self.head:draw(TALKINGHEAD_X, TALKINGHEAD_Y)
+end
+
 function StoryLane:talkingHeadUpdate(nowMs)
     if nowMs > self.endMs then
-        gfx.setFont(font)
-
-        gfx.setColor(gfx.kColorBlack)
-        gfx.fillRect(STORY_X, STORY_Y, STORY_W, STORY_H)
-        gfx.setColor(gfx.kColorWhite)
-
-        gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-        local storyY = STORY_Y
-        for i = 0, 2 do
-            gfx.drawText(self.text[self.textIdx + i], STORY_X, storyY)
-            storyY += 9
-        end
-        gfx.setImageDrawMode(gfx.kDrawModeCopy)
+        self:drawFunc()
 
         if self.textIdx < #self.text - 2 then
             self.textIdx += 1
@@ -104,8 +99,27 @@ function StoryLane:talkingHeadUpdate(nowMs)
         else
             self.fadeFrame = 0
             self.updateFunc = StoryLane.fadeOutUpdate
+            self.drawFunc = StoryLane.fadeOutDraw
         end
     end
+end
+
+function StoryLane:talkingHeadDraw()
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
+    self.head:draw(TALKINGHEAD_X, TALKINGHEAD_Y)
+
+    gfx.setFont(font)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillRect(STORY_X, STORY_Y, STORY_W, STORY_H)
+    gfx.setColor(gfx.kColorWhite)
+
+    gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+    local storyY = STORY_Y
+    for i = 0, 2 do
+        gfx.drawText(self.text[self.textIdx + i], STORY_X, storyY)
+        storyY += 9
+    end
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
 end
 
 function StoryLane:fadeOutUpdate(nowMs)
@@ -114,22 +128,25 @@ function StoryLane:fadeOutUpdate(nowMs)
             self.fadeFrame += 1
             self.endMs = nowMs + TALKINGHEAD_FADEMS
 
-            gfx.setColor(gfx.kColorBlack)
-            gfx.fillRect(TALKINGHEAD_X, TALKINGHEAD_Y, TALKINGHEAD_W, TALKINGHEAD_H)
-            gfx.setColor(gfx.kColorWhite)
-
-            local fade = fade:getImage(self.fadeFrame)
-            self.head:setMaskImage(fade)
-            gfx.setImageDrawMode(gfx.kDrawModeCopy)
-            self.head:draw(TALKINGHEAD_X, TALKINGHEAD_Y)
+            self:drawFunc()
         else
-            gfx.setColor(gfx.kColorBlack)
-            gfx.fillRect(STORY_X, STORY_Y, STORY_W, STORY_H)
-            gfx.setColor(gfx.kColorWhite)
+            self:clear()
 
             self.updateFunc = nil
+            self.drawFunc = StoryLane.clear
         end
     end
+end
+
+function StoryLane:fadeOutDraw()
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillRect(TALKINGHEAD_X, TALKINGHEAD_Y, TALKINGHEAD_W, TALKINGHEAD_H)
+    gfx.setColor(gfx.kColorWhite)
+
+    local fade = fade:getImage(self.fadeFrame)
+    self.head:setMaskImage(fade)
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
+    self.head:draw(TALKINGHEAD_X, TALKINGHEAD_Y)
 end
 
 function StoryLane:start(level, nowMs)
@@ -140,6 +157,7 @@ function StoryLane:start(level, nowMs)
             self.textIdx = 1
             self.endMs = nowMs + 3000
             self.updateFunc = StoryLane.waitUpdate
+            self.drawFunc = nil
 
             return self
         end
@@ -153,6 +171,12 @@ function StoryLane:clear()
     gfx.fillRect(TALKINGHEAD_X, TALKINGHEAD_Y, TALKINGHEAD_W, TALKINGHEAD_H)
     gfx.fillRect(STORY_X, STORY_Y, STORY_W, STORY_H)
     gfx.setColor(gfx.kColorWhite)
+end
+
+function StoryLane:draw()
+    if self.drawFunc then
+        self:drawFunc()
+    end
 end
 
 function StoryLane:update()
