@@ -1,0 +1,2 @@
+frames = 6, 7
+introFrames = 1, 2, 3, 4, 5
